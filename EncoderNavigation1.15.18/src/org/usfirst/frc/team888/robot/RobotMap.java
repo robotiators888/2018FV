@@ -13,10 +13,10 @@ public class RobotMap {
 	public static int rearRightSRX = 3;
 	public static int frontRightSRX = 4;
 	
-	public static double lastEncoderLeft = 5;
-	public static double lastEncoderRight = 6;
-	public static double encoderLeft = 7;
-	public static double encoderRight = 13;
+	public static double lastEncoderLeft = 0;
+	public static double lastEncoderRight = 0;
+	public static double encoderLeftValue = 0;
+	public static double encoderRightValue = 0;
 	public static double robotHeading = 0;
 	public static double lastXPosition = 0;
 	public static double lastYPosition = 0;

@@ -19,8 +19,8 @@ public class Navigation extends Subsystem {
 	
 	public static void navigation() {
 		
-		RobotMap.encoderLeftDifference = RobotMap.encoderLeft - RobotMap.lastEncoderLeft;
-		RobotMap.encoderRightDifference = RobotMap.encoderRight - RobotMap.lastEncoderRight;
+		RobotMap.encoderLeftDifference = RobotMap.encoderLeftValue - RobotMap.lastEncoderLeft;
+		RobotMap.encoderRightDifference = RobotMap.encoderRightValue - RobotMap.lastEncoderRight;
 		RobotMap.positionChange = 
 				(RobotMap.encoderLeftDifference + RobotMap.encoderRightDifference)/2;
 		RobotMap.changeInX = RobotMap.positionChange *Math.cos(RobotMap.heading360 
