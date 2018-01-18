@@ -40,19 +40,29 @@ public class Straight {
 
 	}
 
+
 	public static void goStraight(){											//Does all calculations in order to go straight
-		leftEncoderValue = rearLeftMotor.getEncVelocity();						//Gets encoders speed and direction
-		rightEncoderValue = rearRightMotor.getEncVelocity();
+		// Factor in how close the motors are to the power limit	
+		// change one side to match the power of the other side by increasing until it reaches the power limit
+		// This will change the encoders value to DECREASE it 
 
-		while (leftEncoderValue != rightEncoderValue) { 			
-			while (leftEncoderValue < rightEncoderValue){
-				leftEncoderValue++;												//This will change the encoders value to INCREASE it 
-			} 
-			while (leftEncoderValue > rightEncoderValue){
-				leftEncoderValue--;												////This will change the encoders value to DECREASE it 
-			}
+		public final double DISTANCEPERONECLICK = 0.75; //inches (not the acutal value)
+		public final double INCHESPERREV = 7; //(not actual value)
+		public final double RIGHTCLICKPERREV = 200; //(not actual value)
+		public final double LEFTCLICKPERREV = 250; //(not actual value)
+		
 
-		}
+		public double powerLimit = 1;
+		public double totalDistance = 0;
+		public double encoderClicks = 0;
+		
+		//public double rightAdjustmentPower = 0, leftAdjustmentPower = 0;
+		//public double rightMotorActualPower = 0, leftMotorActualPower = 0; 
 
+		totalDistance = encoderClicks * DISTANCEPERONECLICK;	//finds the total distance the robot has traveled
+		
+		if (encoderClicks < )
+		
 	}
 }
+
