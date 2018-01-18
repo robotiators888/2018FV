@@ -1,9 +1,9 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import org.usfirst.frc.team888.robot.Robot;
 import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.commands.EncoderScheduler;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -18,14 +18,6 @@ public class Encoders extends Subsystem {
 			posX, posY, lastPosX, lastPosY,
 			changeInX, changeInY, heading,
 			changeInPos, changeInAngle, distanceTraveled;
-	
-	Encoder leftEncoder,
-			rightEncoder;
-	
-    public Encoders() {
-    	leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_CHANNEL_A, RobotMap.LEFT_ENCODER_CHANNEL_B, false, Encoder.EncodingType.k4X);
-    	rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_CHANNEL_A, RobotMap.RIGHT_ENCODER_CHANNEL_B, false, Encoder.EncodingType.k4X);
-    }
 
     public void initDefaultCommand() {
         setDefaultCommand(new EncoderScheduler()); //Automatically calls the Command that schedules this class to update its values.
@@ -55,18 +47,19 @@ public class Encoders extends Subsystem {
     	lastEncoderLeft = encoderLeftValue;
     	lastEncoderRight = encoderRightValue;
     	
-    	encoderLeftValue = leftEncoder.getDistance();
-    	encoderRightValue = rightEncoder.getDistance();
+    	int[] vals = Robot.drive.getEncoderVals();
+    	encoderLeftValue = vals[0];
+    	encoderRightValue = vals[1];
     }
     
     /**
      * Resets tracking values to 0 or default.
      */
     public void reset() {
-    	leftEncoder.reset();
     	encoderLeftValue = 0;
-    	rightEncoder.reset();
     	encoderRightValue = 0;
+    	
+    	updateEncoderVals();
     	
     	heading = 0;
     }
