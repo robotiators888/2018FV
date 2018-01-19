@@ -23,12 +23,6 @@ public class RobotMap {
 	public static final int MOTOR_REAR_RIGHT = 3;
 	public static final int MOTOR_FRONT_RIGHT = 4;
 	
-	//Encoder channel values. TODO Add actual values.
-	public static final int LEFT_ENCODER_CHANNEL_A = -1;
-	public static final int LEFT_ENCODER_CHANNEL_B = -1;
-	public static final int RIGHT_ENCODER_CHANNEL_A = -1;
-	public static final int RIGHT_ENCODER_CHANNEL_B = -1;
-	
 	//The width between the two wheels the encoders measure off of.
 	public static final double WIDTH_BETWEEN_ENCODERS = 33;
 }
