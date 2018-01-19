@@ -103,7 +103,7 @@ public class Encoders extends Subsystem {
     private static double angleAbs(double angle) {
     	if(angle < 0) angle += 360;
     	else if(angle > 360) angle -= 360;
-    	
+    	if(angle < 0 || angle > 360) return angleAbs(angle); //Recursively calls itself until angle is within the range.
     	return angle;
     }
 }
