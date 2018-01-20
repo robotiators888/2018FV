@@ -124,6 +124,14 @@ public class Encoders extends Subsystem {
     }
     
     /**
+     * @return Returns true if the robot is moving forward or stationary, false if backwards.
+     */
+    public boolean isForwards() {
+    	if(avgMovement >= 0) return true;
+    	else return false;
+    }
+    
+    /**
      * Converts the angle measurement to a range of 0 - 360.
      * @param angle Angle measurement in degrees
      * @return Angle measurement in degrees between 0 and 360
