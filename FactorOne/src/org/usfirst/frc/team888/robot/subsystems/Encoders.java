@@ -15,9 +15,7 @@ public class Encoders extends Subsystem {
 	double  encoderLeftValue, encoderRightValue,
 			lastEncoderLeft, lastEncoderRight,
 			changeInEncoderLeft, changeInEncoderRight,
-			posX, posY, lastPosX, lastPosY,
-			changeInX, changeInY, heading,
-			changeInPos, changeInAngle, distanceTraveled;
+			posX, posY, heading, avgMovement;
 
     public void initDefaultCommand() {
         setDefaultCommand(new EncoderScheduler()); //Automatically calls the Command that schedules this class to update its values.
@@ -30,14 +28,11 @@ public class Encoders extends Subsystem {
     	updateEncoderVals();
     	changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
     	changeInEncoderRight = encoderRightValue - lastEncoderRight;
-    	changeInPos = (changeInEncoderLeft + changeInEncoderRight) / 2;
-    	changeInAngle = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WIDTH_BETWEEN_ENCODERS;
-    	heading = angleAbs(heading + changeInAngle);
-    	changeInX = changeInPos * Math.cos(heading + (changeInEncoderLeft / (2 * RobotMap.WIDTH_BETWEEN_ENCODERS)));
-    	changeInY = changeInPos * Math.sin(heading + (changeInEncoderRight / (2 * RobotMap.WIDTH_BETWEEN_ENCODERS)));
-    	distanceTraveled = Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2));
-    	posX += changeInX;
-    	posY += changeInY;
+    	avgMovement = (changeInEncoderLeft + changeInEncoderRight) / 2;
+    	
+    	heading = calculateHeading(heading, changeInEncoderLeft, changeInEncoderRight);
+    	posX += calculateX(changeInEncoderLeft, avgMovement, heading);
+    	posY += calculateY(changeInEncoderRight, avgMovement, heading);
     }
     
     /**
@@ -50,6 +45,39 @@ public class Encoders extends Subsystem {
     	int[] vals = Robot.drive.getEncoderVals();
     	encoderLeftValue = vals[0];
     	encoderRightValue = vals[1];
+    }
+    
+    /**
+     * Calculates the current heading based on given data.
+     * @param oldHeading The previous heading.
+     * @param changeInLeft The change in registered encoder values from the left encoder.
+     * @param changeInRight The change in registered encoder values from the right encoder.
+     * @return The new heading measurement in a range between 0 and 360.
+     */
+    private double calculateHeading(double oldHeading, double changeInLeft, double changeInRight) {
+    	return angleAbs(((changeInLeft - changeInRight) / RobotMap.WIDTH_BETWEEN_ENCODERS) + oldHeading);
+    }
+    
+    /**
+     * Calculates the change in X based on given data.
+     * @param changeInLeft The change in registered encoder values from the left encoder.
+     * @param avgMovement The average travel value based on registered encoder value changes.
+     * @param heading The current heading measurement.
+     * @return The change in X
+     */
+    private double calculateX(double changeInLeft, double avgMovement, double heading) {
+    	return (heading * Math.cos(heading + (changeInLeft / (2 * RobotMap.WIDTH_BETWEEN_ENCODERS))));
+    }
+    
+    /**
+     * Calculates the change in Y based on given data.
+     * @param changeInRight The change in registered encoder values from the right encoder.
+     * @param avgMovement The average travel value based on registered encoder value changes.
+     * @param heading The current heading measurement.
+     * @return The change in Y
+     */
+    private double calculateY(double changeInRight, double avgMovement, double heading) {
+    	return (heading * Math.sin(heading + (changeInRight / (2 * RobotMap.WIDTH_BETWEEN_ENCODERS))));
     }
     
     /**
