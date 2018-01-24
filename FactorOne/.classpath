@@ -13,5 +13,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Liam/wpilib/java/current/lib/CTRE_Phoenix-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Liam/wpilib/java/current/lib/java-json.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
