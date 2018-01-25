@@ -22,8 +22,8 @@ public class JSONInterpreter {
 		String newStr = str.toLowerCase();
 		int i;
 		while((i = newStr.indexOf("_")) > -1) {
-			newStr.replace(newStr.substring(i + 1, i + 1), newStr.substring(i + 1, i + 1).toUpperCase());
-			newStr = newStr.substring(0, i - 1) + newStr.substring(i + 1);
+			newStr = newStr.substring(0, i) + Character.toUpperCase(newStr.charAt(i + 1)) 
+				+ newStr.substring(i + 2);
 		}
 		return newStr;
 	}
