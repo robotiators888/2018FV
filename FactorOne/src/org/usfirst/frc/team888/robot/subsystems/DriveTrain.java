@@ -21,11 +21,11 @@ public class DriveTrain extends Subsystem {
     		 frontRight;
 
 	public DriveTrain() {
-    	rearLeft = new TalonSRX(RobotMap.MOTOR_REAR_LEFT);
-    	frontLeft = new TalonSRX(RobotMap.MOTOR_FRONT_LEFT);
+    	rearLeft = new TalonSRX(RobotMap.REAR_LEFT_MOTOR);
+    	frontLeft = new TalonSRX(RobotMap.FRONT_LEFT_MOTOR);
     	
-    	rearRight = new TalonSRX(RobotMap.MOTOR_REAR_RIGHT);
-    	frontRight = new TalonSRX(RobotMap.MOTOR_FRONT_RIGHT);
+    	rearRight = new TalonSRX(RobotMap.REAR_RIGHT_MOTOR);
+    	frontRight = new TalonSRX(RobotMap.FRONT_RIGHT_MOTOR);
     	
     	//Configure encoders.
     	rearLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);

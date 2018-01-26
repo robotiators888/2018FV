@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class OI {
 	
-	Joystick m_joystick = new Joystick(RobotMap.GAMEPAD_PORT);
+	Joystick m_joystick = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
 	
 	public OI() {
 		//TODO Add button triggers.

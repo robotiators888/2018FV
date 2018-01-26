@@ -14,15 +14,39 @@ package org.usfirst.frc.team888.robot;
  * floating around.
  */
 public class RobotMap {
-	//USB id in the DS for the controller.
-	public static final int GAMEPAD_PORT = 0;
+	//Drive Train values.
+	//Talon SRX Motor Controller IDs.
+	public static int FRONT_LEFT_MOTOR;
+	public static int REAR_LEFT_MOTOR;
+	public static int FRONT_RIGHT_MOTOR;
+	public static int REAR_RIGHT_MOTOR;
 	
-	//Constants for id values of the TalonSRX controllers for the drive train.
-	public static final int MOTOR_REAR_LEFT = 1;
-	public static final int MOTOR_FRONT_LEFT = 2;
-	public static final int MOTOR_REAR_RIGHT = 3;
-	public static final int MOTOR_FRONT_RIGHT = 4;
+	//IDs of the Talon SRXs that the encoders are associated with.
+	public static int LEFT_ENCODER_ATTACHED_TO;
+	public static int RIGHT_ENCODER_ATTACHED_TO;
 	
-	//The width between the two wheels the encoders measure off of.
+	//Calculation constants.
 	public static final double WIDTH_BETWEEN_ENCODERS = 33;
+	
+	//Manipulator values.
+	//Arm tilt actuation values.
+	public static int ARM_TILT_MOTOR;
+	public static int ENCODER_ID;
+	
+	//Grabber actuation values.
+	public static int CLAW_SOLENOID;
+	public static int CLAW_SOLENOID2;
+	
+	//Manipulator arg flags.
+	public static boolean IS_DUAL_SOLENOID;
+	public static boolean IS_ARM_TALON_CONTROLLED;
+	
+	//Driver station values.
+	//Control device IDs.
+	public static int LEFT_JOYSTICK;
+	public static int RIGHT_JOYSTICK;
+	public static int GAMEPAD_CONTROLLER;
+	
+	//Diagnostic values.
+	public static boolean JSON_READ_SUCCESSFUL = false; //Indicates if the JSON file read successfully
 }
