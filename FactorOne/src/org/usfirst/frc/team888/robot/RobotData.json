@@ -21,7 +21,8 @@
 		"gamepadController": 2
 	},
 	"diagnostics": {
-		"jsonReadSuccessful": true
+		"jsonReadSuccessful": true,
+		"indicatorLed": 8
 	},
 	"climber": {
 		"climbMotor": 6

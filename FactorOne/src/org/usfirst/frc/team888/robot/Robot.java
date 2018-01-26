@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team888.robot.subsystems.Encoders;
+import org.usfirst.frc.team888.robot.subsystems.IndicatorLED;
 import org.usfirst.frc.team888.robot.subsystems.JSONInterpreter;
 
 /**
@@ -32,6 +33,8 @@ public class Robot extends TimedRobot {
 	public static DriveTrain drive;
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
+	
+	private static IndicatorLED indct;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -53,6 +56,10 @@ public class Robot extends TimedRobot {
 			//m_chooser.addDefault("Default Auto", new ExampleCommand());
 			// chooser.addObject("My Auto", new MyAutoCommand());
 			SmartDashboard.putData("Auto mode", m_chooser);
+			
+			//Sets the indicator to on if the read was successful.
+			indct = new IndicatorLED(RobotMap.INDICATOR_LED);
+			indct.setState(RobotMap.JSON_READ_SUCCESSFUL);
 		}
 	}
 

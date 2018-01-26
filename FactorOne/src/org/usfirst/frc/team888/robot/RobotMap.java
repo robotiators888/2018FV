@@ -53,4 +53,5 @@ public class RobotMap {
 	
 	//Diagnostic values.
 	public static boolean JSON_READ_SUCCESSFUL = false; //Indicates if the JSON file read successfully
+	public static int INDICATOR_LED = 8;
 }
