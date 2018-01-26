@@ -1,0 +1,29 @@
+{
+	"drivetrain": {
+		"frontLeftMotor": 0,
+		"rearLeftMotor": 1,
+		"frontRightMotor": 3,
+		"rearRightMotor": 4,
+		"leftEncoderAttachedTo": 1,
+		"rightEncoderAttachedTo": 3
+	},
+	"manipulator": {
+		"armTiltMotor": 5,
+		"encoderId": 5,
+		"clawSolenoid": 0,
+		"clawSolenoid2": 1,
+		"isDualSolenoid": false,
+		"isArmTalonControlled": true
+	},
+	"driverstation": {
+		"leftJoystick": 0,
+		"rightJoystick": 1,
+		"gamepadController": 2
+	},
+	"diagnostics": {
+		"jsonReadSuccessful": true
+	},
+	"climber": {
+		"climbMotor": 6
+	}
+}

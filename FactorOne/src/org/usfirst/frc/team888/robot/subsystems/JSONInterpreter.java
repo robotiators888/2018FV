@@ -12,7 +12,7 @@ import org.usfirst.frc.team888.robot.RobotMap;
 public class JSONInterpreter {
 
 	//Name of each category in the JSON file to be read from.
-	String[] categories = {"drivetrain", "manipulator", "driverstation", "diagnostics"};
+	String[] categories = {"drivetrain", "manipulator", "driverstation", "climber", "diagnostics"};
 	
 	File src = new File("/home/lvuser/RobotData.json");
 	String robotDataFile;

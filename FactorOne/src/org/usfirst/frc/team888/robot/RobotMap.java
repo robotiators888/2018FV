@@ -47,6 +47,10 @@ public class RobotMap {
 	public static int RIGHT_JOYSTICK;
 	public static int GAMEPAD_CONTROLLER;
 	
+	//Climber values.
+	//Climber motor IDs.
+	public static int CLIMB_MOTOR;
+	
 	//Diagnostic values.
 	public static boolean JSON_READ_SUCCESSFUL = false; //Indicates if the JSON file read successfully
 }
