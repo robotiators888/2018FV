@@ -26,8 +26,7 @@ public class Manipulator extends Subsystem {
     		m_motor = new TalonWrapper(t);
     		m_encoder = new TalonEncoder(t);
     	} else {
-    		Spark s = new Spark(RobotMap.ARM_TILT_MOTOR);
-    		m_motor = new SparkWrapper(s);
+    		m_motor = new SparkWrapper(RobotMap.ARM_TILT_MOTOR);
     		m_encoder = new EncoderWrapper(RobotMap.ENCODER_ID_A, RobotMap.ENCODER_ID_B);
     	}
     	if(RobotMap.IS_DUAL_SOLENOID) {
