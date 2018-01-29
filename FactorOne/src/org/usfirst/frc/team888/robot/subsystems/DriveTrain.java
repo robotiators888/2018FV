@@ -4,7 +4,6 @@ import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.commands.DefaultMovement;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
