@@ -5,7 +5,6 @@ import org.usfirst.frc.team888.robot.subsystems.wrap.*;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
