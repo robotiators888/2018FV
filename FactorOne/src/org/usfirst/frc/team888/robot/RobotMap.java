@@ -31,7 +31,9 @@ public class RobotMap {
 	//Manipulator values.
 	//Arm tilt actuation values.
 	public static int ARM_TILT_MOTOR;
-	public static int ENCODER_ID;
+	public static int ENCODER_ID_A;
+	public static int ENCODER_ID_B;
+	//Above encoder values are only used for non-talon Encoders.
 	
 	//Grabber actuation values.
 	public static int CLAW_SOLENOID;

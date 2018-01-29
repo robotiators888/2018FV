@@ -9,7 +9,8 @@
 	},
 	"manipulator": {
 		"armTiltMotor": 5,
-		"encoderId": 5,
+		"encoderIdA": 5,
+		"encoderIdB": 6,
 		"clawSolenoid": 0,
 		"clawSolenoid2": 1,
 		"isDualSolenoid": false,
