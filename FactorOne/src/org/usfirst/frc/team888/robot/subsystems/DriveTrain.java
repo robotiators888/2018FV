@@ -18,7 +18,9 @@ public class DriveTrain extends Subsystem {
     TalonSRX rearLeft,
     		 frontLeft,
     		 rearRight,
-    		 frontRight;
+    		 frontRight,
+    		 leftEncoderHost,
+    		 rightEncoderHost;
 
 	public DriveTrain() {
     	rearLeft = new TalonSRX(RobotMap.REAR_LEFT_MOTOR);
@@ -27,12 +29,25 @@ public class DriveTrain extends Subsystem {
     	rearRight = new TalonSRX(RobotMap.REAR_RIGHT_MOTOR);
     	frontRight = new TalonSRX(RobotMap.FRONT_RIGHT_MOTOR);
     	
-    	//Configure encoders.
-    	rearLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-    	rearLeft.setSensorPhase(false);
-    	rearRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-    	rearRight.setSensorPhase(false);
+    	initializeEncoders();
     }
+	
+	/**
+	 * Initializes the encoders on the Talon SRXs based on RobotMap values.
+	 */
+	private void initializeEncoders() {
+		//Left encoder.
+		if(RobotMap.LEFT_ENCODER_ATTACHED_TO == RobotMap.REAR_LEFT_MOTOR) leftEncoderHost = rearLeft;
+		else if(RobotMap.LEFT_ENCODER_ATTACHED_TO == RobotMap.FRONT_LEFT_MOTOR) leftEncoderHost = frontLeft;
+		else leftEncoderHost = new TalonSRX(RobotMap.LEFT_ENCODER_ATTACHED_TO);
+		leftEncoderHost.setSensorPhase(false);
+		
+		//Right encoder.
+		if(RobotMap.RIGHT_ENCODER_ATTACHED_TO == RobotMap.REAR_RIGHT_MOTOR) rightEncoderHost = rearRight;
+		else if(RobotMap.RIGHT_ENCODER_ATTACHED_TO == RobotMap.FRONT_RIGHT_MOTOR) rightEncoderHost = frontRight;
+		else rightEncoderHost = new TalonSRX(RobotMap.RIGHT_ENCODER_ATTACHED_TO);
+		rightEncoderHost.setSensorPhase(false);
+	}
     
     public void initDefaultCommand() {
         setDefaultCommand(new DefaultMovement());
@@ -57,8 +72,8 @@ public class DriveTrain extends Subsystem {
      */
     public int[] getEncoderVals() {
     	int[] i = {
-    			rearLeft.getSelectedSensorPosition(0),
-    			rearRight.getSelectedSensorPosition(0)};
+    			leftEncoderHost.getSelectedSensorPosition(0),
+    			rightEncoderHost.getSelectedSensorPosition(0)};
     	
     	return i;
     }
