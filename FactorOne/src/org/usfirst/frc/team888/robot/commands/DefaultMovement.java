@@ -24,7 +24,8 @@ public class DefaultMovement extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	dt.move(Robot.oi.getLeftStickY(), Robot.oi.getRightStickY());
+    	if(Robot.oi.getTriggers()) dt.move(Robot.oi.getLeftStickY(), Robot.oi.getRightStickY());
+    	else dt.move(Robot.oi.getLeftStickY() * 0.7, Robot.oi.getRightStickY() * 0.7);
     }
 
     // Sets this command to never end.

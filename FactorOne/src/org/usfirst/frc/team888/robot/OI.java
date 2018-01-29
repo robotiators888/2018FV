@@ -16,22 +16,31 @@ import edu.wpi.first.wpilibj.Joystick;
 public class OI {
 	
 	Joystick m_joystick = new Joystick(RobotMap.GAMEPAD_CONTROLLER);
+	Joystick m_leftJoystick = new Joystick(RobotMap.LEFT_JOYSTICK);
+	Joystick m_rightJoystick = new Joystick(RobotMap.RIGHT_JOYSTICK);
 	
 	public OI() {
 		//TODO Add button triggers.
 	}
 	
 	/**
+	 * @return True if both triggers are pressed.
+	 */
+	public boolean getTriggers() {
+		return (m_leftJoystick.getTrigger() && m_rightJoystick.getTrigger());
+	}
+	
+	/**
 	 * @return A value between 1.0 and -1.0
 	 */
 	public double getLeftStickY() {
-		return m_joystick.getRawAxis(1);
+		return m_leftJoystick.getY();
 	}
 	
 	/**
 	 * @return A value between 1.0 and -1.0
 	 */
 	public double getRightStickY() {
-		return m_joystick.getRawAxis(5);
+		return m_rightJoystick.getY();
 	}
 }
