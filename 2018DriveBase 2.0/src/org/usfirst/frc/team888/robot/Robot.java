@@ -101,8 +101,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		double[] adjustments = straight.driveStraight(drive.getLeftEncoder(), drive.getRightEncoder());
-		drive.move(0.5+adjustments[0], 0.5+adjustments[1]);
 	}
 
 	@Override

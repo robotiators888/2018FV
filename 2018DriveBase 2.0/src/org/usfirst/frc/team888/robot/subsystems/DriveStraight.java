@@ -8,6 +8,9 @@ import org.usfirst.frc.team888.robot.commands.StraightScheduler;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 
 
 public class DriveStraight extends Subsystem {
@@ -15,8 +18,8 @@ public class DriveStraight extends Subsystem {
 	private double leftSideAdjustment = 0.0;
 	private double rightSideAdjustment = 0.0;
 	private double driveStraightAdjustAmount = 0.1;
-	private double rightBaseOutput = 0.5;
-	private double leftBaseOutput = 0.5;
+	private double rightBaseOutput = 0.85;
+	private double leftBaseOutput = 0.85;
 	private double leftSpeed = 0;
 	private double rightSpeed = 0;
 	private double backwardsLeftSpeed = Math.abs(leftSpeed);
@@ -24,9 +27,11 @@ public class DriveStraight extends Subsystem {
 	private double maxOutput = 1.0;
 
 	private void updateEncoderVals() {
+
+
 		leftSpeed = (Robot.encoders.getChangeInLeft());
 		rightSpeed = (Robot.encoders.getChangeInRight());
-		}
+	}
 
 	public double[] driveStraight(double encoderValueLeft, double encoderValueRight) {	
 
