@@ -1,10 +1,13 @@
 package org.usfirst.frc.team888.robot.subsystems.interconnect;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * Opens a UDP socket, and copies any data received into internal memory.
@@ -53,7 +56,7 @@ public class UDPHandler extends Thread {
 		open = true;
 		
 		while(open) {
-			buf = CommunicationBuffer.getNextNavMessage().getBytes();
+			buf = DatatypeConverter.parseHexBinary(toHex(CommunicationBuffer.getNextNavMessage()));
 			if(buf != null) {
 				DatagramPacket packet = new DatagramPacket(buf, buf.length, RPi0, RPi0_port);
 				try {
@@ -71,6 +74,10 @@ public class UDPHandler extends Thread {
 	public void close() {
 		open = false;
 		socket.close();
+	}
+	
+	private String toHex(String arg) {
+		return String.format("%040x", new BigInteger(1, arg.getBytes()));
 	}
 	
 }
