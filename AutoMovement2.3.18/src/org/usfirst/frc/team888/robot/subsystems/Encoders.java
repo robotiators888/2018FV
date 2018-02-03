@@ -137,6 +137,20 @@ public class Encoders extends Subsystem {
     public double getHeading() {
     	return heading;
     }
+ 
+    /**
+     * @return Returns the change in the left encoder since the last time it was updated.
+     */
+    public double getChangeInEncoderLeft() {
+    	return changeInEncoderLeft;
+    }
+    
+    /**
+     * @return Returns the change in the right encoder since the last time it was updated.
+     */
+    public double getChangeInEncoderRight() {
+    	return changeInEncoderRight;
+    }
     
     /**
      * @return Returns true if the robot is moving forward or stationary, false if backwards.
