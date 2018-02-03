@@ -52,11 +52,12 @@ public class DriveTrain extends Subsystem {
      * @param rightSpeed A value between -1.0 and 1.0
      */
     public void move(double leftSpeed, double rightSpeed) {
-    	rearLeft.set(leftStick.getRawAxis(1));
-    	frontLeft.set(leftStick.getRawAxis(1));
+    	rearLeft.set(leftStick.getRawAxis(1) * -1.0);
+    	frontLeft.set(leftStick.getRawAxis(1) * -1.0);
     	
-    	rearRight.set(rightStick.getRawAxis(1) * -1);
-    	frontRight.set(rightStick.getRawAxis(1) * -1);
+    	
+    	rearRight.set(rightStick.getRawAxis(1) * 1.0);
+    	frontRight.set(rightStick.getRawAxis(1) * 1.0);
     	
     }
     

@@ -15,9 +15,9 @@ package org.usfirst.frc.team888.robot;
  */
 public class RobotMap {
 	//USB id in the DS for the controller.
-	public static final int GAMEPAD_PORT = 0;
-	public static final int LEFT_JOYSTICK = 1;
-	public static final int RIGHT_JOYSTICK = 2;
+	public static final int LEFT_JOYSTICK = 0;
+	public static final int RIGHT_JOYSTICK = 1;
+	public static final int GAMEPAD_PORT = 2;
 	
 	//PWM ports for the motor controllers for the drive train.
 	public static final int MOTOR_REAR_LEFT = 7;
