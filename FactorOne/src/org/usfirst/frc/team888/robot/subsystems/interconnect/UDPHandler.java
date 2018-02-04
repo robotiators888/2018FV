@@ -6,6 +6,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -15,10 +17,10 @@ import javax.xml.bind.DatatypeConverter;
 public class UDPHandler extends Thread {
 	
 	DatagramSocket socket;
-	boolean open;
-	byte[] buf = new byte[1024];
-	InetAddress RPi0;
-	int RPi0_port;
+	boolean open = false;
+	byte[] buf = new byte[65536];
+	List<InetAddress> target = new ArrayList<InetAddress>(0);
+	List<Integer> target_port = new ArrayList<Integer>(0);
 	
 	/**
 	 * Opens the socket.
@@ -26,6 +28,7 @@ public class UDPHandler extends Thread {
 	public UDPHandler() {
 		try {
 			socket = new DatagramSocket(4445);
+			socket.setSoTimeout(50);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -36,33 +39,29 @@ public class UDPHandler extends Thread {
 	 * Once that happens, it begins sending any nav message placed into CommunicationBuffer.
 	 */
 	public void run() {
-		boolean initWait = true;
-		
-		while(initWait) {
-			DatagramPacket packet = new DatagramPacket(buf, buf.length);
-			try {
-				socket.receive(packet);
-				String t = (new String(packet.getData(), 0, packet.getLength()));
-				if(t.equals("registerNav")) {
-					initWait = false;
-					RPi0 = packet.getAddress();
-					RPi0_port = packet.getPort();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+		DatagramPacket Ipacket = new DatagramPacket(buf, buf.length);
+		try {
+			socket.receive(Ipacket);
+			String t = (new String(Ipacket.getData(), 0, Ipacket.getLength()));
+			if(t.equals("registerNav")) {
+				target.add(Ipacket.getAddress());
+				target_port.add(Integer.valueOf(Ipacket.getPort()));
+				open = true;
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
-		open = true;
-		
-		while(open) {
+		if(open && target.get(0) != null) {
 			buf = DatatypeConverter.parseHexBinary(toHex(CommunicationBuffer.getNextNavMessage()));
 			if(buf != null) {
-				DatagramPacket packet = new DatagramPacket(buf, buf.length, RPi0, RPi0_port);
-				try {
-					socket.send(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
+				for(int i = 0; i < target.size(); i++) {
+					DatagramPacket packet = new DatagramPacket(buf, buf.length, target.get(i), target_port.get(i).intValue());
+					try {
+						socket.send(packet);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
