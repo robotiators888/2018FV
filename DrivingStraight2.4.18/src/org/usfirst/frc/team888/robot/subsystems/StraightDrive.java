@@ -45,79 +45,58 @@ public class StraightDrive extends Subsystem {
 		 */
 		if ((changeInEncoders[0] > 0) && (changeInEncoders[1] > 0)) {
 
-			if((leftBaseOutput + driveStraightAdjustAmount) <= maxOutput){
-				if(changeInEncoders[0] < changeInEncoders[1]){
+			/**
+			 * If the speed plus the adjustment for the left side would be slower than the max speed and
+			 * the left side is moving slower than right add the adjustments to the left side
+			 */
+			if(changeInEncoders[0] < changeInEncoders[1]) {
+				if 	((leftBaseOutput + driveStraightAdjustAmount) <= maxOutput) {			
 					leftSideAdjustment = driveStraightAdjustAmount;
+					rightSideAdjustment = 0.0;
 				} else {
-					rightSideAdjustment = driveStraightAdjustAmount;
-				}
-			}
-
-			if((rightBaseOutput + driveStraightAdjustAmount) <= maxOutput){
-
-				if(changeInEncoders[0] < changeInEncoders[1]){
-					rightSideAdjustment = driveStraightAdjustAmount;
-				} else{
-					rightSideAdjustment = 0.0;
-				}
-			}
-			//------------------IF OUTPUT IS GREATER THAN MAX OUTPUT--------------------------------------------------
-
-			if((leftBaseOutput + driveStraightAdjustAmount) > maxOutput){
-				if(changeInEncoders[0] < changeInEncoders[1]){
 					rightSideAdjustment = -driveStraightAdjustAmount;
-				}  else{
-					rightSideAdjustment = 0.0;
-				}
-			}
-			if((rightBaseOutput + driveStraightAdjustAmount) > maxOutput){
-
-				if(changeInEncoders[1] < changeInEncoders[0]){
-					leftSideAdjustment = -driveStraightAdjustAmount;
-				} else{
 					leftSideAdjustment = 0.0;
 				}
 			}
+			
+			if(changeInEncoders[0] > changeInEncoders[1]) {
+				if 	((rightBaseOutput + driveStraightAdjustAmount) <= maxOutput) {			
+					rightSideAdjustment = driveStraightAdjustAmount;
+					leftSideAdjustment = 0.0;
+				} else {
+					leftSideAdjustment = -driveStraightAdjustAmount;
+					rightSideAdjustment = 0.0;
+				}
+			}
+
 			///////////-----Backwards-----//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		} else if((changeInEncoders[0] < 0) && (changeInEncoders[1] < 0)) {
 
-			if((leftBaseOutput + driveStraightAdjustAmount) <= maxOutput){
-				if(changeInEncoders[2] < changeInEncoders[3]){
-					leftSideAdjustment = (driveStraightAdjustAmount);
-				} else{
-					leftSideAdjustment = 0.0;
-				}
-			}
-			if((rightBaseOutput + driveStraightAdjustAmount) <= maxOutput){
-
-				if(changeInEncoders[3] < changeInEncoders[2]){
-					rightSideAdjustment = (driveStraightAdjustAmount);
-				} else{
-					rightSideAdjustment = 0.0;
-				}
-			}
-			//------------------IF OUTPUT IS GREATER THAN MAX OUTPUT-----------------------------------------------------------------
-
-			if((leftBaseOutput + driveStraightAdjustAmount) > maxOutput){
-				if(changeInEncoders[2] < changeInEncoders[3]){
-					rightSideAdjustment = -driveStraightAdjustAmount;
-				}			
-				else{
-					rightSideAdjustment = 0.0;
-				}
-			}
-			if((rightBaseOutput + driveStraightAdjustAmount) > maxOutput){
-
-				if(changeInEncoders[3] < changeInEncoders[2]){
+			if(changeInEncoders[2] > changeInEncoders[3]) {
+				if ((leftBaseOutput - driveStraightAdjustAmount) >= -maxOutput) {
 					leftSideAdjustment = -driveStraightAdjustAmount;
-				}
-				else{
+					rightSideAdjustment = 0.0;
+				} else {
+					rightSideAdjustment = driveStraightAdjustAmount;
 					leftSideAdjustment = 0.0;
 				}
-
 			}
-		}	
+			
+			if(changeInEncoders[2] < changeInEncoders[3]) {
+				if ((rightBaseOutput - driveStraightAdjustAmount) >= -maxOutput) {
+					rightSideAdjustment = -driveStraightAdjustAmount;
+					leftSideAdjustment = 0.0;
+				} else {
+					leftSideAdjustment = driveStraightAdjustAmount;
+					rightSideAdjustment = 0.0;
+				}
+			}
+			
+		} else {
+			leftSideAdjustment = 0.0;
+			rightSideAdjustment = 0.0;
+		}
 		
 		SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
 		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);

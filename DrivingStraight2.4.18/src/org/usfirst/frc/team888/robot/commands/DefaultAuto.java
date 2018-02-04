@@ -28,7 +28,7 @@ public class DefaultAuto extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	//sd.reset();
+    	adjustments = sd.reset();
     }
 
     // Called repeatedly when this Command is scheduled to run
