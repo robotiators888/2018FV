@@ -130,7 +130,8 @@ public class StraightDrive extends Subsystem {
 			}
 		
 		/**
-		 * If the robot is not moving or is moving straight already add no adjustments.	
+		 * If the robot is not moving, turning,
+		 * or is moving straight already add no adjustments.	
 		 */
 			
 		} else {
