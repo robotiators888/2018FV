@@ -35,6 +35,7 @@ public class RobotMap {
 	//Conversion factor for clicks to inches
 	public static final double CLICKS_PER_INCH = 107;
 	
+	//Sets the speed for autonomous and the adjustments to add for driving straight.
 	public static final double DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT = 0.3;
 	public static final double LEFT_AUTO_SPEED = 0.5;
 	public static final double RIGHT_AUTO_SPEED = 0.5;

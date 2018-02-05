@@ -6,8 +6,8 @@ import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- * Command that maintains manual control over the bot as long as it is not being controlled by another command
- * affecting the DriveTrain subsystem.
+ * Command that maintains manual control over the robot as long as it is not
+ * being controlled by another command affecting the DriveTrain subsystem.
  */
 public class DefaultMovement extends Command {
 

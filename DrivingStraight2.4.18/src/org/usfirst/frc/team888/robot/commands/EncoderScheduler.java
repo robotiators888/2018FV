@@ -6,7 +6,7 @@ import org.usfirst.frc.team888.robot.subsystems.Encoders;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *	Second part of the reworking of Charlie's Navigation algorithms, sets the values to regularly update.
+ *	Sets the values to regularly update.
  */
 public class EncoderScheduler extends Command {
 
