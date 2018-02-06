@@ -32,5 +32,6 @@ public class DefaultClimber extends Command {
     }
 
     protected void interrupted() {
+    	m_c.setSpeed(0);
     }
 }
