@@ -37,6 +37,14 @@ public class OI {
 		return m_leftJoystick.getY();
 	}
 	
+	public double getClimbUpVal() {
+		if(m_leftJoystick.getRawButton(RobotMap.CLIMB_UP_BUTTON) && !m_leftJoystick.getRawButton(RobotMap.CLIMB_DOWN_BUTTON)) {
+			return 1.0;
+		} else if(!m_leftJoystick.getRawButton(RobotMap.CLIMB_UP_BUTTON) && m_leftJoystick.getRawButton(RobotMap.CLIMB_DOWN_BUTTON)) {
+			return -1.0;
+		} else return 0;
+	}
+	
 	/**
 	 * @return A value between 1.0 and -1.0
 	 */

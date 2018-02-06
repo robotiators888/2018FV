@@ -53,6 +53,10 @@ public class RobotMap {
 	//Climber motor IDs.
 	public static int CLIMB_MOTOR;
 	
+	//Climber control buttons.
+	public static int CLIMB_UP_BUTTON = 2;
+	public static int CLIMB_DOWN_BUTTON = 1;
+	
 	//Diagnostic values.
 	public static boolean JSON_READ_SUCCESSFUL = false; //Indicates if the JSON file read successfully
 	public static int INDICATOR_LED = 8;
