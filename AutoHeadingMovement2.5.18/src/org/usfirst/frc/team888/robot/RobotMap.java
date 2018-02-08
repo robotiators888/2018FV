@@ -13,6 +13,7 @@ package org.usfirst.frc.team888.robot;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
+
 public class RobotMap {
 	//USB id in the DS for the controller.
 	public static final int LEFT_JOYSTICK = 0;
