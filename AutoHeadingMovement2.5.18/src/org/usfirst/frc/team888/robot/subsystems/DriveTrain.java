@@ -1,6 +1,5 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
-import org.usfirst.frc.team888.robot.Robot;
 import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.commands.DefaultMovement;
 
@@ -10,10 +9,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-/**
- *	Reworking of Charlie's DriveTrain system. Encoders moved to their own subsystem.
- */
 
 public class DriveTrain extends Subsystem {
 
@@ -52,46 +47,12 @@ public class DriveTrain extends Subsystem {
 	 * @param leftSpeed A value between -1.0 and 1.0
 	 * @param rightSpeed A value between -1.0 and 1.0
 	 */
-
 	public void move(double leftSpeed, double rightSpeed) {
-		//Robot.straight.getAdjustments();
-		
-		if((leftSpeed > -0.2 && leftSpeed < 0.2) && (rightSpeed > -0.2 && rightSpeed < 0.2)) {
-			rearLeft.set(0.0);
-			frontLeft.set(0.0);
-			
-			rearRight.set(0.0);
-			frontRight.set(0.0);
-		}
-		else if(leftStick.getRawButton(RobotMap.L_TRIGGER) && rightStick.getRawButton(RobotMap.R_TRIGGER)) {
-			rearLeft.set(-leftSpeed);
-			frontLeft.set(-leftSpeed);
+		rearLeft.set(-leftSpeed);
+		frontLeft.set(-leftSpeed);
 
-			rearRight.set(rightSpeed);
-			frontRight.set(rightSpeed);
-		
-		
-		/*} else if(changeInLeft < changeInRight) {
-			rearLeft.set(-leftSpeed * 0.7);
-			frontLeft.set(-leftSpeed * 0.7);
-
-			rearRight.set(rightSpeed * 0.6);
-			frontRight.set(rightSpeed * 0.6);
-		} else if(changeInLeft > changeInRight {
-			rearLeft.set(-leftSpeed * 0.6);
-			frontLeft.set(-leftSpeed * 0.6);
-
-			rearRight.set(rightSpeed * 0.7);
-			frontRight.set(rightSpeed * 0.7);
-			*/
-		} else {
-			rearLeft.set(-leftSpeed * 1.0);
-			frontLeft.set(-leftSpeed * 1.0);
-
-			rearRight.set(rightSpeed * 1.0);
-			frontRight.set(rightSpeed * 1.0);
-			
-		}
+		rearRight.set(rightSpeed);
+		frontRight.set(rightSpeed);
 	}
 
 	/**

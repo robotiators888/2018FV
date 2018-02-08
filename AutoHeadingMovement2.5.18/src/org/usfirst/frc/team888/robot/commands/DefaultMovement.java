@@ -1,49 +1,42 @@
 package org.usfirst.frc.team888.robot.commands;
 
 import org.usfirst.frc.team888.robot.Robot;
-import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team888.robot.subsystems.StraightDrive;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- * Command that maintains manual control over the bot as long as it is not being controlled by another command
- * affecting the DriveTrain subsystem.
+ * Command that maintains manual control over the robot as long as it is not
+ * being controlled by another command affecting the DriveTrain subsystem.
  */
-public class DefaultAuto extends Command {
+public class DefaultMovement extends Command {
 
 	DriveTrain dt;
-	StraightDrive sd;
-	//int i = 0;
-	double[] adjustments;
 	
-    public DefaultAuto() {
+    public DefaultMovement() {
         requires(Robot.drive);
         this.dt = Robot.drive;
-        
-        requires(Robot.straight);
-        this.sd = Robot.straight;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	adjustments = sd.reset();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	//i++;
-    	//if (Robot.encoders.getX() < 36) {
-        	/*if(i % 5 == 0) {
-        		adjustments = sd.getAdjustments();
-             } */
-    		adjustments = sd.getAdjustments();
-    		dt.move((RobotMap.LEFT_AUTO_SPEED + adjustments[0]), (RobotMap.RIGHT_AUTO_SPEED + adjustments[1]));
-    	//	dt.move(0, 0);
-    	//}
+    	
+    	if((Robot.oi.getLeftStickY() > -0.2 && Robot.oi.getLeftStickY() < 0.2) 
+    			&& (Robot.oi.getRightStickY() > -0.2 && Robot.oi.getRightStickY() < 0.2)) {
+    		dt.move(0.0, 0.0);
+    		
+    	} else if(Robot.oi.getTriggers()) {
+    		dt.move(Robot.oi.getLeftStickY(), Robot.oi.getRightStickY());
+    		
+    	} else {
+    		dt.move(Robot.oi.getLeftStickY() * 0.7, Robot.oi.getRightStickY() * 0.7);
+    	}
     }
-
+    	
     // Sets this command to never end.
     protected boolean isFinished() {
         return false;
