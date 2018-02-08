@@ -11,10 +11,6 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *	Reworking of Charlie's DriveTrain system. Encoders moved to their own subsystem.
- */
-
 public class DriveTrain extends Subsystem {
 
 	Victor rearLeft,
@@ -54,7 +50,6 @@ public class DriveTrain extends Subsystem {
 	 */
 
 	public void move(double leftSpeed, double rightSpeed) {
-		//Robot.straight.getAdjustments();
 		
 		if((leftSpeed > -0.2 && leftSpeed < 0.2) && (rightSpeed > -0.2 && rightSpeed < 0.2)) {
 			rearLeft.set(0.0);
@@ -63,7 +58,9 @@ public class DriveTrain extends Subsystem {
 			rearRight.set(0.0);
 			frontRight.set(0.0);
 		}
-		else if(leftStick.getRawButton(RobotMap.L_TRIGGER) && rightStick.getRawButton(RobotMap.R_TRIGGER)) {
+		else if(leftStick.getRawButton(RobotMap.L_TRIGGER) 
+				&& rightStick.getRawButton(RobotMap.R_TRIGGER)) {
+			
 			rearLeft.set(-leftSpeed);
 			frontLeft.set(-leftSpeed);
 

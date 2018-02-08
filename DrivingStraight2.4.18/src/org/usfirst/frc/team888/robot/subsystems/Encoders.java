@@ -7,10 +7,6 @@ import org.usfirst.frc.team888.robot.commands.EncoderScheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *	First part of the reworking of Charlie's Navigation algorithms with localized variables,
- *	and support for scheduled regular updates.
- */
 public class Encoders extends Subsystem {
 
 	double  encoderLeftValue, encoderRightValue,

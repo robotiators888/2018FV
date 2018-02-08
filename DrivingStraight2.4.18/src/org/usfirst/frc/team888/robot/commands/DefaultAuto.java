@@ -8,8 +8,7 @@ import org.usfirst.frc.team888.robot.subsystems.StraightDrive;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- * Command that maintains manual control over the bot as long as it is not being controlled by another command
- * affecting the DriveTrain subsystem.
+ * Default autonomous code to run (in testing/development phases)
  */
 public class DefaultAuto extends Command {
 
