@@ -16,7 +16,7 @@ public class HeadingAdjust extends Subsystem {
 	double rightBaseOutput = RobotMap.RIGHT_AUTO_SPEED;
 	double maxOutput = 1.0;
 	
-	double desiredHeading = 180;
+	double desiredHeading = Math.PI;
 	
 	double leftSideAdjustment, rightSideAdjustment;
 	

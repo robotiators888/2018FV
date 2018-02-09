@@ -59,17 +59,18 @@ public class DriveTrain extends Subsystem {
 	 *  Polls the TalonSRX's for the Encoder values.
 	 * @return Encoder values in {left, right} format.
 	 */
+	
 	public int[] getEncoderVals() {
 
-		double leftCounts = leftEncoder.get();
-		double rightCounts = rightEncoder.get();
+		int leftCounts = -leftEncoder.get();
+		int rightCounts = -rightEncoder.get();
 		SmartDashboard.putNumber("Left Encoder", leftCounts);
 		SmartDashboard.putNumber("Right Encoder", rightCounts);
-
+		
 		int[] i = {
-				(int) leftCounts,
-				(int) rightCounts };
-
+				leftCounts,
+				rightCounts };
+		
 		return i;
 	}
 	
