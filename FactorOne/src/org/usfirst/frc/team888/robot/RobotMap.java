@@ -27,6 +27,10 @@ public class RobotMap {
 	
 	//Calculation constants.
 	public static final double WIDTH_BETWEEN_ENCODERS = 33;
+	public static double RIGHT_AUTO_SPEED;
+	public static double LEFT_AUTO_SPEED;
+	public static double DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT = 0.0;
+	public static double MAX_AUTO_OUTPUT;
 	
 	//Manipulator values.
 	//Arm tilt actuation values.

@@ -66,6 +66,16 @@ public class DriveTrain extends Subsystem {
     }
     
     /**
+     * Sets the motor speeds, with adjustments.
+     * @param leftSpeed A value between -1.0 and 1.0
+     * @param rightSpeed A value between -1.0 and 1.0
+     * @param adjustments And array with the left adjustment and right adjustment, in that order.
+     */
+    public void move(double leftSpeed, double rightSpeed, double[] adjustments) {
+    	if(adjustments != null) move(leftSpeed + adjustments[0], rightSpeed + adjustments[1]);
+    }
+    
+    /**
      *  Polls the TalonSRX's for the Encoder values.
      * @return Encoder values in {left, right} format.
      */

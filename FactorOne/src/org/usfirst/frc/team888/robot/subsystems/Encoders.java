@@ -142,5 +142,13 @@ public class Encoders extends Subsystem {
     	if(angle < 0 || angle > 360) return angleAbs(angle); //Recursively calls itself until angle is within the range.
     	return angle;
     }
+
+	public double getChangeInEncoderLeft() {
+		return changeInEncoderLeft;
+	}
+
+	public double getChangeInEncoderRight() {
+		return changeInEncoderRight;
+	}
 }
 
