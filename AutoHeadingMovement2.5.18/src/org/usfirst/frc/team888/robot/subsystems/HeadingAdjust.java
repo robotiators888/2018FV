@@ -119,7 +119,7 @@ public class HeadingAdjust extends Subsystem {
 			 * If the left side is moving slower than right...
 			 */
 			
-			if(heading < Math.PI) {
+			if (Encoders.absAngle(heading - desiredHeading) < Encoders.absAngle(desiredHeading - heading)) {
 				
 				/**
 				 * If the speed plus the adjustment for the left side would be slower
@@ -139,7 +139,7 @@ public class HeadingAdjust extends Subsystem {
 			/* If the right side is moving slower than left...
 			*/		
 				
-			} else if (heading > Math.PI) {
+			} else if (Encoders.absAngle(heading - desiredHeading) > Encoders.absAngle(desiredHeading - heading)) {
 				
 				/**
 				 * If the speed plus the adjustment for the right side would be slower
