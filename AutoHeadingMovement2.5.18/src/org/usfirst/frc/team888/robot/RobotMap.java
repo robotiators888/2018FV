@@ -41,5 +41,5 @@ public class RobotMap {
 	public static final double LEFT_AUTO_SPEED = 0.5;
 	public static final double RIGHT_AUTO_SPEED = 0.5;
 	public static final double DESIRED_HEADING = Math.toRadians(0);
-	public static final double[] DESIRED_LOCATION = {36, 36};
+	public static final double[] DESIRED_LOCATION = {36, 120};
 }

@@ -36,7 +36,7 @@ public class HeadingAdjust extends Subsystem {
 		for (int i = 0; i < pos.length; i++) {
 			posToDesired[i] = pos[i] - RobotMap.DESIRED_LOCATION[i];
 		}
-		desiredHeading = Encoders.absAngle(Math.atan2(posToDesired[1], posToDesired[0]));
+		desiredHeading = Encoders.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
 		return desiredHeading;
 	}
 	
@@ -49,7 +49,7 @@ public class HeadingAdjust extends Subsystem {
 		
 		double[] changeInEncoders = updateEncoderVals();
 		double heading = Robot.encoders.getHeading();
-		//desiredHeading = calculateDesiredHeading();
+		desiredHeading = calculateDesiredHeading();
 		
 		/**
 		 * If the robot is moving in a positive direction...
