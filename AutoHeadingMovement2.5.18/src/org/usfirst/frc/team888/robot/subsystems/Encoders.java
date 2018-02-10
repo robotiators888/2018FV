@@ -32,9 +32,9 @@ public class Encoders extends Subsystem {
     	avgMovement = (changeInEncoderLeft + changeInEncoderRight) / 2;
     	avgChangeInEncoder = changeInEncoderLeft - changeInEncoderRight;
     	
-    	clickPosX += calculateX(avgChangeInEncoder, avgMovement, heading);
-    	clickPosY += calculateY(avgChangeInEncoder, avgMovement, heading);
     	heading = absAngle(lastHeading + calculateHeading(heading, avgChangeInEncoder));
+    	clickPosX += calculateX(avgChangeInEncoder, heading);
+    	clickPosY += calculateY(avgChangeInEncoder, heading);
     	
     	posX = clickPosX / RobotMap.CLICKS_PER_INCH;
     	posY = clickPosY / RobotMap.CLICKS_PER_INCH;
@@ -71,25 +71,22 @@ public class Encoders extends Subsystem {
     /**
      * Calculates the change in X based on given data.
      * @param avgChangeInEncoder The difference between the number of encoder clicks.
-     * @param avgMovement The average travel value based on registered encoder value changes.
      * @param heading The current heading measurement in radians.
      * @return The change in X
      */
-    private double calculateX(double avgChangeInEncoder, double avgMovement, double heading) {
-    	return (avgMovement * 
-    			Math.cos(heading + (avgChangeInEncoder / RobotMap.WHEEL_BASE)));
+    private double calculateX(double avgChangeInEncoder, double heading) {
+    	return (avgMovement * Math.sin(heading));
     }
     
     /**
      * Calculates the change in Y based on given data.
      * @param avgChangeInEncoder The difference between the number of encoder clicks.
-     * @param avgMovement The average travel value based on registered encoder value changes.
      * @param heading The current heading measurement in radians.
      * @return The change in Y
      */
-    private double calculateY(double avgChangeInEncoder, double avgMovement, double heading) {
-    	return (avgMovement * 
-    			Math.sin(heading + (avgChangeInEncoder / RobotMap.WHEEL_BASE)));
+    private double calculateY(double avgChangeInEncoder, double heading) {
+    	return (avgMovement * Math.cos(heading));
+    	
     }
     
     /**
@@ -165,7 +162,7 @@ public class Encoders extends Subsystem {
     public static double absAngle(double angle) {
     	angle %= 2 * Math.PI;
     	if (angle < 0){
-    		angle = 2 * Math.PI - Math.abs(angle);
+    		angle += 2 * Math.PI;
     		}
     	return angle;
     	}
