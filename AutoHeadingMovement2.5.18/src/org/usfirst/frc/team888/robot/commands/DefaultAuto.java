@@ -34,7 +34,6 @@ public class DefaultAuto extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	if ((Math.abs(36 - Robot.encoders.getX()) <= 1) && (Math.abs(120 - Robot.encoders.getY()) <= 1 )) {
-
     		adjustments = m_compass.getAdjustments(); //sd.getAdjustments();
     		dt.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
     	} else {
