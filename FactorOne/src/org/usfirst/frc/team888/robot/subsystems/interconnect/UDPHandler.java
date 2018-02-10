@@ -56,7 +56,7 @@ public class UDPHandler extends Thread {
 			}
 
 			if(open && target.get(0) != null) {
-				buf = DatatypeConverter.parseHexBinary(toHex(CommunicationBuffer.getNextNavMessage()));
+				buf = CommunicationBuffer.getNextNavMessage();
 				if(buf != null) {
 					for(int i = 0; i < target.size(); i++) {
 						DatagramPacket packet = new DatagramPacket(buf, buf.length, target.get(i), target_port.get(i).intValue());
