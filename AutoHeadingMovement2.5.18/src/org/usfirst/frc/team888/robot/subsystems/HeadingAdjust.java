@@ -6,17 +6,14 @@ import org.usfirst.frc.team888.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- */
 public class HeadingAdjust extends Subsystem {
 
-	double driveStraightAdjustAmount = RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;	 
+	double driveStraightAdjustAmount = RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
 	double leftBaseOutput = RobotMap.LEFT_AUTO_SPEED;
 	double rightBaseOutput = RobotMap.RIGHT_AUTO_SPEED;
 	double maxOutput = 1.0;
 	
-	double desiredHeading = Math.PI;
+	double desiredHeading = 0;
 	
 	double leftSideAdjustment, rightSideAdjustment;
 	
@@ -81,8 +78,8 @@ public class HeadingAdjust extends Subsystem {
 				}
 			
 			/**
-			/* If the right side is moving slower than left...
-			*/		
+			 * If the right side is moving slower than left...
+			 */		
 				
 			} else if (Encoders.absAngle(heading - desiredHeading) < Encoders.absAngle(desiredHeading - heading)) {
 				
@@ -101,8 +98,8 @@ public class HeadingAdjust extends Subsystem {
 				}
 				
 			/**
-			/* If the robot is already moving straight add no adjustments
-			*/
+			 * If the robot is already moving straight add no adjustments
+			 */
 			
 			} else {
 				leftSideAdjustment = 0.0;
@@ -110,8 +107,8 @@ public class HeadingAdjust extends Subsystem {
 			}	
 
 		/**
-		/* If the robot is moving in a negative direction...
-		*/
+		 * If the robot is moving in a negative direction...
+		 */
 
 		} else if((changeInEncoders[0] < 0) && (changeInEncoders[1] < 0)) {
 
