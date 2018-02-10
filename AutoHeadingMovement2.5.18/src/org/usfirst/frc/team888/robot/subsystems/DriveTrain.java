@@ -61,13 +61,16 @@ public class DriveTrain extends Subsystem {
 	 */
 	
 	public int[] getEncoderVals() {
-
-		SmartDashboard.putNumber("Left Encoder", -leftEncoder.get());
-		SmartDashboard.putNumber("Right Encoder", -rightEncoder.get());
+		
+		int leftClicks = leftEncoder.get();
+		int rightClicks = rightEncoder.get();
+		
+		SmartDashboard.putNumber("Left Encoder", leftClicks);
+		SmartDashboard.putNumber("Right Encoder", rightClicks);
 		
 		int[] i = {
-				-leftEncoder.get()
-				-rightEncoder.get()};
+				leftClicks,
+				rightClicks };
 		
 		return i;
 	}
