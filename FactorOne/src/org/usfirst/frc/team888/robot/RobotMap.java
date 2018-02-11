@@ -7,6 +7,8 @@
 
 package org.usfirst.frc.team888.robot;
 
+import java.util.HashMap;
+
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -64,4 +66,6 @@ public class RobotMap {
 	//Diagnostic values.
 	public static boolean JSON_READ_SUCCESSFUL = false; //Indicates if the JSON file read successfully
 	public static int INDICATOR_LED = 8;
+	
+	public static HashMap<String, double[]> waypoints;
 }

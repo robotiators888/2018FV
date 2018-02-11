@@ -27,6 +27,7 @@ import org.usfirst.frc.team888.robot.subsystems.JSONInterpreter;
  * project.
  */
 public class Robot extends TimedRobot {
+	JSONInterpreter intrprt = new JSONInterpreter();
 	//public static final ExampleSubsystem kExampleSubsystem
 	//		= new ExampleSubsystem();
 	public static OI oi;
@@ -47,8 +48,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		//Read JSON values into RobotMap before doing anything else.
 		synchronized(this) {
-			JSONInterpreter intrprt = new JSONInterpreter();
-			intrprt.interpret();
+			intrprt.interpretRobotData();
 		}
 		
 		//Initialize everything.
