@@ -9,8 +9,6 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
-
 /**
  * Opens a UDP socket, and copies any data received into internal memory.
  */
@@ -18,7 +16,7 @@ public class UDPHandler extends Thread {
 	
 	DatagramSocket socket = null;
 	boolean open = false, r;
-	byte[] buf = new byte[65536];
+	byte[] buf = new byte[1024];
 	List<InetAddress> target = new ArrayList<InetAddress>(0);
 	List<Integer> target_port = new ArrayList<Integer>(0);
 	
@@ -29,6 +27,7 @@ public class UDPHandler extends Thread {
 		try {
 			socket = new DatagramSocket(4445);
 			socket.setSoTimeout(50);
+			socket.setReceiveBufferSize(1024);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -79,6 +78,7 @@ public class UDPHandler extends Thread {
 		socket.close();
 	}
 	
+	@Deprecated
 	private String toHex(String arg) {
 		return String.format("%040x", new BigInteger(1, arg.getBytes()));
 	}
