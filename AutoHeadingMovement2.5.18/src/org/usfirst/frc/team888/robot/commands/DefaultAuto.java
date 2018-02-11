@@ -14,30 +14,34 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DefaultAuto extends Command {
 
 	DriveTrain dt;
-	HeadingAdjust m_compass; //StraightDrive sd;
-	//int i = 0;
+	HeadingAdjust m_compass;
 	double[] adjustments;
 	
     public DefaultAuto() {
         requires(Robot.drive);
         this.dt = Robot.drive;
         
-        requires(Robot.compass); //straight);
-        this.m_compass = Robot.compass; //this.sd = Robot.straight;
+        requires(Robot.compass);
+        this.m_compass = Robot.compass;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	adjustments = m_compass.reset(); //sd.reset():
+    	adjustments = m_compass.reset();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	
+    	//Moves the robot to the way point and stops it when it is within one inch of the point
     	if ((Math.abs(36 - Robot.encoders.getX()) <= 1) && (Math.abs(120 - Robot.encoders.getY()) <= 1 )) {
-    		adjustments = m_compass.getAdjustments(); //sd.getAdjustments();
+    		
+    		adjustments = m_compass.getAdjustments();
     		dt.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+    	
     	} else {
-    	dt.move(0, 0);
+    	
+    		dt.move(0, 0);
     	}
     }
 

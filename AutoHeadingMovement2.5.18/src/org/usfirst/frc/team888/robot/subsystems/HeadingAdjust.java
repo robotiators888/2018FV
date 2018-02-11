@@ -13,9 +13,7 @@ public class HeadingAdjust extends Subsystem {
 	double rightBaseOutput = RobotMap.RIGHT_AUTO_SPEED;
 	double maxOutput = 1.0;
 	
-	double desiredHeading = 0;
-	
-	double leftSideAdjustment, rightSideAdjustment;
+	double leftSideAdjustment, rightSideAdjustment, desiredHeading;
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -30,6 +28,10 @@ public class HeadingAdjust extends Subsystem {
 		return i;		
 	}
 	
+	/**
+	 * Given a set of waypoints, calculates the heading the robot needs to facing to get there.
+	 * @return The desired heading of the robot in radians
+	 */
 	public double calculateDesiredHeading() {
 		double[] pos = Robot.encoders.getPos();
 		double[] posToDesired = {0,0};
@@ -182,6 +184,7 @@ public class HeadingAdjust extends Subsystem {
 
 
 	/**
+	 * Resets the adjustments.
 	 * @return The array with zeros for both adjustments
 	 */
 	

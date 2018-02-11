@@ -25,13 +25,16 @@ public class DefaultMovement extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	
+    	//Dead zones for if the joystick is only slightly moved
     	if((Robot.oi.getLeftStickY() > -0.2 && Robot.oi.getLeftStickY() < 0.2) 
     			&& (Robot.oi.getRightStickY() > -0.2 && Robot.oi.getRightStickY() < 0.2)) {
     		dt.move(0.0, 0.0);
     		
+    	//If both triggers are pressed, full speed	
     	} else if(Robot.oi.getTriggers()) {
     		dt.move(Robot.oi.getLeftStickY(), Robot.oi.getRightStickY());
-    		
+    	
+    	//Go at 70% speed
     	} else {
     		dt.move(Robot.oi.getLeftStickY() * 0.7, Robot.oi.getRightStickY() * 0.7);
     	}

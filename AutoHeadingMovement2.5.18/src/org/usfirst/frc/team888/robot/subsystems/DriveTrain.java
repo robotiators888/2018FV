@@ -56,7 +56,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	/**
-	 *  Polls the TalonSRX's for the Encoder values.
+	 *  Polls for the Encoder values and adjusts them for clicks per inch.
 	 * @return Encoder values in {left, right} format.
 	 */
 	
