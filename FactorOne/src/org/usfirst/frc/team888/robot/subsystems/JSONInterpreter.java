@@ -127,14 +127,16 @@ public class JSONInterpreter {
 	 * Grabs a specific scenario from the list of scenarios, then destructs the list to free up memory.
 	 * @param fieldConfiguration The match's field configuration.
 	 * @param startPos The robot's start position.
+	 * @param scenarioVer The scenario to be chosen.
 	 * @return The scenario for the given field configuration and start position.
 	 */
-	public Queue<String> getScenario(String fieldConfiguration, String startPos) {
+	public Queue<String> getScenario(String scenarioVer, String startPos, String fieldConfiguration) {
 		LinkedList<String> scenarioKeys = new LinkedList<String>(); //Make a queue (LinkedList implementation).
 		
 		try {
-			JSONObject o = scenarios.getJSONObject(fieldConfiguration); //Get the JSONObject for the given field configuration.
-			JSONArray a = o.getJSONArray(startPos); //Get the waypoint key list (scenario) for the given start position.
+			JSONObject s = scenarios.getJSONObject(scenarioVer); //Get the JSONObject for the given Scenario.
+			JSONObject p = s.getJSONObject(startPos); //Get the JSONObject for the given start position.
+			JSONArray a = p.getJSONArray(fieldConfiguration); //Get the waypoint key list (scenario) for the given field config. 
 			for(int i = 0; i < a.length(); i++) scenarioKeys.add(a.getString(i)); //Add the keys into the queue.
 			scenarios = null; //Destruct the scenarios object.
 			return scenarioKeys;

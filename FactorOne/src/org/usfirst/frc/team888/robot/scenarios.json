@@ -1,0 +1,14 @@
+#Example JSON file for storing scenarios.
+{
+	"<scenarioVer>": {
+		"<startPos>": {
+			"<fieldConfig>": ["firstKey", "...", "lastKey"]
+		}
+	},
+	"exampleScenario": {
+		"exampleStartPos": {
+			"exampleFieldConfig": ["firstKey", "...", "lastkey"],
+			"exampleOtherFieldConfig": ["otherFirstKey", "...", "otherLastKey"]
+		}
+	}
+}

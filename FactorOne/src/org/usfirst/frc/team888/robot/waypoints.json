@@ -1,0 +1,5 @@
+#Example JSON file for storing that waypoing "dictionary"
+{
+	"<waypointName>": ["x", "y", "z", "heading", "pitch", "roll"],
+	"exampleWaypoint": [0, 0, 0, 0, 0, 0]
+}
