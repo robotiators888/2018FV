@@ -7,13 +7,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  *	Defines the getAdjustmentsForStraight() method for Straight(TM) driving. Highly optimized version of the Biegel/Chuck code.
  */
+@Deprecated
 public interface StraightDrive {
 	
 	/**
 	 * Gets the encoder values and finds what adjustments need to be done
 	 * @return An array containing the adjustments for the left and right sides in that order
 	 */
-	public default double[] getAdjustmentsForStraight() {	
+	public default double[] getAdjustments() {	
 		double[] adjustments = null;
 		double[] changeInEncoders = {
 				Robot.encoders.getChangeInEncoderLeft(),
