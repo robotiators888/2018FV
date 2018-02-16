@@ -12,9 +12,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
-/**
- *
- */
 public class Climber extends Subsystem {
 
 	boolean isClimbingUp = false;
