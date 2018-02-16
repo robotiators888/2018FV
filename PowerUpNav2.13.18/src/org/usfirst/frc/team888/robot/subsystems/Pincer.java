@@ -13,15 +13,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pincer extends Subsystem {
 
-	PincerPositions pincerPosition;
+	int pincerDesiredPosition;
 
 	String positioning;
 	TalonSRX pincerMotor;
 	int pincerClicks;
-
-	public enum PincerPositions {
-		pickUp, dropOff, resting, highDropOff		
-	}
 
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
@@ -33,70 +29,36 @@ public class Pincer extends Subsystem {
 	public void setDesiredPincerPosition() {
 		switch (Robot.oi.getPOV()) {
 		case 0:
-			pincerPosition = PincerPositions.resting;
+			pincerDesiredPosition = RobotMap.RESTING_POSITION;
 			break;
 		case 90:
-			pincerPosition = PincerPositions.highDropOff;
+			pincerDesiredPosition = RobotMap.HIGH_DROPOFF_POSITION;
 			break;
 		case 180:
-			pincerPosition = PincerPositions.dropOff;
+			pincerDesiredPosition = RobotMap.LOW_DROPOFF_POSITION;
 			break;
 		case 270:
-			pincerPosition = PincerPositions.pickUp;
+			pincerDesiredPosition = RobotMap.PICKUP_POSITION;
 			break;
 		default:
 			break;
 		}
 	}
 
-	public PincerPositions getPincerPosition() {
-		return pincerPosition;
+	public void setPincerPosition() {
+		if (pincerClicks > (pincerDesiredPosition + 50)) {
+			movePincer(-RobotMap.PINCER_MOTOR_SPEED);
+		} else if (pincerClicks < (pincerDesiredPosition - 50)){
+			movePincer(RobotMap.PINCER_MOTOR_SPEED);
+		} else {
+			movePincer(0.0);
+		}
 	}
 
 	public void movePincer(double speed) {
 		pincerMotor.set(ControlMode.PercentOutput, speed);
 	}
-	
-	public void setPincer() {
-		
-		switch (pincerPosition) {
-		case resting:
-			if (pincerClicks > 50) {
-				movePincer(-RobotMap.PINCER_MOTOR_SPEED);
-			} else {
-				movePincer(0.0);
-			}				
-			break;
-		case highDropOff:
-			if (pincerClicks > (250+50)) {
-				movePincer(-RobotMap.PINCER_MOTOR_SPEED);
-			} else if (pincerClicks < (250-50)){
-				movePincer(RobotMap.PINCER_MOTOR_SPEED);
-			} else {
-				movePincer(0.0);
-			}
-			break;
-		case dropOff:
-			if (pincerClicks > (500+50)) {
-				movePincer(-RobotMap.PINCER_MOTOR_SPEED);
-			} else if (pincerClicks < (500-50)){
-				movePincer(RobotMap.PINCER_MOTOR_SPEED);
-			} else {
-				movePincer(0.0);
-			}
-			break;
-		case pickUp:
-			if (pincerClicks > (750+50)) {
-				movePincer(-RobotMap.PINCER_MOTOR_SPEED);
-			} else if (pincerClicks < (750-50)){
-				movePincer(RobotMap.PINCER_MOTOR_SPEED);
-			} else {
-				movePincer(0.0);
-			}
-			break;
-		default:
-		} 
-	}
+
 	
 	public void testPincer() {
 		SmartDashboard.putNumber("Pincer Encoder", pincerClicks);

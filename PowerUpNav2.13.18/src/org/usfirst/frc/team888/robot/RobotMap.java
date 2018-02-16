@@ -53,12 +53,10 @@ public class RobotMap {
 	public static final double PINCER_MOTOR_SPEED = 0.2;
 	
 	//Establishes the encoder position for each level of the climber
-	public static final double HIGH_DROPOFF_LOW_RANGE = 600;
-	public static final double HIGH_DROPOFF_HIGH_RANGE = 200;
-	public static final double DROPOFF_LOW_POSITION = 1000;
-	public static final double DROPOFF_HIGH_POSITION = 800;
-	public static final double PICKUP_LOW_POSITION = 1600;
-	public static final double PICKUP_HIGH_POSITION = 1200;
+	public static final int HIGH_DROPOFF_POSITION = 200;
+	public static final int LOW_DROPOFF_POSITION = 1000;
+	public static final int PICKUP_POSITION = 1600;
+	public static final int RESTING_POSITION = 0;
 	
 	//Sets the speed for autonomous and the adjustments to add for driving straight.
 	public static final double DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT = 0.1;
