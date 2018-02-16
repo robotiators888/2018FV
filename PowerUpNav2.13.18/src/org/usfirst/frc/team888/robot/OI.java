@@ -47,4 +47,8 @@ public class OI {
 	public double getGamepadAxisY() {
 		return gamepad.getRawAxis(1);
 	}
+	
+	public boolean getGamepadButton(int buttonNum) {
+		return gamepad.getRawButton(buttonNum);
+	}
 }

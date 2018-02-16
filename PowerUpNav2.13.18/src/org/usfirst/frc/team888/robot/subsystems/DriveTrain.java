@@ -11,13 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain extends Subsystem {
 
-	DigitalInput proximitySensor;
+	DigitalInput proximitySensor, limitSwitch;
+	
 
 	TalonSRX rearLeft,
 	frontLeft,
 	rearRight,
-	frontRight,
-	climberMotor;
+	frontRight;
 
 	public DriveTrain() {
 		rearLeft = new TalonSRX(RobotMap.MOTOR_REAR_LEFT);
@@ -25,13 +25,13 @@ public class DriveTrain extends Subsystem {
 
 		rearRight = new TalonSRX(RobotMap.MOTOR_REAR_RIGHT);
 		frontRight = new TalonSRX(RobotMap.MOTOR_FRONT_RIGHT);
-		climberMotor = new TalonSRX(RobotMap.CLIMBER_MOTOR);
 
 		//Configure encoders.
 		rearLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rearRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
 		proximitySensor = new DigitalInput(RobotMap.PROXIMITY_SENSOR);
+		proximitySensor = new DigitalInput(RobotMap.LIMIT_SWITCH);
 
 	}
 
@@ -55,9 +55,7 @@ public class DriveTrain extends Subsystem {
 		frontRight.set(ControlMode.PercentOutput, rightSpeed);
 	}
 
-	public void climberMoves(double speed) {
-		climberMotor.set(ControlMode.PercentOutput, speed);
-	}
+	
 
 	//public boolean proximitySensor() {
 		boolean objectDetected = proximitySensor.get();
@@ -72,13 +70,13 @@ public class DriveTrain extends Subsystem {
 	public int[] getEncoderVals() {
 
 		int leftClicks = rearLeft.getSelectedSensorPosition(0);
-		int rightClicks = rearRight.getSelectedSensorPosition(0);
+		int rightClicks = -rearRight.getSelectedSensorPosition(0);
 
 		SmartDashboard.putNumber("Left Encoder", leftClicks);
 		SmartDashboard.putNumber("Right Encoder", rightClicks);
 
 		int[] i = {
-				-leftClicks,
+				leftClicks,
 				rightClicks };
 
 		return i;
