@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DefaultMovement extends Command {
 
 	DriveTrain dt;
-	Climber climb;
+	Climber m_climb;
 
 	public DefaultMovement() {
 		requires(Robot.drive);
@@ -22,7 +22,7 @@ public class DefaultMovement extends Command {
 		
 		/** NOT SURE IF THIS IS HOW TO IMPLEMENT THE CLIMBER CLASS**/
 		requires(Robot.climb);
-		this.climb = (Climber) Robot.climb;
+		this.m_climb = (Climber) Robot.climb;
 		
 	}
 
@@ -50,18 +50,18 @@ public class DefaultMovement extends Command {
 		
 		//Climber moves via an axis
 		if (Robot.oi.getGamepadAxisY() > 0.0) {
-			dt.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
+			m_climb.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
 		} else {
-			dt.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
+			m_climb.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
 		}
 
 		//Climber moves via a button
 		if (Robot.oi.getGamepadButton(3) && isClimbingUp == false) {
-			dt.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
+			m_climb.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
 			isClimbingUp = true;
 
 		} else if (Robot.oi.getGamepadButton(3) && isClimbingUp == true) {
-			dt.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
+			m_climb.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
 			isClimbingUp = false;
 			
 		}

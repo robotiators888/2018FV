@@ -36,11 +36,15 @@ public class RobotMap {
 	public static final int LIMIT_SWITCH = 10; /**CAHNGE THIS ID**/
 	
 	//The width between the two wheels the encoders measure off of.
-	public static final double WHEEL_BASE = 2996;
+	public static final double WHEEL_BASE = 17060.859;
 	
 	//Conversion factor for clicks to inches
-	public static final double CLICKS_PER_INCH = 107;
+	public static final double CLICKS_PER_INCH = 745.8299;
+	
+	//Max climber speed
 	public static final double CLIMBER_MOTOR_SPEED = 0.4;
+	
+	//Max pincer speed
 	public static final double PINCER_MOTOR_SPEED = 0.2;
 	
 	public static final double HIGH_DROPOFF_LOW_RANGE = 600;
