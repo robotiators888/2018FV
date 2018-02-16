@@ -4,20 +4,16 @@ import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.commands.DefaultMovement;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Spark;
 
 public class Climber extends Subsystem {
 
 	boolean isClimbingUp = false;
 
-	DriveTrain dt;
-	TalonSRX climberMotor;
+	Spark climberMotor;
 
 	Compressor climberCompressor = new Compressor(1);
 	DoubleSolenoid climberPistonLeft = new DoubleSolenoid(0, 1);
@@ -25,15 +21,11 @@ public class Climber extends Subsystem {
 
 
 	public Climber() {
-		climberMotor = new TalonSRX(RobotMap.CLIMBER_MOTOR);
+		climberMotor = new Spark(RobotMap.CLIMBER_MOTOR);
 	}
 
 	public void climberMoves(double speed) {
-		climberMotor.set(ControlMode.PercentOutput, speed);
-	}
-
-	public void limitSwitchPressed() {
-	
+		climberMotor.set(speed);
 	}
 
 	public void pneumaticLocking() {

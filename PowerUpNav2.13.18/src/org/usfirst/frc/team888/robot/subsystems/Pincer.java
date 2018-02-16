@@ -2,6 +2,7 @@ package org.usfirst.frc.team888.robot.subsystems;
 
 import org.usfirst.frc.team888.robot.Robot;
 import org.usfirst.frc.team888.robot.RobotMap;
+import org.usfirst.frc.team888.robot.commands.DefaultMovement;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -31,16 +32,16 @@ public class Pincer extends Subsystem {
 	public void setDesiredPincerPosition() {
 		switch (Robot.oi.getPOV()) {
 		case 0:
-			pincerPosition = pincerPosition.resting;
+			pincerPosition = PincerPositions.resting;
 			break;
 		case 90:
-			pincerPosition = pincerPosition.highDropOff;
+			pincerPosition = PincerPositions.highDropOff;
 			break;
 		case 180:
-			pincerPosition = pincerPosition.dropOff;
+			pincerPosition = PincerPositions.dropOff;
 			break;
 		case 270:
-			pincerPosition = pincerPosition.pickUp;
+			pincerPosition = PincerPositions.pickUp;
 			break;
 		default:
 			break;
@@ -105,8 +106,8 @@ public class Pincer extends Subsystem {
 	}
 
 	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		//setDefaultCommand(new MySpecialCommand());
+		pincerMotor.setSelectedSensorPosition(0, 0, 0);
+		setDefaultCommand(new DefaultMovement());
 	}
 }
 

@@ -29,8 +29,10 @@ public class RobotMap {
 	public static final int MOTOR_FRONT_LEFT = 3;
 	public static final int MOTOR_REAR_RIGHT = 1;
 	public static final int MOTOR_FRONT_RIGHT = 0;
-	public static final int CLIMBER_MOTOR = 5;
 	public static final int PINCER_MOTOR = 4;
+	
+	//PWM port for non-CAN motor controllers
+	public static final int CLIMBER_MOTOR = 0;
 	
 	public static final int PROXIMITY_SENSOR = 9; /**CAHNGE THIS ID**/
 	public static final int LIMIT_SWITCH = 10; /**CAHNGE THIS ID**/
@@ -47,6 +49,7 @@ public class RobotMap {
 	//Max pincer speed
 	public static final double PINCER_MOTOR_SPEED = 0.2;
 	
+	//Establishes the encoder position for each level of the climber
 	public static final double HIGH_DROPOFF_LOW_RANGE = 600;
 	public static final double HIGH_DROPOFF_HIGH_RANGE = 200;
 	public static final double DROPOFF_LOW_POSITION = 1000;
