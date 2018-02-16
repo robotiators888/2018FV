@@ -27,18 +27,23 @@ public class Pincer extends Subsystem {
 		pincerClicks = pincerMotor.getSelectedSensorPosition(0);
 	}
 
-	public PincerPositions findPincerPosition() {
+	//Sets the position drivers want the pincer at
+	public void setDesiredPincerPosition() {
 		switch (Robot.oi.getPOV()) {
 		case 0:
-			return pincerPosition.resting;
+			pincerPosition = pincerPosition.resting;
+			break;
 		case 90:
-			return pincerPosition.highDropOff;
+			pincerPosition = pincerPosition.highDropOff;
+			break;
 		case 180:
-			return pincerPosition.dropOff;
+			pincerPosition = pincerPosition.dropOff;
+			break;
 		case 270:
-			return pincerPosition.pickUp;
+			pincerPosition = pincerPosition.pickUp;
+			break;
 		default:
-			return pincerPosition;
+			break;
 		}
 	}
 
@@ -50,7 +55,7 @@ public class Pincer extends Subsystem {
 		pincerMotor.set(ControlMode.PercentOutput, speed);
 	}
 	
-	public void pincerPositions() {
+	public void setPincer() {
 		
 		switch (pincerPosition) {
 		case resting:
@@ -61,27 +66,27 @@ public class Pincer extends Subsystem {
 			}				
 			break;
 		case highDropOff:
-			if (pincerClicks != 600+50 || pincerClicks != 600-50) {
-				movePincer(RobotMap.PINCER_MOTOR_SPEED);
-			} else if (pincerClicks != 400+50 || pincerClicks != 400-50){
+			if (pincerClicks > (250+50)) {
 				movePincer(-RobotMap.PINCER_MOTOR_SPEED);
+			} else if (pincerClicks < (250-50)){
+				movePincer(RobotMap.PINCER_MOTOR_SPEED);
 			} else {
 				movePincer(0.0);
 			}
 			break;
 		case dropOff:
-			if (pincerClicks != 600+50 || pincerClicks != 600-50) {
-				movePincer(RobotMap.PINCER_MOTOR_SPEED);
-			} else if (pincerClicks != 400+50 || pincerClicks != 400-50) {
+			if (pincerClicks > (500+50)) {
 				movePincer(-RobotMap.PINCER_MOTOR_SPEED);
+			} else if (pincerClicks < (500-50)){
+				movePincer(RobotMap.PINCER_MOTOR_SPEED);
 			} else {
 				movePincer(0.0);
 			}
 			break;
 		case pickUp:
-			if (pincerClicks != 600+50 || pincerClicks != 600-50) {
-				movePincer(RobotMap.PINCER_MOTOR_SPEED);
-			} else if (pincerClicks != 400+50 || pincerClicks != 400-50) {
+			if (pincerClicks > (750+50)) {
+				movePincer(-RobotMap.PINCER_MOTOR_SPEED);
+			} else if (pincerClicks < (750-50)){
 				movePincer(RobotMap.PINCER_MOTOR_SPEED);
 			} else {
 				movePincer(0.0);
@@ -90,8 +95,13 @@ public class Pincer extends Subsystem {
 		default:
 		} 
 	}
-	public void pincerPosition() {
-
+	
+	public void pince() {
+		if(Robot.oi.getLeftStickButton3()) {
+			
+		} else if(Robot.oi.getRightStickButton3()) {
+			
+		}
 	}
 
 	public void initDefaultCommand() {
