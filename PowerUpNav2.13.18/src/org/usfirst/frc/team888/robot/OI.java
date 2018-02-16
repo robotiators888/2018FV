@@ -19,32 +19,71 @@ public class OI {
 	Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK);
 	Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
 	
-	/**
-	 * @return True if both triggers are pressed.
-	 */
+	//Returns true if both joystick triggers are pressed.
 	public boolean getTriggers() {
 		return (leftStick.getRawButton(1) && rightStick.getRawButton(1));
 	}
 	
-	/**
-	 * @return A value between 1.0 and -1.0
-	 */
+	//Returns value between -1 and 1 for left joystick
 	public double getLeftStickY() {
 		return leftStick.getRawAxis(1);
 	}
 	
-	/**
-	 * @return A value between 1.0 and -1.0
-	 */
+	//Returns value between -1 and 1 for right joystick
 	public double getRightStickY() {
 		return rightStick.getRawAxis(1);
 	}
 	
+	//Returns true if center button on left joystick is pressed
+	public boolean getLeftStickButton3() {
+		return leftStick.getRawButton(3);
+	}
+	
+	//Returns true if center button on right joystick is pressed
+	public boolean getRightStickButton3() {
+		return rightStick.getRawButton(3);
+	}
+	
+	//Returns angle between 0 and 315 (starts at top and goes clockwise)
+	//If no buttons are pressed returns -1
 	public int getPOV()	{
 		return gamepad.getPOV(0);
 	}
 	
+	//Returns value between -1 and 1 for left axis on gamepad
 	public double getGamepadAxisY() {
 		return gamepad.getRawAxis(1);
 	}
+	
+	//Returns true if gamepad button A is pressed
+	public boolean getGamepadA() {
+		return gamepad.getRawButton(1);
+	}
+	
+	//Returns true if gamepad button B is pressed
+	public boolean getGamepadB() {
+		return gamepad.getRawButton(2);
+	}
+	
+	//Returns true if gamepad button X is pressed
+	public boolean getGamepadX() {
+		return gamepad.getRawButton(3);
+	}
+	
+	//Returns true if gamepad button Y is pressed
+	public boolean getGamepadY() {
+		return gamepad.getRawButton(4);
+	}
+	
+	//Returns true if gamepad left button is pressed
+	public boolean getGamepadLeft() {
+		return gamepad.getRawButton(5);
+	}
+	
+	//Returns true if gamepad right button is pressed
+	public boolean getGamepadRight() {
+		return gamepad.getRawButton(6);
+	}
+	
+	
 }
