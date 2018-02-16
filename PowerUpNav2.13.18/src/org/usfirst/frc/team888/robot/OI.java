@@ -85,5 +85,7 @@ public class OI {
 		return gamepad.getRawButton(6);
 	}
 	
-	
+	public boolean getGamepadButton(int buttonNum) {
+		return gamepad.getRawButton(buttonNum);
+	}
 }

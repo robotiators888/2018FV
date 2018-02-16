@@ -10,6 +10,7 @@ package org.usfirst.frc.team888.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
 	public static Encoders encoders;
 	public static DriveTrain drive;
 	public static HeadingAdjust compass; //StraightDrive straight;
+	public static Subsystem climb;
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 	

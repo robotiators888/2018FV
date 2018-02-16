@@ -33,6 +33,7 @@ public class RobotMap {
 	public static final int PINCER_MOTOR = 4;
 	
 	public static final int PROXIMITY_SENSOR = 9; /**CAHNGE THIS ID**/
+	public static final int LIMIT_SWITCH = 10; /**CAHNGE THIS ID**/
 	
 	//The width between the two wheels the encoders measure off of.
 	public static final double WHEEL_BASE = 2996;
