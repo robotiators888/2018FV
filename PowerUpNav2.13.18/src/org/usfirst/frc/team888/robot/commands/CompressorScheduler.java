@@ -1,33 +1,32 @@
 package org.usfirst.frc.team888.robot.commands;
 
 import org.usfirst.frc.team888.robot.Robot;
-import org.usfirst.frc.team888.robot.subsystems.Encoders;
+import org.usfirst.frc.team888.robot.subsystems.RunCompressor;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *	Sets the values to regularly update.
+ *	Sets the compressor to run continuously.
  */
-public class EncoderScheduler extends Command {
+public class CompressorScheduler extends Command {
 
-	Encoders m_encoders;
+	RunCompressor m_compressor;
 	
-    public EncoderScheduler() {
-        requires(Robot.encoders);
-        m_encoders = Robot.encoders;
+    public CompressorScheduler() {
+    	requires(Robot.compressor);
+        m_compressor = Robot.compressor;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	m_encoders.reset();
+    	m_compressor.startCompressor();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	m_encoders.updateTracker();
     }
 
-    // Sets this command to never end.
+    // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
         return false;
     }

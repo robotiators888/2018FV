@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -16,8 +17,14 @@ public class Pincer extends Subsystem {
 	int pincerDesiredPosition;
 
 	String positioning;
+
 	TalonSRX pincerMotor;
+
+	DoubleSolenoid pincerPiston;
+	
 	int pincerClicks;
+	
+	boolean pincerClosed = false;
 
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
@@ -46,10 +53,12 @@ public class Pincer extends Subsystem {
 	}
 
 	public void setPincerPosition() {
+		setDesiredPincerPosition();
+		
 		if (pincerClicks > (pincerDesiredPosition + 50)) {
-			movePincer(-RobotMap.PINCER_MOTOR_SPEED);
-		} else if (pincerClicks < (pincerDesiredPosition - 50)){
 			movePincer(RobotMap.PINCER_MOTOR_SPEED);
+		} else if (pincerClicks < (pincerDesiredPosition - 50)){
+			movePincer(-RobotMap.PINCER_MOTOR_SPEED);
 		} else {
 			movePincer(0.0);
 		}
@@ -65,10 +74,10 @@ public class Pincer extends Subsystem {
 	}
 	
 	public void pince() {
-		if(Robot.oi.getLeftStickButton3()) {
-			
-		} else if(Robot.oi.getRightStickButton3()) {
-			
+		if (!pincerClosed && Robot.oi.getGamepadY()) {
+			pincerPiston.set(DoubleSolenoid.Value.kForward);
+		} else if (pincerClosed && Robot.oi.getGamepadY()) {
+			pincerPiston.set(DoubleSolenoid.Value.kReverse);
 		}
 	}
 
@@ -77,4 +86,3 @@ public class Pincer extends Subsystem {
 		setDefaultCommand(new DefaultMovement());
 	}
 }
-

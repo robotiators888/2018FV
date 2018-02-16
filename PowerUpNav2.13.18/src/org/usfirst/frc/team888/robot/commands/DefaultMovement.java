@@ -53,13 +53,6 @@ public class DefaultMovement extends Command {
 
 		//-------------------------------
 
-		//Climber moves via an axis
-		if (Robot.oi.getGamepadAxisY() > 0.0) {
-			m_climb.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
-		} else {
-			m_climb.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
-		}
-
 		//Climber moves via a button
 		if (Robot.oi.getGamepadButton(3) && isClimbingUp == false) {
 			m_climb.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
