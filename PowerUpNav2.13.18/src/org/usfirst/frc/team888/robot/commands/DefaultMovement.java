@@ -21,14 +21,14 @@ public class DefaultMovement extends Command {
 	public DefaultMovement() {
 		requires(Robot.drive);
 		this.dt = Robot.drive;
-		
+
 		/** NOT SURE IF THIS IS HOW TO IMPLEMENT THE CLIMBER OR PINCER CLASS**/
 		requires(Robot.climb);
 		this.m_climb = Robot.climb;
-		
+
 		requires(Robot.pincer);
 		this.m_pince = Robot.pincer;
-		
+
 	}
 
 	// Called just before this Command runs the first time
@@ -37,7 +37,7 @@ public class DefaultMovement extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		
+
 		boolean isClimbingUp = false;
 
 		if((Robot.oi.getLeftStickY() > -0.2 && Robot.oi.getLeftStickY() < 0.2) 
@@ -52,7 +52,7 @@ public class DefaultMovement extends Command {
 		}
 
 		//-------------------------------
-		
+
 		//Climber moves via an axis
 		if (Robot.oi.getGamepadAxisY() > 0.0) {
 			m_climb.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);

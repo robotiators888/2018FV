@@ -5,38 +5,35 @@ import org.usfirst.frc.team888.robot.commands.DefaultMovement;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Climber extends Subsystem {
 
 	boolean isClimbingUp = false;
 
-	Spark climberMotor;
-
-	Compressor climberCompressor = new Compressor(1);
-	DoubleSolenoid climberPistonLeft = new DoubleSolenoid(0, 1);
-
-
+	Spark climberMotorLeft, climberMotorRight;
+	Solenoid climberPiston;
 
 	public Climber() {
-		climberMotor = new Spark(RobotMap.CLIMBER_MOTOR);
+		climberMotorLeft = new Spark(RobotMap.CLIMBER_MOTOR_LEFT);
+		climberMotorRight = new Spark(RobotMap.CLIMBER_MOTOR_RIGHT);
+		climberPiston = new Solenoid(0);
 	}
 
 	public void climberMoves(double speed) {
-		climberMotor.set(speed);
+		climberMotorLeft.set(speed);
+		climberMotorRight.set(speed);
 	}
 
-	public void pneumaticLocking() {
-
+	public void pneumaticLocking(boolean lock) {
+		if (lock) {
+			climberPiston.set(true);
+		} else {
+			climberPiston.set(false);
+		}
 	}
-	public void climberMovesThroughAxis() {
-
-	}
-	// Put methods for controlling this subsystem
-	// here. Call these from Commands.
-
+	
 	public void initDefaultCommand() {
 		setDefaultCommand(new DefaultMovement());
 	}
