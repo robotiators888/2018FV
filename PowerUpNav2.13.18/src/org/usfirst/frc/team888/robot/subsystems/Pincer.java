@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pincer extends Subsystem {
 
@@ -95,6 +96,10 @@ public class Pincer extends Subsystem {
 			break;
 		default:
 		} 
+	}
+	
+	public void testPincer() {
+		SmartDashboard.putNumber("Pincer Encoder", pincerClicks);
 	}
 	
 	public void pince() {

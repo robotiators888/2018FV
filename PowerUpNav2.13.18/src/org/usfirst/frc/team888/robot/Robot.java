@@ -15,9 +15,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team888.robot.commands.DefaultAuto;
+import org.usfirst.frc.team888.robot.subsystems.Climber;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team888.robot.subsystems.Encoders;
 import org.usfirst.frc.team888.robot.subsystems.HeadingAdjust;
+import org.usfirst.frc.team888.robot.subsystems.Pincer;
 //import org.usfirst.frc.team888.robot.subsystems.StraightDrive;
 
 /**
@@ -36,7 +38,8 @@ public class Robot extends TimedRobot {
 	public static Encoders encoders;
 	public static DriveTrain drive;
 	public static HeadingAdjust compass; //StraightDrive straight;
-	public static Subsystem climb;
+	public static Climber climb;
+	public static Pincer pincer;
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 	
@@ -52,6 +55,8 @@ public class Robot extends TimedRobot {
 		encoders = new Encoders();
 		drive = new DriveTrain();
 		compass = new HeadingAdjust(); //straight = new StraightDrive();
+		pincer = new Pincer();
+		climb = new Climber();
 		m_chooser.addDefault("Default Auto", new DefaultAuto());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);

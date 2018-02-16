@@ -4,6 +4,7 @@ import org.usfirst.frc.team888.robot.Robot;
 import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.subsystems.Climber;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team888.robot.subsystems.Pincer;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -15,14 +16,18 @@ public class DefaultMovement extends Command {
 
 	DriveTrain dt;
 	Climber m_climb;
+	Pincer m_pince;
 
 	public DefaultMovement() {
 		requires(Robot.drive);
 		this.dt = Robot.drive;
 		
-		/** NOT SURE IF THIS IS HOW TO IMPLEMENT THE CLIMBER CLASS**/
+		/** NOT SURE IF THIS IS HOW TO IMPLEMENT THE CLIMBER OR PINCER CLASS**/
 		requires(Robot.climb);
-		this.m_climb = (Climber) Robot.climb;
+		this.m_climb = Robot.climb;
+		
+		requires(Robot.pincer);
+		this.m_pince = Robot.pincer;
 		
 	}
 
@@ -63,9 +68,9 @@ public class DefaultMovement extends Command {
 		} else if (Robot.oi.getGamepadButton(3) && isClimbingUp == true) {
 			m_climb.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
 			isClimbingUp = false;
-			
 		}
 
+		m_pince.testPincer();
 	}
 
 	// Sets this command to never end.
