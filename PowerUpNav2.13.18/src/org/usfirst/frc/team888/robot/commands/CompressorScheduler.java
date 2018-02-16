@@ -19,7 +19,7 @@ public class CompressorScheduler extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	m_compressor.startCompressor();
+    	m_compressor.compressorStart();
     }
 
     // Called repeatedly when this Command is scheduled to run

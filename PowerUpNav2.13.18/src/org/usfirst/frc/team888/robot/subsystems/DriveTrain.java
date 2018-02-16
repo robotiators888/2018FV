@@ -30,9 +30,6 @@ public class DriveTrain extends Subsystem {
 		rearLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rearRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
-		proximitySensor = new DigitalInput(RobotMap.PROXIMITY_SENSOR);
-		proximitySensor = new DigitalInput(RobotMap.LIMIT_SWITCH);
-
 	}
 
 	public void initDefaultCommand() {
@@ -54,13 +51,6 @@ public class DriveTrain extends Subsystem {
 		rearRight.set(ControlMode.PercentOutput, rightSpeed);
 		frontRight.set(ControlMode.PercentOutput, rightSpeed);
 	}
-
-	
-
-	//public boolean proximitySensor() {
-		boolean objectDetected = proximitySensor.get();
-		//if (objectDetected)
-	//} 
 
 	/**
 	 *  Polls the TalonSRX's for the Encoder values.

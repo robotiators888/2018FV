@@ -33,12 +33,11 @@ public class RobotMap {
 	//CAN bus ID for the pincer motor controller
 	public static final int PINCER_MOTOR = 4;
 	
+	public static final int COMPRESSOR = 5;
+	
 	//PWM ports for climber motor controllers
 	public static final int CLIMBER_MOTOR_LEFT = 0;
 	public static final int CLIMBER_MOTOR_RIGHT = 1;
-	
-	public static final int PROXIMITY_SENSOR = 9; /**CAHNGE THIS ID**/
-	public static final int LIMIT_SWITCH = 10; /**CAHNGE THIS ID**/
 	
 	//The width between the two wheels the encoders measure off of.
 	public static final double WHEEL_BASE = 17060.859;
