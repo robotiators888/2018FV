@@ -6,6 +6,8 @@ import org.usfirst.frc.team888.robot.commands.DefaultMovement;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -30,6 +32,10 @@ public class Pincer extends Subsystem {
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+
+		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+		pincerMotor.configForwardLimitSwitchSource(LimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, 0);
+		
 		pincerClicks = pincerMotor.getSelectedSensorPosition(0);
 	}
 
@@ -59,7 +65,7 @@ public class Pincer extends Subsystem {
 
 	public void movePincer() {
 		if (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) > 0.1 || Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) < -0.1) {
-			pincerMotor.set(ControlMode.PercentOutput,  Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) * 0.5);
+			pincerDesiredPosition = (int) pincerClicks + (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS * 5);
 		} else if (Robot.oi.getGamepadButton(RobotMap.A_BUTTON)) {
 			pincerDesiredPosition = RobotMap.PICKUP_POSITION;
 			setPincerPosition();
@@ -77,7 +83,7 @@ public class Pincer extends Subsystem {
 	
 	//Move pincer to set positions through buttons
 	public void setPincerPosition() {
-		
+		/*
 		if (pincerClicks > (pincerDesiredPosition + 50)) {
 			pincerMotor.set(ControlMode.PercentOutput, RobotMap.PINCER_MOTOR_SPEED);
 		} else if (pincerClicks < (pincerDesiredPosition - 50)){
@@ -85,6 +91,8 @@ public class Pincer extends Subsystem {
 		} else {
 			pincerMotor.set(ControlMode.PercentOutput, 0);
 		}
+		*/
+		pincerMotor.set(ControlMode.PercentOutput, -Robot.oi.getGamePadAxis(RobotMap.GP_L_Y_AXIS));
 	}
 	
 	public void testPincer() {
