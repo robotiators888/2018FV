@@ -63,7 +63,7 @@ public class Pincer extends Subsystem {
 	*/
 
 
-	public void movePincer() {
+	/*public void movePincer() {
 		if (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) > 0.1 || Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) < -0.1) {
 			//pincerDesiredPosition = (int) pincerClicks + (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS * 5);
 		} else if (Robot.oi.getGamepadButton(RobotMap.A_BUTTON)) {
@@ -79,10 +79,10 @@ public class Pincer extends Subsystem {
 			pincerDesiredPosition = RobotMap.RESTING_POSITION;
 			setPincerPosition();
 		}
-	}
+	} */
 	
 	//Move pincer to set positions through buttons
-	public void setPincerPosition() {
+	public void setPincerPosition(double pincerSpeed) {
 		/*
 		if (pincerClicks > (pincerDesiredPosition + 50)) {
 			pincerMotor.set(ControlMode.PercentOutput, RobotMap.PINCER_MOTOR_SPEED);
@@ -92,7 +92,7 @@ public class Pincer extends Subsystem {
 			pincerMotor.set(ControlMode.PercentOutput, 0);
 		}
 		*/
-		pincerMotor.set(ControlMode.PercentOutput, -Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) * 0.3);
+		pincerMotor.set(ControlMode.PercentOutput, pincerSpeed);
 	}
 	
 	public void testPincer() {

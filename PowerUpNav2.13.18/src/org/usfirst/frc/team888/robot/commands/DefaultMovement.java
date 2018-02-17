@@ -63,7 +63,7 @@ public class DefaultMovement extends Command {
 
 		m_pince.testPincer();
 		
-		m_pince.movePincer();
+		m_pince.setPincerPosition(Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) * -0.5);
 		
 		m_pince.pince();
 		
