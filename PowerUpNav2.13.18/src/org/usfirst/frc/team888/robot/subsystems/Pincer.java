@@ -14,17 +14,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pincer extends Subsystem {
 
-	int pincerDesiredPosition;
-
-	String positioning;
-
 	TalonSRX pincerMotor;
 
 	DoubleSolenoid pincerPiston;
 	
+	int pincerDesiredPosition;
+	
 	int pincerClicks;
 	
-	boolean pincerClosed = false;
+	String positioning;
+	
+	boolean pincerOpen = true;
 
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
@@ -48,10 +48,12 @@ public class Pincer extends Subsystem {
 			pincerDesiredPosition = RobotMap.PICKUP_POSITION;
 			break;
 		default:
+			//figure out what this is
 			break;
 		}
 	}
 
+	//Move pincer to set positions through buttons
 	public void setPincerPosition() {
 		setDesiredPincerPosition();
 		
@@ -64,8 +66,9 @@ public class Pincer extends Subsystem {
 		}
 	}
 
+	//Manually move pincer through gamepad axis
 	public void movePincer(double speed) {
-		pincerMotor.set(ControlMode.PercentOutput, speed);
+		pincerMotor.set(ControlMode.PercentOutput, speed * 0.3);
 	}
 
 	
@@ -73,11 +76,14 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("Pincer Encoder", pincerClicks);
 	}
 	
+	//Uses pistons to close pincer
 	public void pince() {
-		if (!pincerClosed && Robot.oi.getGamepadButton(1)) {
-			pincerPiston.set(DoubleSolenoid.Value.kForward);
-		} else if (pincerClosed && Robot.oi.getGamepadButton(1)) {
-			pincerPiston.set(DoubleSolenoid.Value.kReverse);
+		if(Robot.oi.getRightStickButton(1)) {
+			if(pincerOpen) {
+				pincerPiston.set(DoubleSolenoid.Value.kReverse);
+			} else {
+				pincerPiston.set(DoubleSolenoid.Value.kForward);
+			}
 		}
 	}
 
