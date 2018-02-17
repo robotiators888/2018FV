@@ -38,15 +38,15 @@ public class DefaultMovement extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 
-		if((Robot.oi.getLeftStickAxis(0) > -0.2 && Robot.oi.getLeftStickAxis(0) < 0.2) 
-				&& (Robot.oi.getRightStickAxis(0) > -0.2 && Robot.oi.getRightStickAxis(0) < 0.2)) {
+		if((Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS) > -0.2 && Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS) < 0.2) 
+				&& (Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS) > -0.2 && Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS) < 0.2)) {
 			dt.move(0.0, 0.0);
 
 		} else if(Robot.oi.getTriggers()) {
-			dt.move(Robot.oi.getLeftStickAxis(0), Robot.oi.getRightStickAxis(0));
+			dt.move(Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS), Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS));
 
 		} else {
-			dt.move(Robot.oi.getLeftStickAxis(0) * 0.7, Robot.oi.getRightStickAxis(0) * 0.7);
+			dt.move(Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS) * 0.7, Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS) * 0.7);
 		}
 
 
