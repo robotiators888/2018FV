@@ -50,7 +50,7 @@ public class DefaultMovement extends Command {
 		}
 
 
-		//Climber moves via a button
+		//Climber moves via gamepad triggers
 		if (Robot.oi.getGamepadAxis(RobotMap.GP_L_TRIGGER) > 0.2) {
 			m_climb.climberMoves(Robot.oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
 		} else if (Robot.oi.getGamepadAxis(RobotMap.GP_R_TRIGGER) > 0.2) {
