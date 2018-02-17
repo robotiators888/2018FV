@@ -26,6 +26,7 @@ public class Pincer extends Subsystem {
 	
 	boolean pincerOpen = true;
 
+	
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
