@@ -38,29 +38,23 @@ public class DefaultMovement extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 
-		boolean isClimbingUp = false;
-
-		if((Robot.oi.getLeftStickY() > -0.2 && Robot.oi.getLeftStickY() < 0.2) 
-				&& (Robot.oi.getRightStickY() > -0.2 && Robot.oi.getRightStickY() < 0.2)) {
+		if((Robot.oi.getLeftStickAxis(0) > -0.2 && Robot.oi.getLeftStickAxis(0) < 0.2) 
+				&& (Robot.oi.getRightStickAxis(0) > -0.2 && Robot.oi.getRightStickAxis(0) < 0.2)) {
 			dt.move(0.0, 0.0);
 
 		} else if(Robot.oi.getTriggers()) {
-			dt.move(Robot.oi.getLeftStickY(), Robot.oi.getRightStickY());
+			dt.move(Robot.oi.getLeftStickAxis(0), Robot.oi.getRightStickAxis(0));
 
 		} else {
-			dt.move(Robot.oi.getLeftStickY() * 0.7, Robot.oi.getRightStickY() * 0.7);
+			dt.move(Robot.oi.getLeftStickAxis(0) * 0.7, Robot.oi.getRightStickAxis(0) * 0.7);
 		}
 
-		//-------------------------------
 
 		//Climber moves via a button
-		if (Robot.oi.getGamepadButton(3) && isClimbingUp == false) {
+		if (Robot.oi.getGamepadButton(3)) {
 			m_climb.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
-			isClimbingUp = true;
-
-		} else if (Robot.oi.getGamepadButton(3) && isClimbingUp == true) {
+		} else if (Robot.oi.getGamepadButton(4)) {
 			m_climb.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
-			isClimbingUp = false;
 		}
 
 		m_pince.testPincer();

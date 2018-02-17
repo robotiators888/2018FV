@@ -15,20 +15,20 @@ package org.usfirst.frc.team888.robot;
  */
 
 public class RobotMap {
-	//USB id in the DS for the controller.
+	//USB IDs in the DS for the controller.
 	public static final int LEFT_JOYSTICK = 0;
 	public static final int RIGHT_JOYSTICK = 1;
 	public static final int GAMEPAD_PORT = 2;
 	
-	//Button id values on the Joysticks
+	//Button ID values on the Joysticks
 	public static final int L_TRIGGER= 1; // Left Joystick
 	public static final int R_TRIGGER = 1; // Right Joystick
 	
-	//CAN bus IDs for the motor controllers for the drive train.
+	//CAN bus IDs for the motor controllers for the drive train
+	public static final int MOTOR_FRONT_RIGHT = 0;
+	public static final int MOTOR_REAR_RIGHT = 1;
 	public static final int MOTOR_REAR_LEFT = 2;
 	public static final int MOTOR_FRONT_LEFT = 3;
-	public static final int MOTOR_REAR_RIGHT = 1;
-	public static final int MOTOR_FRONT_RIGHT = 0;
 	
 	//CAN bus ID for the pincer motor controller
 	public static final int PINCER_MOTOR = 4;
