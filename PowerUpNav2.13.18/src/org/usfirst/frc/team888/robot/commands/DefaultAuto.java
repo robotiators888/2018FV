@@ -1,14 +1,12 @@
 package org.usfirst.frc.team888.robot.commands;
 
 import org.usfirst.frc.team888.robot.Robot;
-import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 //import org.usfirst.frc.team888.robot.subsystems.Encoders;
 import org.usfirst.frc.team888.robot.subsystems.HeadingAdjust;
 //import org.usfirst.frc.team888.robot.subsystems.StraightDrive;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Default autonomous code to run (in testing/development phases)
