@@ -56,7 +56,6 @@ public class RobotMap {
 	public static final int GP_R_X_AXIS = 4;
 	public static final int GP_R_Y_AXIS = 5;
 	
-	
 	//CAN bus IDs for the motor controllers for the drive train
 	public static final int MOTOR_FRONT_RIGHT = 0;
 	public static final int MOTOR_REAR_RIGHT = 1;
