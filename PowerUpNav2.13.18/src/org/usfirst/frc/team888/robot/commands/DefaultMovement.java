@@ -63,9 +63,7 @@ public class DefaultMovement extends Command {
 
 		m_pince.testPincer();
 		
-		//m_pince.setPincerPosition();
-		
-		m_pince.movePincer(Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS));
+		m_pince.movePincer();
 		
 		if(Robot.oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
 			lock = true;

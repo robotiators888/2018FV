@@ -33,6 +33,7 @@ public class Pincer extends Subsystem {
 		pincerClicks = pincerMotor.getSelectedSensorPosition(0);
 	}
 
+	/*
 	//Sets the position drivers want the pincer at
 	public void setDesiredPincerPosition() {
 		switch (Robot.oi.getGamepadPOV()) {
@@ -53,23 +54,37 @@ public class Pincer extends Subsystem {
 			break;
 		}
 	}
+	*/
 
-	//Move pincer to set positions through buttons
-	public void setPincerPosition() {
-		setDesiredPincerPosition();
-		
-		if (pincerClicks > (pincerDesiredPosition + 50)) {
-			movePincer(RobotMap.PINCER_MOTOR_SPEED);
-		} else if (pincerClicks < (pincerDesiredPosition - 50)){
-			movePincer(-RobotMap.PINCER_MOTOR_SPEED);
-		} else {
-			movePincer(0.0);
+
+	public void movePincer() {
+		if (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) > 0.1 || Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) < -0.1) {
+			pincerMotor.set(ControlMode.PercentOutput,  Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) * 0.5);
+		} else if (Robot.oi.getGamepadButton(RobotMap.A_BUTTON)) {
+			pincerDesiredPosition = RobotMap.PICKUP_POSITION;
+			setPincerPosition();
+		} else if (Robot.oi.getGamepadButton(RobotMap.B_BUTTON)) {
+			pincerDesiredPosition = RobotMap.HIGH_DROPOFF_POSITION;
+			setPincerPosition();
+		} else if (Robot.oi.getGamepadButton(RobotMap.X_BUTTON)) {
+			pincerDesiredPosition = RobotMap.LOW_DROPOFF_POSITION;
+			setPincerPosition();
+		} else if (Robot.oi.getGamepadButton(RobotMap.Y_BUTTON)) {
+			pincerDesiredPosition = RobotMap.RESTING_POSITION;
+			setPincerPosition();
 		}
 	}
-
-	//Manually move pincer through gamepad axis
-	public void movePincer(double speed) {
-		pincerMotor.set(ControlMode.PercentOutput, speed * 0.3);
+	
+	//Move pincer to set positions through buttons
+	public void setPincerPosition() {
+		
+		if (pincerClicks > (pincerDesiredPosition + 50)) {
+			pincerMotor.set(ControlMode.PercentOutput, RobotMap.PINCER_MOTOR_SPEED);
+		} else if (pincerClicks < (pincerDesiredPosition - 50)){
+			pincerMotor.set(ControlMode.PercentOutput, -RobotMap.PINCER_MOTOR_SPEED);
+		} else {
+			pincerMotor.set(ControlMode.PercentOutput, 0);
+		}
 	}
 
 	
