@@ -38,7 +38,6 @@ public class RobotMap {
 	public static final int R_Y_AXIS = 1;
 	public static final int R_Z_AXIS = 2;
 	
-	
 	//Button values for gamepad
 	public static final int X_BUTTON = 1;
 	public static final int A_BUTTON = 2;
