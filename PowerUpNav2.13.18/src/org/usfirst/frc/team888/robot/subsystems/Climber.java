@@ -10,15 +10,13 @@ import edu.wpi.first.wpilibj.Spark;
 
 public class Climber extends Subsystem {
 
-	boolean isClimbingUp = false;
-
 	Spark climberMotorLeft, climberMotorRight;
 	Solenoid climberPiston;
 
 	public Climber() {
 		climberMotorLeft = new Spark(RobotMap.CLIMBER_MOTOR_LEFT);
 		climberMotorRight = new Spark(RobotMap.CLIMBER_MOTOR_RIGHT);
-		climberPiston = new Solenoid(0);
+		climberPiston = new Solenoid(5, 0); //module number, channel
 	}
 
 	public void climberMoves(double speed) {
