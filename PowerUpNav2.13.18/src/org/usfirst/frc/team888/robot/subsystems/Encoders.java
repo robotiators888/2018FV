@@ -46,7 +46,8 @@ public class Encoders extends Subsystem {
     	clickPosX += changeInX;
     	clickPosY += changeInY;
     	
-    	speed = Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / timePassed;
+    	speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
+    			/ (timePassed);
     	
     	posX = clickPosX / RobotMap.CLICKS_PER_INCH;
     	posY = clickPosY / RobotMap.CLICKS_PER_INCH;
@@ -56,6 +57,7 @@ public class Encoders extends Subsystem {
     	SmartDashboard.putNumber("Y Position", posY);
     	SmartDashboard.putNumber("Heading", displayHeading);
     	SmartDashboard.putNumber("Speed", speed);
+    	SmartDashboard.putNumber("DeltaTime", timePassed);
     }
     
     /**
