@@ -4,16 +4,21 @@ import org.usfirst.frc.team888.robot.Robot;
 import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.commands.EncoderScheduler;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Encoders extends Subsystem {
 
+	Timer timer = new Timer();
+	
 	double  encoderLeftValue, encoderRightValue,
 			lastEncoderLeft, lastEncoderRight, lastHeading,
 			changeInEncoderLeft, changeInEncoderRight,
 			avgChangeInEncoder, avgMovement,
+			changeInX, changeInY,
 			clickPosX, clickPosY, displayHeading,
+			time, lastTime, timePassed, speed,
 			posX, posY, heading;
 
     public void initDefaultCommand() {
@@ -27,25 +32,21 @@ public class Encoders extends Subsystem {
      */
     public void updateTracker() {
     	updateEncoderVals();
-    	
-    	if (lastEncoderLeft == 0) {
-    		changeInEncoderLeft = 0;
-    	} else {
-    		changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
-    	}
-    	
-    	if (lastEncoderRight == 0) {
-    		changeInEncoderRight = 0;
-    	} else {
-    		changeInEncoderRight = encoderRightValue - lastEncoderRight;;
-    	}
-    	
+
+    	changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
+    	changeInEncoderRight = encoderRightValue - lastEncoderRight;
     	avgMovement = (changeInEncoderLeft + changeInEncoderRight) / 2;
     	avgChangeInEncoder = changeInEncoderLeft - changeInEncoderRight;
     	
+    	timePassed = time - lastTime;
+    	
     	heading = absAngle(lastHeading + calculateHeading(heading, avgChangeInEncoder));
-    	clickPosX += calculateX(avgChangeInEncoder, heading);
-    	clickPosY += calculateY(avgChangeInEncoder, heading);
+    	changeInX = calculateX(avgChangeInEncoder, heading);
+    	changeInY = calculateY(avgChangeInEncoder, heading);
+    	clickPosX += changeInX;
+    	clickPosY += changeInY;
+    	
+    	speed = Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / timePassed;
     	
     	posX = clickPosX / RobotMap.CLICKS_PER_INCH;
     	posY = clickPosY / RobotMap.CLICKS_PER_INCH;
@@ -54,6 +55,7 @@ public class Encoders extends Subsystem {
     	SmartDashboard.putNumber("X Position", posX);
     	SmartDashboard.putNumber("Y Position", posY);
     	SmartDashboard.putNumber("Heading", displayHeading);
+    	SmartDashboard.putNumber("Speed", speed);
     }
     
     /**
@@ -64,6 +66,8 @@ public class Encoders extends Subsystem {
     	lastEncoderLeft = encoderLeftValue;
     	lastEncoderRight = encoderRightValue;
     	lastHeading = heading;
+    	lastTime = time;
+    	time = timer.get();
     	
     	int[] vals = Robot.drive.getEncoderVals();
     	encoderLeftValue = vals[0];
@@ -111,6 +115,11 @@ public class Encoders extends Subsystem {
     	updateEncoderVals();
     	
     	heading = 0;
+    }
+    
+    public void startTimer() {
+    	timer.reset();
+    	timer.start();
     }
     
     /**
