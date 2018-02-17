@@ -51,13 +51,17 @@ public class DefaultMovement extends Command {
 
 
 		//Climber moves via a button
-		if (Robot.oi.getGamepadButton(3)) {
+		if (Robot.oi.getGamepadButton(RobotMap.LEFT_BUTTON)) {
 			m_climb.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
-		} else if (Robot.oi.getGamepadButton(4)) {
+		} else if (Robot.oi.getGamepadButton(RobotMap.RIGHT_BUTTON)) {
 			m_climb.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
 		}
 
 		m_pince.testPincer();
+		
+		//m_pince.setPincerPosition();
+		
+		m_pince.movePincer(Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS));
 	}
 
 	// Sets this command to never end.
