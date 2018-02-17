@@ -15,47 +15,36 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DefaultAuto extends Command {
 
 	DriveTrain dt;
-	HeadingAdjust m_compass; //StraightDrive sd;
-	//Encoders m_encoders;
-	//int i = 0;
+	HeadingAdjust m_compass;
 	double[] adjustments;
-	
-    public DefaultAuto() {
-        requires(Robot.drive);
-        this.dt = Robot.drive;
-        
-        //requires(Robot.encoders);
-        //this.m_encoders = Robot.encoders;
-        
-        requires(Robot.compass); //straight);
-        this.m_compass = Robot.compass; //this.sd = Robot.straight;
-    }
 
-    // Called just before this Command runs the first time
-    protected void initialize() {
-    	adjustments = m_compass.reset(); //sd.reset():
-    	//dt.resetEncoders();
-    	//m_encoders.reset();
-    }
+	public DefaultAuto() {
+		requires(Robot.drive);
+		this.dt = Robot.drive;
 
-    // Called repeatedly when this Command is scheduled to run
-    protected void execute() {
-    	//if ((Math.abs(36 - Robot.encoders.getX()) <= 1) && (Math.abs(120 - Robot.encoders.getY()) <= 1 )) {
-    		adjustments = m_compass.getAdjustments(); //sd.getAdjustments();
-    		dt.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
-    	//} else {
-    	//dt.move(0, 0);
-    	//}
-    }
+		requires(Robot.compass);
+		this.m_compass = Robot.compass;
+	}
 
-    // Sets this command to never end.
-    protected boolean isFinished() {
-        return false;
-    }
+	// Called just before this Command runs the first time
+	protected void initialize() {
+		adjustments = m_compass.reset();
+	}
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
-    protected void interrupted() {
-    	dt.move(0, 0); //Stops motor controllers so they are ready to be taken over by other command.
-    }
+	// Called repeatedly when this Command is scheduled to run
+	protected void execute() {
+		adjustments = m_compass.getAdjustments();
+		dt.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+	}
+
+	// Sets this command to never end.
+	protected boolean isFinished() {
+		return false;
+	}
+
+	// Called when another command which requires one or more of the same
+	// subsystems is scheduled to run
+	protected void interrupted() {
+		dt.move(0, 0); //Stops motor controllers so they are ready to be taken over by other command.
+	}
 }

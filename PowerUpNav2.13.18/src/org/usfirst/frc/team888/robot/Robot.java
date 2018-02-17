@@ -36,13 +36,13 @@ public class Robot extends TimedRobot {
 	public static OI oi;
 	public static Encoders encoders;
 	public static DriveTrain drive;
-	public static HeadingAdjust compass; //StraightDrive straight;
+	public static HeadingAdjust compass;
 	public static Climber climb;
 	public static Pincer pincer;
 	public static RunCompressor compressor;
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
-	
+
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -101,7 +101,7 @@ public class Robot extends TimedRobot {
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.start();
-			
+
 		}
 	}
 
