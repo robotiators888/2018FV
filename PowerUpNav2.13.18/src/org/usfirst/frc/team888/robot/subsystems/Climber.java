@@ -11,12 +11,13 @@ import edu.wpi.first.wpilibj.Spark;
 public class Climber extends Subsystem {
 
 	Spark climberMotorLeft, climberMotorRight;
-	Solenoid climberPiston;
+	Solenoid climberPistonLeft, climberPistonRight;
 
 	public Climber() {
 		climberMotorLeft = new Spark(RobotMap.CLIMBER_MOTOR_LEFT);
 		climberMotorRight = new Spark(RobotMap.CLIMBER_MOTOR_RIGHT);
-		climberPiston = new Solenoid(5, 0); //module number, channel
+		climberPistonLeft = new Solenoid(5, 0); //module number, channel
+		climberPistonRight = new Solenoid(5, 1); //module number, channel
 	}
 
 	public void climberMoves(double speed) {
@@ -26,11 +27,8 @@ public class Climber extends Subsystem {
 
 	//Need to edit this.
 	public void pneumaticLocking(boolean lock) {
-		if (lock) {
-			climberPiston.set(true);
-		} else {
-			climberPiston.set(false);
-		}
+			climberPistonLeft.set(lock);
+			climberPistonRight.set(lock);
 	}
 	
 	public void initDefaultCommand() {
