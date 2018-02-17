@@ -17,6 +17,8 @@ public class DefaultMovement extends Command {
 	DriveTrain dt;
 	Climber m_climb;
 	Pincer m_pince;
+	
+	boolean lock = false;
 
 	public DefaultMovement() {
 		requires(Robot.drive);
@@ -54,7 +56,9 @@ public class DefaultMovement extends Command {
 		if (Robot.oi.getGamepadAxis(RobotMap.GP_L_TRIGGER) > 0.2) {
 			m_climb.climberMoves(Robot.oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
 		} else if (Robot.oi.getGamepadAxis(RobotMap.GP_R_TRIGGER) > 0.2) {
-			m_climb.climberMoves(-Robot.oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
+			m_climb.climberMoves(-Robot.oi.getGamepadAxis(RobotMap.GP_R_TRIGGER));
+		} else {
+			m_climb.climberMoves(0);
 		}
 
 		m_pince.testPincer();
@@ -62,6 +66,17 @@ public class DefaultMovement extends Command {
 		//m_pince.setPincerPosition();
 		
 		m_pince.movePincer(Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS));
+		
+		if(Robot.oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
+			lock = true;
+			m_climb.pneumaticLocking(lock);
+		} else if (Robot.oi.getGamepadButton(RobotMap.GP_R_BUTTON)) {
+			lock = false;
+			m_climb.pneumaticLocking(lock);
+		} else {
+			//m_climb.pneumaticLocking(lock);
+		}
+		
 	}
 
 	// Sets this command to never end.
