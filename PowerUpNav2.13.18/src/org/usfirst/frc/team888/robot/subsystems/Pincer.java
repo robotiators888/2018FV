@@ -86,7 +86,6 @@ public class Pincer extends Subsystem {
 			pincerMotor.set(ControlMode.PercentOutput, 0);
 		}
 	}
-
 	
 	public void testPincer() {
 		SmartDashboard.putNumber("Pincer Encoder", pincerClicks);
