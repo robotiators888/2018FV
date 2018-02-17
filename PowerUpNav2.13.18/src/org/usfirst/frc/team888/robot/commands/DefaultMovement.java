@@ -65,10 +65,12 @@ public class DefaultMovement extends Command {
 		
 		m_pince.movePincer();
 		
-		if(Robot.oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
+		m_pince.pince();
+		
+		if(Robot.oi.getGamepadButton(RobotMap.GP_R_BUTTON)) {
 			lock = true;
 			m_climb.pneumaticLocking(lock);
-		} else if (Robot.oi.getGamepadButton(RobotMap.GP_R_BUTTON)) {
+		} else if (Robot.oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
 			lock = false;
 			m_climb.pneumaticLocking(lock);
 		} else {
