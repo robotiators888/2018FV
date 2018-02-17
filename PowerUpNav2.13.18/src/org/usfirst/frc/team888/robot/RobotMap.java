@@ -50,8 +50,8 @@ public class RobotMap {
 	public static final int GP_L_X_AXIS = 0;
 	public static final int GP_L_Y_AXIS = 1;
 	
-	public static final int GP_L_TRIGGER_AXIS = 2;
-	public static final int GP_R_TRIGGER_AXIS = 3;
+	public static final int GP_L_TRIGGER = 2;
+	public static final int GP_R_TRIGGER = 3;
 	
 	public static final int GP_R_X_AXIS = 4;
 	public static final int GP_R_Y_AXIS = 5;

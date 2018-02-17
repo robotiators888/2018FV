@@ -51,10 +51,10 @@ public class DefaultMovement extends Command {
 
 
 		//Climber moves via a button
-		if (Robot.oi.getGamepadButton(RobotMap.LEFT_BUTTON)) {
-			m_climb.climberMoves(RobotMap.CLIMBER_MOTOR_SPEED);
-		} else if (Robot.oi.getGamepadButton(RobotMap.RIGHT_BUTTON)) {
-			m_climb.climberMoves(-RobotMap.CLIMBER_MOTOR_SPEED);
+		if (Robot.oi.getGamepadAxis(RobotMap.GP_L_TRIGGER) > 0.2) {
+			m_climb.climberMoves(Robot.oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
+		} else if (Robot.oi.getGamepadAxis(RobotMap.GP_R_TRIGGER) > 0.2) {
+			m_climb.climberMoves(-Robot.oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
 		}
 
 		m_pince.testPincer();
