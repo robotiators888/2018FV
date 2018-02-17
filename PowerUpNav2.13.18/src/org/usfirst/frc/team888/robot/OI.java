@@ -31,12 +31,16 @@ public class OI {
 	
 	//Returns value between -1 and 1 for gamepad joystick
 	public double getGamepadAxis(int axis) {
-		return leftStick.getRawAxis(axis);
+		return gamepad.getRawAxis(axis);
+	}
+	
+	public int getGamepadPOV() {
+		return gamepad.getPOV();
 	}
 	
 	//Returns true if button is pressed
 	public boolean getLeftStickButton(int button) {
-		return gamepad.getRawButton(button);
+		return leftStick.getRawButton(button);
 	}
 	
 	//Returns true if button is pressed

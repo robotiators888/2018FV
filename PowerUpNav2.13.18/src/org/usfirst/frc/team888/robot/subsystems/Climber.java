@@ -24,7 +24,7 @@ public class Climber extends Subsystem {
 		climberMotorRight.set(speed);
 	}
 
-	//Need to edit this
+	//Need to edit this.
 	public void pneumaticLocking(boolean lock) {
 		if (lock) {
 			climberPiston.set(true);

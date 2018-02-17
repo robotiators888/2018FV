@@ -34,7 +34,7 @@ public class Pincer extends Subsystem {
 
 	//Sets the position drivers want the pincer at
 	public void setDesiredPincerPosition() {
-		switch (Robot.oi.getPOV()) {
+		switch (Robot.oi.getGamepadPOV()) {
 		case 0:
 			pincerDesiredPosition = RobotMap.RESTING_POSITION;
 			break;
@@ -74,9 +74,9 @@ public class Pincer extends Subsystem {
 	}
 	
 	public void pince() {
-		if (!pincerClosed && Robot.oi.getGamepadY()) {
+		if (!pincerClosed && Robot.oi.getGamepadButton(1)) {
 			pincerPiston.set(DoubleSolenoid.Value.kForward);
-		} else if (pincerClosed && Robot.oi.getGamepadY()) {
+		} else if (pincerClosed && Robot.oi.getGamepadButton(1)) {
 			pincerPiston.set(DoubleSolenoid.Value.kReverse);
 		}
 	}
