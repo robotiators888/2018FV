@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +19,8 @@ public class DriveTrain extends Subsystem {
 	frontLeft,
 	rearRight,
 	frontRight;
+	
+	Compressor mainCompressor;
 
 	public DriveTrain() {
 		rearLeft = new TalonSRX(RobotMap.MOTOR_REAR_LEFT);
@@ -25,6 +28,8 @@ public class DriveTrain extends Subsystem {
 
 		rearRight = new TalonSRX(RobotMap.MOTOR_REAR_RIGHT);
 		frontRight = new TalonSRX(RobotMap.MOTOR_FRONT_RIGHT);
+		
+		mainCompressor = new Compressor(RobotMap.COMPRESSOR);
 
 		//Configure encoders.
 		rearLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -38,6 +43,10 @@ public class DriveTrain extends Subsystem {
 		setDefaultCommand(new DefaultMovement());
 	}
 
+	public void startCompressor() {
+		mainCompressor.start();
+	}
+	
 	/**
 	 * Sets the motor speeds.
 	 * @param leftSpeed A value between -1.0 and 1.0

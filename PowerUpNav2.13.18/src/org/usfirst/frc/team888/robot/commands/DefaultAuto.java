@@ -28,6 +28,7 @@ public class DefaultAuto extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		adjustments = m_compass.reset();
+		dt.startCompressor();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
