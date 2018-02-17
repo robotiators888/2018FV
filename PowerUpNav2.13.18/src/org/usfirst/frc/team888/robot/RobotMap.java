@@ -20,9 +20,42 @@ public class RobotMap {
 	public static final int RIGHT_JOYSTICK = 1;
 	public static final int GAMEPAD_PORT = 2;
 	
+	
 	//Button ID values on the Joysticks
-	public static final int L_TRIGGER= 1; // Left Joystick
-	public static final int R_TRIGGER = 1; // Right Joystick
+	public static final int L_TRIGGER = 1;
+	public static final int L_CENTER_BUTTON = 3;
+	
+	public static final int R_TRIGGER = 1;
+	public static final int R_CENTER_BUTTON = 3;
+	
+	
+	//Axes values for Joysticks
+	public static final int L_X_AXIS = 0;
+	public static final int L_Y_AXIS = 1;
+	public static final int L_Z_AXIS = 2;
+	
+	public static final int R_X_AXIS = 0;
+	public static final int R_Y_AXIS = 1;
+	public static final int R_Z_AXIS = 2;
+	
+	
+	//Button values for gamepad
+	public static final int X_BUTTON = 1;
+	public static final int A_BUTTON = 2;
+	public static final int B_BUTTON = 3;
+	public static final int Y_BUTTON = 4;
+	public static final int LEFT_BUTTON = 5;
+	public static final int RIGHT_BUTTON = 6;
+	
+	//Axes values for gamepad
+	public static final int GP_L_X_AXIS = 0;
+	public static final int GP_L_Y_AXIS = 1;
+	
+	public static final int GP_L_TRIGGER_AXIS = 2;
+	public static final int GP_R_TRIGGER_AXIS = 3;
+	
+	public static final int GP_R_X_AXIS = 4;
+	public static final int GP_R_Y_AXIS = 5;
 	
 	//CAN bus IDs for the motor controllers for the drive train
 	public static final int MOTOR_FRONT_RIGHT = 0;
@@ -30,32 +63,40 @@ public class RobotMap {
 	public static final int MOTOR_REAR_LEFT = 2;
 	public static final int MOTOR_FRONT_LEFT = 3;
 	
+	
 	//CAN bus ID for the pincer motor controller
 	public static final int PINCER_MOTOR = 4;
 	
 	public static final int COMPRESSOR = 5;
 	
+	
 	//PWM ports for climber motor controllers
 	public static final int CLIMBER_MOTOR_LEFT = 0;
 	public static final int CLIMBER_MOTOR_RIGHT = 1;
 	
+	
 	//The width between the two wheels the encoders measure off of.
 	public static final double WHEEL_BASE = 17060.859;
+	
 	
 	//Conversion factor for clicks to inches
 	public static final double CLICKS_PER_INCH = 745.8299;
 	
+	
 	//Max climber speed
 	public static final double CLIMBER_MOTOR_SPEED = 0.4;
 	
+	
 	//Max pincer speed
 	public static final double PINCER_MOTOR_SPEED = 0.2;
+	
 	
 	//Establishes the encoder position for each level of the climber
 	public static final int HIGH_DROPOFF_POSITION = 200;
 	public static final int LOW_DROPOFF_POSITION = 1000;
 	public static final int PICKUP_POSITION = 1600;
 	public static final int RESTING_POSITION = 0;
+	
 	
 	//Sets the speed for autonomous and the adjustments to add for driving straight.
 	public static final double DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT = 0.1;
