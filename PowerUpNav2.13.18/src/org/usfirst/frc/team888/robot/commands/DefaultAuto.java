@@ -34,7 +34,7 @@ public class DefaultAuto extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 		adjustments = m_compass.getAdjustments();
-		dt.move(1,1);
+		dt.move(0.5,0.5);
 		//dt.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 	}
 

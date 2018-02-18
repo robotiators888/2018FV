@@ -45,7 +45,7 @@ public class OI {
 	
 	//Returns true if button is pressed
 	public boolean getRightStickButton(int button) {
-		return gamepad.getRawButton(button);
+		return rightStick.getRawButton(button);
 	}
 	
 	//Returns true if button is pressed

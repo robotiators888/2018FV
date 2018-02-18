@@ -36,6 +36,8 @@ public class Pincer extends Subsystem {
 		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
 		pincerMotor.configForwardLimitSwitchSource(LimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, 0);
 		
+		pincerPiston = new DoubleSolenoid(5,2,3);
+		
 		pincerClicks = pincerMotor.getSelectedSensorPosition(0);
 	}
 
@@ -101,12 +103,12 @@ public class Pincer extends Subsystem {
 	
 	//Uses pistons to close pincer
 	public void pince() {
-		if(Robot.oi.getRightStickButton(1)) {
-			if(pincerOpen) {
-				pincerPiston.set(DoubleSolenoid.Value.kReverse);
-			} else {
-				pincerPiston.set(DoubleSolenoid.Value.kForward);
-			}
+		if(Robot.oi.getRightStickButton(3)) {
+			pincerOpen = true;
+			pincerPiston.set(DoubleSolenoid.Value.kReverse);
+		} else if (Robot.oi.getLeftStickButton(3)) {
+			pincerOpen = false;
+			pincerPiston.set(DoubleSolenoid.Value.kForward);
 		}
 	}
 
