@@ -50,6 +50,7 @@ public class DefaultMovement extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
         if(Robot.oi.getTriggers()) {
+        	//Drivetrain controls
         	leftBaseDriveOutput = Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
         	rightBaseDriveOutput = Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS);
         }
