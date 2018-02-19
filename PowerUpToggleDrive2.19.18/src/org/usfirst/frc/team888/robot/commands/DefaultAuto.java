@@ -8,7 +8,6 @@ import org.usfirst.frc.team888.robot.subsystems.HeadingAdjust;
 //import org.usfirst.frc.team888.robot.subsystems.StraightDrive;
 import org.usfirst.frc.team888.robot.subsystems.Pincer;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
@@ -24,6 +23,7 @@ public class DefaultAuto extends Command {
 		this.dt = Robot.drive;
 		this.m_compass = Robot.compass;
 		this.pince = Robot.pincer;
+		//something little
 	}
 
 	// Called just before this Command runs the first time
