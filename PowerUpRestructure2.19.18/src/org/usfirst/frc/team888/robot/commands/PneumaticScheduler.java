@@ -28,6 +28,7 @@ public class PneumaticScheduler extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
+		compressor.startCompressor();
 	}
 
 	// Called repeatedly when this Command is scheduled to run

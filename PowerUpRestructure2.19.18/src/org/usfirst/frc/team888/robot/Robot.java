@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team888.robot.commands.NavigationScheduler;
+import org.usfirst.frc.team888.robot.commands.PneumaticScheduler;
 import org.usfirst.frc.team888.robot.subsystems.Climber;
 import org.usfirst.frc.team888.robot.subsystems.DeadReckon;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
@@ -31,17 +32,18 @@ import org.usfirst.frc.team888.robot.subsystems.RunCompressor;
 
 public class Robot extends TimedRobot {
 	protected static OI oi;
-	
+
 	protected static DriveTrain drive;
 	protected static DeadReckon location;
 	protected static Navigation navigation;
-	
+
 	protected static RunCompressor compressor;
 	protected static Climber climber;
 	protected static Pincer pincer;
-	
+
 	protected static Command navScheduler;
-	
+	protected static Command airScheduler;
+
 	//Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -52,17 +54,18 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		oi = new OI();
-		
+
 		drive = new DriveTrain();
 		location = new DeadReckon(drive);
 		navigation =  new Navigation(drive, location);
-		
+
 		compressor =  new RunCompressor();
 		climber = new Climber();
 		pincer = new Pincer();
 
 		navScheduler = new NavigationScheduler(navigation);
-		
+		airScheduler = new PneumaticScheduler(compressor, climber, pincer);	
+
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
 	}
@@ -74,6 +77,13 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
+		if (navScheduler != null) {
+			navScheduler.cancel();
+		}
+		
+		if (airScheduler != null) {
+			airScheduler.cancel();
+		}
 	}
 
 	@Override
@@ -95,7 +105,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		//m_autonomousCommand = m_chooser.getSelected();
-		navScheduler.start();
+		if (!navScheduler.isRunning()) {
+			navScheduler.start();
+		}
+
+		if (!airScheduler.isRunning()) {
+			airScheduler.start();
+		}
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -125,10 +141,17 @@ public class Robot extends TimedRobot {
 			continue until interrupted by another command, remove
 			this line or comment it out.
 		 */
-
 		//if (m_autonomousCommand != null) {
 		//	m_autonomousCommand.cancel();
 		//}
+		
+		if (!navScheduler.isRunning()) {
+			navScheduler.start();
+		}
+
+		if (!airScheduler.isRunning()) {
+			airScheduler.start();
+		}
 	}
 
 	/**
