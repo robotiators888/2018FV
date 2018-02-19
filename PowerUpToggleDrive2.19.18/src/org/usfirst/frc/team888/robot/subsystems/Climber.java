@@ -4,7 +4,6 @@ import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.commands.DefaultMovement;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 
