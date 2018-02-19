@@ -63,8 +63,8 @@ public class Robot extends TimedRobot {
 		climber = new Climber();
 		pincer = new Pincer();
 
-		navScheduler = new NavigationScheduler(navigation);
-		airScheduler = new PneumaticScheduler(compressor, climber, pincer);	
+		navScheduler = new NavigationScheduler(navigation, oi);
+		airScheduler = new PneumaticScheduler(compressor, climber, pincer, oi);	
 
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);

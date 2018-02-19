@@ -1,5 +1,6 @@
 package org.usfirst.frc.team888.robot.commands;
 
+import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.subsystems.Climber;
 import org.usfirst.frc.team888.robot.subsystems.Pincer;
 import org.usfirst.frc.team888.robot.subsystems.RunCompressor;
@@ -14,8 +15,9 @@ public class PneumaticScheduler extends Command {
 	protected RunCompressor compressor;
 	protected Climber climber;
 	protected Pincer pincer;
+	protected OI oi;
 
-	public PneumaticScheduler(RunCompressor p_compressor, Climber p_climber, Pincer p_pincer) {
+	public PneumaticScheduler(RunCompressor p_compressor, Climber p_climber, Pincer p_pincer, OI p_oi) {
 		requires(p_compressor);
 		compressor = p_compressor;
 		
@@ -24,6 +26,8 @@ public class PneumaticScheduler extends Command {
 		
 		requires(p_pincer);
 		pincer = p_pincer;
+		
+		oi = p_oi;
 	}
 
 	// Called just before this Command runs the first time
