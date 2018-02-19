@@ -60,35 +60,33 @@ public class PneumaticScheduler extends Command {
 			lock = true;
 			climber.pneumaticLocking(lock);
 			SmartDashboard.putBoolean("Locked?", !lock);
-			
+
 			if(!lock){
 				SmartDashboard.putString("Climber Status:", "Locked");
 			} else {
 				SmartDashboard.putString("Climber Status:", "Unlocked");
 			}
-			
+
 		} else if (oi.getGamepadButton(RobotMap.GP_R_BUTTON)) {
 			lock = false;
 			climber.pneumaticLocking(lock);
+
 			SmartDashboard.putBoolean("locked?", !lock);
+
 			if(!lock){
 				SmartDashboard.putString("Climber Status:", "Locked");
-			}
-			else{
+			} else {
 				SmartDashboard.putString("Climber Status:", "Unlocked");
 			}
+
 		} else {
 			SmartDashboard.putBoolean("Locked?", !lock);
-			if(!lock){
+			if (!lock){
 				SmartDashboard.putString("Climber Status:", "Locked");
-			}
-			else{
+			} else {
 				SmartDashboard.putString("Climber Status:", "Unlocked");
 			}
 		}
-		
-		
-		
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
