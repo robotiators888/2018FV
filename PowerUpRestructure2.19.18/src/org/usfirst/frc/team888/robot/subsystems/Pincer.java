@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,9 +19,16 @@ public class Pincer extends Subsystem {
 	protected TalonSRX pincerMotor;
 	protected DoubleSolenoid pincerPiston;
 	
+	protected AnalogInput pincerEncoder;
+	
+	protected DigitalInput proximity;
+	protected DigitalInput topLimit;
+	protected DigitalInput bottomLimit;
+	
 	protected int pincerDesiredPosition;
 	protected int pincerClicks;	
-	boolean pincerOpen = true;
+	
+	protected boolean pincerOpen = true;
 
 	
 	public Pincer() {
@@ -30,71 +39,33 @@ public class Pincer extends Subsystem {
 		
 		pincerPiston = new DoubleSolenoid(5, 2, 3);
 		
-		pincerClicks = pincerMotor.getSelectedSensorPosition(0); //NEEDS TO BE MOVED!!!!
+		pincerEncoder = new AnalogInput(0);
+    	pincerEncoder.setOversampleBits(2);
+    	pincerEncoder.setAverageBits(2);
+    	
+		pincerPiston = new DoubleSolenoid(5,2,3);
+		
+		proximity = new DigitalInput(0);
+		
+		topLimit = new DigitalInput(1);
+		bottomLimit = new DigitalInput(2);
 	}
 
 	public void pincerInit() {
 		pincerMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 	
-	/*
-	//Sets the position drivers want the pincer at
-	public void setDesiredPincerPosition() {
-		switch (Robot.oi.getGamepadPOV()) {
-		case 0:
-			pincerDesiredPosition = RobotMap.RESTING_POSITION;
-			break;
-		case 90:
-			pincerDesiredPosition = RobotMap.HIGH_DROPOFF_POSITION;
-			break;
-		case 180:
-			pincerDesiredPosition = RobotMap.LOW_DROPOFF_POSITION;
-			break;
-		case 270:
-			pincerDesiredPosition = RobotMap.PICKUP_POSITION;
-			break;
-		default:
-			//figure out what this is
-			break;
-		}
-	}
-	*/
-
-
-	/*public void movePincer() {
-		if (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) > 0.1 || Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) < -0.1) {
-			//pincerDesiredPosition = (int) pincerClicks + (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS * 5);
-		} else if (Robot.oi.getGamepadButton(RobotMap.A_BUTTON)) {
-			pincerDesiredPosition = RobotMap.PICKUP_POSITION;
-			setPincerPosition();
-		} else if (Robot.oi.getGamepadButton(RobotMap.B_BUTTON)) {
-			pincerDesiredPosition = RobotMap.HIGH_DROPOFF_POSITION;
-			setPincerPosition();
-		} else if (Robot.oi.getGamepadButton(RobotMap.X_BUTTON)) {
-			pincerDesiredPosition = RobotMap.LOW_DROPOFF_POSITION;
-			setPincerPosition();
-		} else if (Robot.oi.getGamepadButton(RobotMap.Y_BUTTON)) {
-			pincerDesiredPosition = RobotMap.RESTING_POSITION;
-			setPincerPosition();
-		}
-	} */
-	
-	//Move pincer to set positions through buttons
 	public void setPincerPosition(double pincerSpeed) {
-		/*
-		if (pincerClicks > (pincerDesiredPosition + 50)) {
-			pincerMotor.set(ControlMode.PercentOutput, RobotMap.PINCER_MOTOR_SPEED);
-		} else if (pincerClicks < (pincerDesiredPosition - 50)){
-			pincerMotor.set(ControlMode.PercentOutput, -RobotMap.PINCER_MOTOR_SPEED);
-		} else {
-			pincerMotor.set(ControlMode.PercentOutput, 0);
-		}
-		*/
 		pincerMotor.set(ControlMode.PercentOutput, pincerSpeed);
+		SmartDashboard.putNumber("pincer output", pincerSpeed);
 	}
 	
-	public void testPincer() {
-		SmartDashboard.putNumber("Pincer Encoder", pincerClicks);
+	public void displaySensorValues() {
+		//SmartDashboard.putNumber("Pincer Encoder", pincerClicks);
+		SmartDashboard.putBoolean("proximity", !proximity.get());
+		SmartDashboard.putNumber("analogEncoderRaw", pincerEncoder.getValue());
+		SmartDashboard.putBoolean("topLimit", topLimit.get());
+		SmartDashboard.putBoolean("bottomLimit", bottomLimit.get());
 	}
 	
 	//Uses pistons to close pincer
