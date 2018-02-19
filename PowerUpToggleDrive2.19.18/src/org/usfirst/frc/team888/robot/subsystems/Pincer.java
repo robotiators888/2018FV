@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -19,6 +20,8 @@ public class Pincer extends Subsystem {
 
 	DoubleSolenoid pincerPiston;
 	
+	AnalogInput pincerEncoder;	
+	
 	int pincerDesiredPosition;
 	
 	int pincerClicks;
@@ -28,19 +31,22 @@ public class Pincer extends Subsystem {
 	boolean pincerOpen = true;
 
 	DigitalInput proximity;
+	DigitalInput topLimit;
+	DigitalInput bottomLimit;
 	
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
-		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-
-		//pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-		//pincerMotor.configForwardLimitSwitchSource(LimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, 0);
 		
+    	pincerEncoder = new AnalogInput(0);
+    	pincerEncoder.setOversampleBits(2);
+    	pincerEncoder.setAverageBits(2);
+    	
 		pincerPiston = new DoubleSolenoid(5,2,3);
 		
 		proximity = new DigitalInput(0);
 		
-		pincerClicks = pincerMotor.getSelectedSensorPosition(0);
+		topLimit = new DigitalInput(1);
+		bottomLimit = new DigitalInput(2);
 	}
 
 	/*
@@ -91,9 +97,12 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("pincer output", pincerSpeed);
 	}
 	
-	public void testPincer() {
+	public void displaySensorValues() {
 		//SmartDashboard.putNumber("Pincer Encoder", pincerClicks);
 		SmartDashboard.putBoolean("proximity", !proximity.get());
+		SmartDashboard.putNumber("analogEncoderRaw", pincerEncoder.getValue());
+		SmartDashboard.putBoolean("topLimit", topLimit.get());
+		SmartDashboard.putBoolean("bottomLimit", bottomLimit.get());
 	}
 	
 	//Uses pistons to close pincer

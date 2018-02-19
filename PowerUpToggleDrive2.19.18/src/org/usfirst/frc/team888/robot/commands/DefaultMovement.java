@@ -18,16 +18,16 @@ public class DefaultMovement extends Command {
 	DriveTrain dt;
 	Climber m_climb;
 	Pincer m_pince;
-	
+
 	boolean lock = false;
 	double leftBaseDriveOutput = 0.0;
 	double rightBaseDriveOutput = 0.0;	
 	double leftDriveOutput = 0.0;
 	double rightDriveOutput = 0.0;
-    boolean input = false;
-    boolean lastInput = false;
-    boolean output = false;
-    boolean press = false;
+	boolean input = false;
+	boolean lastInput = false;
+	boolean output = false;
+	boolean press = false;
 
 	public DefaultMovement() {
 		requires(Robot.drive);
@@ -49,40 +49,40 @@ public class DefaultMovement extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-        if(Robot.oi.getTriggers()) {
-        	//Drivetrain controls
-        	leftBaseDriveOutput = Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
-        	rightBaseDriveOutput = Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS);
-        }
-        else {
-        	leftBaseDriveOutput = 0.7*Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
-        	rightBaseDriveOutput = 0.7*Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS);
-			}
-        if(Math.abs(Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.3 &&  Math.abs(Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.3){
-        	leftBaseDriveOutput = 0.0;
-        	rightBaseDriveOutput = 0.0;
+		if(Robot.oi.getTriggers()) {
+			//Drivetrain controls
+			leftBaseDriveOutput = Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
+			rightBaseDriveOutput = Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+		}
+		else {
+			leftBaseDriveOutput = 0.7*Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
+			rightBaseDriveOutput = 0.7*Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+		}
+		if(Math.abs(Robot.oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.3 &&  Math.abs(Robot.oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.3){
+			leftBaseDriveOutput = 0.0;
+			rightBaseDriveOutput = 0.0;
 		}
 		if(input == true && lastInput == false) {
-            press = true;
-        	}
-        else {
-            press = false;
-        	}
-        if(press) {
-            output = !output;
-        	}
-        lastInput = input;
-        input = Robot.oi.getLeftStickButton(2) || Robot.oi.getRightStickButton(2);
-        if(output) {
+			press = true;
+		}
+		else {
+			press = false;
+		}
+		if(press) {
+			output = !output;
+		}
+		lastInput = input;
+		input = Robot.oi.getLeftStickButton(2) || Robot.oi.getRightStickButton(2);
+		if(output) {
 			leftDriveOutput = leftBaseDriveOutput;
 			rightDriveOutput = rightBaseDriveOutput;
-        	}
-        else {
+		}
+		else {
 			leftDriveOutput = -rightBaseDriveOutput;
 			rightDriveOutput = -leftBaseDriveOutput;
-        	}
-        SmartDashboard.putNumber("leftOutput", leftDriveOutput);
-        SmartDashboard.putNumber("rightOutput", rightDriveOutput);       
+		}
+		SmartDashboard.putNumber("leftOutput", leftDriveOutput);
+		SmartDashboard.putNumber("rightOutput", rightDriveOutput);       
 		dt.move(leftDriveOutput, rightDriveOutput);
 
 		//Climber moves via gamepad triggers
@@ -94,12 +94,12 @@ public class DefaultMovement extends Command {
 			m_climb.climberMoves(0);
 		}
 
-		m_pince.testPincer();
-		
+		m_pince.displaySensorValues();
+
 		m_pince.setPincerPosition(Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) * 0.4);
-		
+
 		m_pince.pince();
-		
+
 		if(Robot.oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
 			lock = true;
 			m_climb.pneumaticLocking(lock);
@@ -130,7 +130,7 @@ public class DefaultMovement extends Command {
 			}
 			//m_climb.pneumaticLocking(lock);
 		}
-		
+
 	}
 
 	// Sets this command to never end.
