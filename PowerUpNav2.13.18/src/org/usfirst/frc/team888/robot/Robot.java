@@ -19,7 +19,6 @@ import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team888.robot.subsystems.Encoders;
 import org.usfirst.frc.team888.robot.subsystems.HeadingAdjust;
 import org.usfirst.frc.team888.robot.subsystems.Pincer;
-import org.usfirst.frc.team888.robot.subsystems.RunCompressor;
 //import org.usfirst.frc.team888.robot.subsystems.StraightDrive;
 
 /**
@@ -39,7 +38,6 @@ public class Robot extends TimedRobot {
 	public static HeadingAdjust compass;
 	public static Climber climb;
 	public static Pincer pincer;
-	public static RunCompressor compressor;
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 	
@@ -55,7 +53,6 @@ public class Robot extends TimedRobot {
 		compass = new HeadingAdjust(); //straight = new StraightDrive();
 		pincer = new Pincer();
 		climb = new Climber();
-		compressor = new RunCompressor();
 		m_chooser.addDefault("Default Auto", new DefaultAuto());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
