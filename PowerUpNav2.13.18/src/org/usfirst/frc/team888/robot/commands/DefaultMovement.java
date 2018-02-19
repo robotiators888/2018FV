@@ -35,6 +35,7 @@ public class DefaultMovement extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
+		dt.startCompressor();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -63,7 +64,9 @@ public class DefaultMovement extends Command {
 
 		m_pince.testPincer();
 		
-		m_pince.movePincer();
+		m_pince.setPincerPosition(Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) * -1);
+		
+		m_pince.pince();
 		
 		if(Robot.oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
 			lock = true;

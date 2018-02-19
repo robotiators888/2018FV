@@ -6,6 +6,8 @@ import org.usfirst.frc.team888.robot.commands.DefaultMovement;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -30,6 +32,12 @@ public class Pincer extends Subsystem {
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+
+		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+		pincerMotor.configForwardLimitSwitchSource(LimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, 0);
+		
+		pincerPiston = new DoubleSolenoid(5,2,3);
+		
 		pincerClicks = pincerMotor.getSelectedSensorPosition(0);
 	}
 
@@ -57,9 +65,9 @@ public class Pincer extends Subsystem {
 	*/
 
 
-	public void movePincer() {
+	/*public void movePincer() {
 		if (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) > 0.1 || Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) < -0.1) {
-			pincerMotor.set(ControlMode.PercentOutput,  Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) * 0.5);
+			//pincerDesiredPosition = (int) pincerClicks + (Robot.oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS * 5);
 		} else if (Robot.oi.getGamepadButton(RobotMap.A_BUTTON)) {
 			pincerDesiredPosition = RobotMap.PICKUP_POSITION;
 			setPincerPosition();
@@ -73,11 +81,11 @@ public class Pincer extends Subsystem {
 			pincerDesiredPosition = RobotMap.RESTING_POSITION;
 			setPincerPosition();
 		}
-	}
+	} */
 	
 	//Move pincer to set positions through buttons
-	public void setPincerPosition() {
-		
+	public void setPincerPosition(double pincerSpeed) {
+		/*
 		if (pincerClicks > (pincerDesiredPosition + 50)) {
 			pincerMotor.set(ControlMode.PercentOutput, RobotMap.PINCER_MOTOR_SPEED);
 		} else if (pincerClicks < (pincerDesiredPosition - 50)){
@@ -85,6 +93,8 @@ public class Pincer extends Subsystem {
 		} else {
 			pincerMotor.set(ControlMode.PercentOutput, 0);
 		}
+		*/
+		pincerMotor.set(ControlMode.PercentOutput, pincerSpeed);
 	}
 	
 	public void testPincer() {
@@ -93,12 +103,12 @@ public class Pincer extends Subsystem {
 	
 	//Uses pistons to close pincer
 	public void pince() {
-		if(Robot.oi.getRightStickButton(1)) {
-			if(pincerOpen) {
-				pincerPiston.set(DoubleSolenoid.Value.kReverse);
-			} else {
-				pincerPiston.set(DoubleSolenoid.Value.kForward);
-			}
+		if(Robot.oi.getRightStickButton(3)) {
+			pincerOpen = true;
+			pincerPiston.set(DoubleSolenoid.Value.kReverse);
+		} else if (Robot.oi.getLeftStickButton(3)) {
+			pincerOpen = false;
+			pincerPiston.set(DoubleSolenoid.Value.kForward);
 		}
 	}
 

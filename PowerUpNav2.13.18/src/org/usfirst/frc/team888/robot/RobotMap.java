@@ -39,9 +39,9 @@ public class RobotMap {
 	public static final int R_Z_AXIS = 2;
 	
 	//Button values for gamepad
-	public static final int X_BUTTON = 1;
-	public static final int A_BUTTON = 2;
-	public static final int B_BUTTON = 3;
+	public static final int A_BUTTON = 1;
+	public static final int B_BUTTON = 2;
+	public static final int X_BUTTON = 3;
 	public static final int Y_BUTTON = 4;
 	public static final int GP_L_BUTTON = 5;
 	public static final int GP_R_BUTTON = 6;
@@ -55,7 +55,6 @@ public class RobotMap {
 	
 	public static final int GP_R_X_AXIS = 4;
 	public static final int GP_R_Y_AXIS = 5;
-	
 	
 	//CAN bus IDs for the motor controllers for the drive train
 	public static final int MOTOR_FRONT_RIGHT = 0;
