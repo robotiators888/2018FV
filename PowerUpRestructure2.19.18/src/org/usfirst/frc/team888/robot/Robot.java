@@ -14,9 +14,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team888.robot.commands.NavigationScheduler;
+import org.usfirst.frc.team888.robot.subsystems.Climber;
 import org.usfirst.frc.team888.robot.subsystems.DeadReckon;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team888.robot.subsystems.Navigation;
+import org.usfirst.frc.team888.robot.subsystems.Pincer;
+import org.usfirst.frc.team888.robot.subsystems.RunCompressor;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,10 +31,17 @@ import org.usfirst.frc.team888.robot.subsystems.Navigation;
 
 public class Robot extends TimedRobot {
 	protected static OI oi;
+	
 	protected static DriveTrain drive;
 	protected static DeadReckon location;
 	protected static Navigation navigation;
+	
+	protected static RunCompressor compressor;
+	protected static Climber climber;
+	protected static Pincer pincer;
+	
 	protected static Command navScheduler;
+	
 	//Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -42,12 +52,19 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		oi = new OI();
+		
 		drive = new DriveTrain();
 		location = new DeadReckon(drive);
 		navigation =  new Navigation(drive, location);
+		
+		compressor =  new RunCompressor();
+		climber = new Climber();
+		pincer = new Pincer();
+
 		navScheduler = new NavigationScheduler(navigation);
-				// chooser.addObject("My Auto", new MyAutoCommand());
-				SmartDashboard.putData("Auto mode", m_chooser);
+		
+		// chooser.addObject("My Auto", new MyAutoCommand());
+		SmartDashboard.putData("Auto mode", m_chooser);
 	}
 
 	/**
@@ -57,7 +74,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
 	}
 
 	@Override

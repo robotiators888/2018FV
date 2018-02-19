@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Navigation extends Subsystem {
 
-	DriveTrain drive;
-	DeadReckon location;
+	protected DriveTrain drive;
+	protected DeadReckon location;
 
 	protected double maxOutput = 1.0;
 	protected double leftSideAdjustment;

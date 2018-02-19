@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class DeadReckon extends Subsystem {
 
-	Timer timer;
-	DriveTrain drive;
+	protected Timer timer;
+	protected DriveTrain drive;
 	
     protected double encoderLeftValue;
     protected double encoderRightValue;

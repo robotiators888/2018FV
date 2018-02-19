@@ -1,26 +1,37 @@
 package org.usfirst.frc.team888.robot.commands;
 
-import org.usfirst.frc.team888.robot.subsystems.Navigation;
+import org.usfirst.frc.team888.robot.subsystems.Climber;
+import org.usfirst.frc.team888.robot.subsystems.Pincer;
+import org.usfirst.frc.team888.robot.subsystems.RunCompressor;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class NavigationScheduler extends Command {
+/**
+ *
+ */
+public class PneumaticScheduler extends Command {
 
-	protected Navigation navigation;
+	protected RunCompressor compressor;
+	protected Climber climber;
+	protected Pincer pincer;
 
-	public NavigationScheduler(Navigation p_nav) {
-		requires(p_nav);
-		navigation = p_nav;
+	public PneumaticScheduler(RunCompressor p_compressor, Climber p_climber, Pincer p_pincer) {
+		requires(p_compressor);
+		compressor = p_compressor;
+		
+		requires(p_climber);
+		climber = p_climber;
+		
+		requires(p_pincer);
+		pincer = p_pincer;
 	}
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		navigation.navigationInit();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		navigation.navigationExecute(0.3, 0.3);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain extends Subsystem {
 
-    TalonSRX rearLeft;
-    TalonSRX frontLeft;
-    TalonSRX rearRight;
-    TalonSRX frontRight;
+    protected TalonSRX rearLeft;
+    protected TalonSRX frontLeft;
+    protected TalonSRX rearRight;
+    protected TalonSRX frontRight;
     
 
     public DriveTrain() {
