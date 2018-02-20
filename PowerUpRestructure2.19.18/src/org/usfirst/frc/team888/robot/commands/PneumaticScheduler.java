@@ -20,6 +20,7 @@ public class PneumaticScheduler extends Command {
 	protected OI oi;
 
 	protected boolean lock;
+	protected double desiredPosition = 2115;
 
 	public PneumaticScheduler(RunCompressor p_compressor, Climber p_climber, Pincer p_pincer, OI p_oi) {
 		requires(p_compressor);
@@ -51,8 +52,16 @@ public class PneumaticScheduler extends Command {
 		}
 
 		pincer.displaySensorValues();
-
-		pincer.setPincerPosition(oi.getGamepadAxis(RobotMap.GP_L_Y_AXIS) * 0.4);
+		if(oi.getGamepadButton(1)){
+			desiredPosition = 750;
+		}
+		if(oi.getGamepadButton(2)){
+			desiredPosition = 1650;
+		}
+		if(oi.getGamepadButton(3)){
+			desiredPosition = 2115;
+		}
+		pincer.setPincerPosition(desiredPosition);
 
 		pincer.pince(oi.getRightStickButton(3));
 

@@ -30,7 +30,18 @@ public class Pincer extends Subsystem {
 	
 	protected boolean pincerOpen = true;
 
-	
+	protected double currentAngle = 0;
+	protected double lastAngle = 0;
+	protected double angleThreshold = 50;
+	protected double pincerPower = 0;
+	protected double maintainerConstant = 0;
+	protected double movementThreshold = 30;
+	protected double maintainerConstantIterator = 0.00005;
+	protected double reflexLow = 0.1;
+	protected double reflexHigh = 0.3;
+	protected int reflexLength = 0;
+	protected int reflexTimer = 0;
+	protected int reflexStart = 0;
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 
@@ -42,30 +53,66 @@ public class Pincer extends Subsystem {
 		pincerEncoder = new AnalogInput(0);
     	pincerEncoder.setOversampleBits(2);
     	pincerEncoder.setAverageBits(2);
-    	
-		pincerPiston = new DoubleSolenoid(5,2,3);
 		
 		proximity = new DigitalInput(0);
 		
 		topLimit = new DigitalInput(1);
-		bottomLimit = new DigitalInput(2);
 	}
 
 	public void pincerInit() {
 		pincerMotor.setSelectedSensorPosition(0, 0, 0);
 	}
-	
+	/*
 	public void setPincerPosition(double pincerSpeed) {
 		pincerMotor.set(ControlMode.PercentOutput, pincerSpeed);
 		SmartDashboard.putNumber("pincer output", pincerSpeed);
 	}
-	
+	*/
+	public void setPincerPosition(double desiredAngle){
+		SmartDashboard.putNumber("desiredAngle", desiredAngle);
+		SmartDashboard.putNumber("currentAngle", currentAngle);
+		SmartDashboard.putNumber("maintainerConstant", maintainerConstant);
+		SmartDashboard.putNumber("pincerPower", pincerPower);
+		SmartDashboard.putNumber("change", currentAngle - lastAngle);
+		
+		if(currentAngle > (desiredAngle + angleThreshold)){
+			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
+				maintainerConstant = maintainerConstant + maintainerConstantIterator;
+			}
+			pincerPower = maintainerConstant*Math.abs(currentAngle - desiredAngle);
+			if(pincerPower > 0.4){
+				pincerPower = 0.4;
+			}
+			//stuff to bring down to angle
+		}
+		else if(currentAngle < (desiredAngle - angleThreshold)){
+			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
+				maintainerConstant = maintainerConstant + maintainerConstantIterator;
+			}
+			pincerPower = maintainerConstant*Math.abs(currentAngle - desiredAngle);
+			if(pincerPower > 0.4){
+				pincerPower = 0.4;
+			}
+			pincerPower = -pincerPower;
+			//stuff to bring up to angle
+		}
+		else{
+			reflexStart = reflexTimer;
+			pincerPower = -pincerPower*(reflexLow/reflexHigh);
+			if(reflexTimer-reflexStart > reflexLength){
+				
+			maintainerConstant = 0;
+			pincerPower = 0;
+			}
+			//stuff to maintain position, want to do a thing where it puts slight 
+			//power in the opposite direction to oppose movement and brake
+		}
+		lastAngle = currentAngle;
+		currentAngle = pincerEncoder.getValue();
+		pincerMotor.set(ControlMode.PercentOutput, pincerPower);
+		reflexTimer = reflexTimer+1;
+	}
 	public void displaySensorValues() {
-		//SmartDashboard.putNumber("Pincer Encoder", pincerClicks);
-		SmartDashboard.putBoolean("proximity", !proximity.get());
-		SmartDashboard.putNumber("analogEncoderRaw", pincerEncoder.getValue());
-		SmartDashboard.putBoolean("topLimit", topLimit.get());
-		SmartDashboard.putBoolean("bottomLimit", bottomLimit.get());
 	}
 	
 	//Uses pistons to close pincer
