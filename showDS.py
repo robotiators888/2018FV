@@ -53,7 +53,7 @@ while True:
 			#msg, address = sock.recvfrom(65507)
 		    msg, address = sock.recvfrom(65536)
 	    else: 
-		    sock.sendto("camera", cameraAddress)
+		    sock.sendto("frontCamera", cameraAddress)
 		    msg = None
 		    address = None
 
