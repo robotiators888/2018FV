@@ -57,13 +57,13 @@ public class Robot extends TimedRobot {
 
 		drive = new DriveTrain();
 		location = new DeadReckon(drive);
-		navigation =  new Navigation(drive, location);
+		navigation =  new Navigation(drive, location, oi);
 
 		compressor =  new RunCompressor();
 		climber = new Climber();
 		pincer = new Pincer();
 
-		navScheduler = new NavigationScheduler(navigation, oi);
+		navScheduler = new NavigationScheduler(navigation);
 		airScheduler = new PneumaticScheduler(compressor, climber, pincer, oi);	
 
 		// chooser.addObject("My Auto", new MyAutoCommand());

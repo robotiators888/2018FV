@@ -1,5 +1,11 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -9,42 +15,145 @@ public class Navigation extends Subsystem {
 
 	protected DriveTrain drive;
 	protected DeadReckon location;
+	protected OI oi;
 
 	protected double maxOutput = 1.0;
 	protected double leftSideAdjustment;
 	protected double rightSideAdjustment;
 	protected double desiredHeading;
+	protected double leftBaseDriveOutput = 0.0;
+	protected double rightBaseDriveOutput = 0.0;	
+	protected double leftDriveOutput = 0.0;
+	protected double rightDriveOutput = 0.0;
 
-	public Navigation(DriveTrain p_drive, DeadReckon p_location) {
+	protected int time = 0;
+
+	protected boolean manualControl = true;
+
+	protected boolean input = false;
+	protected boolean lastInput = false;
+	protected boolean output = false;
+	protected boolean press = false;
+
+	//Camera Stuff
+	protected String camera = "frontCamera";
+	protected byte[] byteCameraMessage = camera.getBytes();
+	protected boolean previousCameraButtonState = false;
+	protected byte[] ip = {10, 8, 88, 12};
+	protected InetAddress cameraAddress;
+
+	protected DatagramSocket sock;
+	protected DatagramPacket message;
+
+
+	public Navigation(DriveTrain p_drive, DeadReckon p_location, OI p_oi) {
 		drive = p_drive;
 		location = p_location;
+		oi = p_oi;
+
+		try {
+			sock = new DatagramSocket(7777);
+			message = new DatagramPacket(byteCameraMessage, camera.length(), cameraAddress, 8888);
+			cameraAddress = InetAddress.getByAddress(ip);
+		} catch (Exception e) {
+
+		}
 	}
-	
+
 	public void navigationInit() {
 		drive.resetEncoderPositions();
-	}
-	
-	public void navigationExecute(double leftSpeed, double rightSpeed) {
-		location.updateTracker();
-		drive.move(leftSpeed, rightSpeed);
-	}
-	
-	public double calculateDesiredHeading() {
-		double[] pos = location.getPos();
-		double[] posToDesired = {0,0};
 
-		for (int i = 0; i < pos.length; i++) {
-			posToDesired[i] = pos[i] - RobotMap.DESIRED_LOCATION[i];
+		//send first message to pi to start camera feed
+		try {
+			sock.send(message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		desiredHeading = DeadReckon.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
-		return desiredHeading;
 	}
+
+	public void navigationExecute() {
+		location.updateTracker();
+		updateGuidenceControl();
+		updateMotion();
+		updateCamera();
+
+	}
+
+	public void updateGuidenceControl() {
+	}
+
+	public void updateCamera() {
+		if(oi.getRightStickButton(2) && !previousCameraButtonState) {
+			if(camera.equals("cameraFront")) {
+				camera = "backCamera";
+			} else {
+				camera = "frontCamera";
+			}
+
+			try {
+				sock.send(message);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			previousCameraButtonState = true;
+		} else if (!oi.getRightStickButton(2)) {
+			previousCameraButtonState = false;
+		}
+	} 
 
 	/**
 	 * Gets the encoder values and finds what adjustments need to be done
 	 * @return An array containing the adjustments for the left and right sides in that order
 	 */
+
+	public void updateMotion() {
+		if (!manualControl) {
+			double[] adjustments = getAdjustments();
+			drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+		} else {
+			if(oi.getTriggers()) {
+				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
+				rightBaseDriveOutput = oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+			} else {
+				leftBaseDriveOutput = 0.7 * oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
+				rightBaseDriveOutput = 0.7 * oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+			}
+
+			if(Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.3 &&
+					Math.abs(oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.3){
+				leftBaseDriveOutput = 0.0;
+				rightBaseDriveOutput = 0.0;
+			}
+
+			if (input == true && lastInput == false) {
+				press = true;
+			} else {
+				press = false;
+			}
+
+			if (press) {
+				output = !output;
+			}
+
+			lastInput = input;
+			input = oi.getLeftStickButton(2) || oi.getRightStickButton(2);
+
+			if(output) {
+				leftDriveOutput = leftBaseDriveOutput;
+				rightDriveOutput = rightBaseDriveOutput;
+			} else {
+				leftDriveOutput = -rightBaseDriveOutput;
+				rightDriveOutput = -leftBaseDriveOutput;
+			}
+
+			SmartDashboard.putNumber("leftOutput", leftDriveOutput);
+			SmartDashboard.putNumber("rightOutput", rightDriveOutput); 
+
+			drive.move(leftDriveOutput, rightDriveOutput);
+		}
+	}
 
 	public double[] getAdjustments() {	
 
@@ -185,6 +294,17 @@ public class Navigation extends Subsystem {
 		return adjustments;		
 	}
 
+	public double calculateDesiredHeading() {
+		double[] pos = location.getPos();
+		double[] posToDesired = {0,0};
+
+		for (int i = 0; i < pos.length; i++) {
+			posToDesired[i] = pos[i] - RobotMap.DESIRED_LOCATION[i];
+		}
+
+		desiredHeading = DeadReckon.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
+		return desiredHeading;
+	}
 
 	/**
 	 * @return The array with zeros for both adjustments
