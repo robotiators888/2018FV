@@ -28,7 +28,7 @@ public class Navigation extends Subsystem {
 
 	protected double[] desiredLocation;
 
-	protected int time = 0;
+	protected int schedulerOffset = 0;
 
 	protected boolean manualControl = true;
 
@@ -63,6 +63,8 @@ public class Navigation extends Subsystem {
 	}
 
 	public void navigationInit() {
+		schedulerOffset = 0;
+
 		drive.resetEncoderPositions();
 
 		//send first message to pi to start camera feed
@@ -77,8 +79,12 @@ public class Navigation extends Subsystem {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
-		updateCamera();
 
+		if (schedulerOffset == 0) {
+			updateCamera();
+		}
+
+		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
 
 	public void updateGuidenceControl() {
