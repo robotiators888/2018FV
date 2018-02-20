@@ -84,6 +84,7 @@ public class Pincer extends Subsystem {
 			if(pincerPower > 0.4){
 				pincerPower = 0.4;
 			}
+			
 			//stuff to bring down to angle
 		}
 		else if(currentAngle < (desiredAngle - angleThreshold)){
