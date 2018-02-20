@@ -26,6 +26,8 @@ public class Navigation extends Subsystem {
 	protected double leftDriveOutput = 0.0;
 	protected double rightDriveOutput = 0.0;
 
+	protected double[] desiredLocation;
+
 	protected int time = 0;
 
 	protected boolean manualControl = true;
@@ -67,7 +69,6 @@ public class Navigation extends Subsystem {
 		try {
 			sock.send(message);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -81,6 +82,7 @@ public class Navigation extends Subsystem {
 	}
 
 	public void updateGuidenceControl() {
+		desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
 
 	public void updateCamera() {
@@ -94,7 +96,6 @@ public class Navigation extends Subsystem {
 			try {
 				sock.send(message);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			previousCameraButtonState = true;
@@ -156,7 +157,6 @@ public class Navigation extends Subsystem {
 	}
 
 	public double[] getAdjustments() {	
-
 		double[] navData = location.getNavLocationData();
 		desiredHeading = calculateDesiredHeading();
 
@@ -291,6 +291,7 @@ public class Navigation extends Subsystem {
 				leftSideAdjustment,
 				rightSideAdjustment
 		};
+
 		return adjustments;		
 	}
 
@@ -299,7 +300,7 @@ public class Navigation extends Subsystem {
 		double[] posToDesired = {0,0};
 
 		for (int i = 0; i < pos.length; i++) {
-			posToDesired[i] = pos[i] - RobotMap.DESIRED_LOCATION[i];
+			posToDesired[i] = pos[i] - desiredLocation[i];
 		}
 
 		desiredHeading = DeadReckon.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
