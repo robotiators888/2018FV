@@ -49,7 +49,7 @@ public class Navigation extends Subsystem {
 	public double[] getAdjustments() {	
 
 		double[] navData = location.getNavLocationData();
-		desiredHeading = 0; //calculateDesiredHeading();
+		desiredHeading = calculateDesiredHeading();
 
 		/**
 		 * If the robot is moving in a positive direction...
@@ -70,7 +70,8 @@ public class Navigation extends Subsystem {
 				 * Otherwise, subtract the adjustments from the right side.
 				 */
 
-				if 	((RobotMap.LEFT_AUTO_SPEED + RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT) <= maxOutput) {			
+				if 	((RobotMap.LEFT_AUTO_SPEED + RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT)
+						<= maxOutput) {			
 					leftSideAdjustment = RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
 					rightSideAdjustment = 0.0;
 				} else {

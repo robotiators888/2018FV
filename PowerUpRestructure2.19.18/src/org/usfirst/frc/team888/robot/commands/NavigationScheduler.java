@@ -16,6 +16,8 @@ public class NavigationScheduler extends Command {
 	protected double rightBaseDriveOutput = 0.0;	
 	protected double leftDriveOutput = 0.0;
 	protected double rightDriveOutput = 0.0;
+
+	protected boolean auto = false;
 	protected boolean input = false;
 	protected boolean lastInput = false;
 	protected boolean output = false;
@@ -35,45 +37,52 @@ public class NavigationScheduler extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		if(oi.getTriggers()) {
-			leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
-			rightBaseDriveOutput = oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+
+		if (auto = true) {
+			double[] adjustments = navigation.getAdjustments();
+			navigation.navigationExecute(RobotMap.LEFT_AUTO_SPEED +
+					adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 		} else {
-			leftBaseDriveOutput = 0.7 * oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
-			rightBaseDriveOutput = 0.7* oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+			if(oi.getTriggers()) {
+				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
+				rightBaseDriveOutput = oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+			} else {
+				leftBaseDriveOutput = 0.7 * oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
+				rightBaseDriveOutput = 0.7* oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+			}
+
+			if(Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.3 &&
+					Math.abs(oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.3){
+				leftBaseDriveOutput = 0.0;
+				rightBaseDriveOutput = 0.0;
+			}
+
+			if (input == true && lastInput == false) {
+				press = true;
+			} else {
+				press = false;
+			}
+
+			if (press) {
+				output = !output;
+			}
+
+			lastInput = input;
+			input = oi.getLeftStickButton(2) || oi.getRightStickButton(2);
+
+			if(output) {
+				leftDriveOutput = leftBaseDriveOutput;
+				rightDriveOutput = rightBaseDriveOutput;
+			} else {
+				leftDriveOutput = -rightBaseDriveOutput;
+				rightDriveOutput = -leftBaseDriveOutput;
+			}
+
+			SmartDashboard.putNumber("leftOutput", leftDriveOutput);
+			SmartDashboard.putNumber("rightOutput", rightDriveOutput); 
+
+			navigation.navigationExecute(leftDriveOutput, rightDriveOutput);
 		}
-
-		if(Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.3 &&
-				Math.abs(oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.3){
-			leftBaseDriveOutput = 0.0;
-			rightBaseDriveOutput = 0.0;
-		}
-
-		if (input == true && lastInput == false) {
-			press = true;
-		} else {
-			press = false;
-		}
-
-		if (press) {
-			output = !output;
-		}
-
-		lastInput = input;
-		input = oi.getLeftStickButton(2) || oi.getRightStickButton(2);
-
-		if(output) {
-			leftDriveOutput = leftBaseDriveOutput;
-			rightDriveOutput = rightBaseDriveOutput;
-		} else {
-			leftDriveOutput = -rightBaseDriveOutput;
-			rightDriveOutput = -leftBaseDriveOutput;
-		}
-
-		SmartDashboard.putNumber("leftOutput", leftDriveOutput);
-		SmartDashboard.putNumber("rightOutput", rightDriveOutput); 
-
-		navigation.navigationExecute(leftDriveOutput, rightDriveOutput);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
