@@ -32,14 +32,13 @@ public class Pincer extends Subsystem {
 
 	protected double currentAngle = 0;
 	protected double lastAngle = 0;
-	protected double angleThreshold = 50;
+	protected double angleThreshold = 200;
 	protected double pincerPower = 0;
 	protected double maintainerConstant = 0;
 	protected double movementThreshold = 30;
 	protected double maintainerConstantIterator = 0.00005;
-	protected double reflexLow = 0.1;
-	protected double reflexHigh = 0.3;
-	protected int reflexLength = 0;
+	protected double reflexHigh = 0.5;
+	protected int reflexLength = 20;
 	protected int reflexTimer = 0;
 	protected int reflexStart = 0;
 	public Pincer() {
@@ -56,6 +55,7 @@ public class Pincer extends Subsystem {
 		
 		proximity = new DigitalInput(0);
 		
+		bottomLimit = new DigitalInput(2);
 		topLimit = new DigitalInput(1);
 	}
 
@@ -76,6 +76,7 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("change", currentAngle - lastAngle);
 		
 		if(currentAngle > (desiredAngle + angleThreshold)){
+			SmartDashboard.putBoolean("I'm Here", false);
 			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
@@ -86,6 +87,7 @@ public class Pincer extends Subsystem {
 			//stuff to bring down to angle
 		}
 		else if(currentAngle < (desiredAngle - angleThreshold)){
+			SmartDashboard.putBoolean("I'm Here", false);
 			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
@@ -97,12 +99,15 @@ public class Pincer extends Subsystem {
 			//stuff to bring up to angle
 		}
 		else{
+			SmartDashboard.putBoolean("I'm Here", true);
 			reflexStart = reflexTimer;
-			pincerPower = -pincerPower*(reflexLow/reflexHigh);
+			pincerPower = (-pincerPower*Math.abs(currentAngle - desiredAngle)*(reflexHigh)*0.0025)/Math.abs(pincerPower);
 			if(reflexTimer-reflexStart > reflexLength){
-				
-			maintainerConstant = 0;
-			pincerPower = 0;
+				maintainerConstant = 0;
+				pincerPower = 0;
+			}
+			if(bottomLimit.get() || topLimit.get()){
+				pincerPower = 0;
 			}
 			//stuff to maintain position, want to do a thing where it puts slight 
 			//power in the opposite direction to oppose movement and brake
@@ -118,10 +123,8 @@ public class Pincer extends Subsystem {
 	//Uses pistons to close pincer
 	public void pince(boolean button) {
 		if(button) {
-			pincerOpen = true;
 			pincerPiston.set(DoubleSolenoid.Value.kReverse);
-		} else if (button) {
-			pincerOpen = false;
+		} else{
 			pincerPiston.set(DoubleSolenoid.Value.kForward);
 		}
 	}

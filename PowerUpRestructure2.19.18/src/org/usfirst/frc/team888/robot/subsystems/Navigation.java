@@ -37,7 +37,7 @@ public class Navigation extends Subsystem {
 	protected boolean output = false;
 	protected boolean press = false;
 
-	//Camera Stuff
+	/*Camera Stuff
 	protected String camera = "frontCamera";
 	protected byte[] byteCameraMessage = camera.getBytes();
 	protected boolean previousCameraButtonState = false;
@@ -46,33 +46,34 @@ public class Navigation extends Subsystem {
 
 	protected DatagramSocket sock;
 	protected DatagramPacket message;
-
+*/
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, OI p_oi) {
 		drive = p_drive;
 		location = p_location;
 		oi = p_oi;
-
+/*
 		try {
 			sock = new DatagramSocket(7777);
 			message = new DatagramPacket(byteCameraMessage, camera.length(), cameraAddress, 8888);
 			cameraAddress = InetAddress.getByAddress(ip);
 		} catch (Exception e) {
 
-		}
+		} */
 	}
 
 	public void navigationInit() {
 		schedulerOffset = 0;
 
 		drive.resetEncoderPositions();
+		location.reset();
 
-		//send first message to pi to start camera feed
+		/*send first message to pi to start camera feed
 		try {
 			sock.send(message);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} */
 	}
 
 	public void navigationExecute() {
@@ -80,9 +81,9 @@ public class Navigation extends Subsystem {
 		updateGuidenceControl();
 		updateMotion();
 
-		if (schedulerOffset == 0) {
+		/*if (schedulerOffset == 0) {
 			updateCamera();
-		}
+		} */
 
 		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
@@ -91,7 +92,7 @@ public class Navigation extends Subsystem {
 		desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
 
-	public void updateCamera() {
+	/*public void updateCamera() {
 		if(oi.getRightStickButton(2) && !previousCameraButtonState) {
 			if(camera.equals("cameraFront")) {
 				camera = "backCamera";
@@ -108,7 +109,7 @@ public class Navigation extends Subsystem {
 		} else if (!oi.getRightStickButton(2)) {
 			previousCameraButtonState = false;
 		}
-	} 
+	} */
 
 	/**
 	 * Gets the encoder values and finds what adjustments need to be done
@@ -164,7 +165,7 @@ public class Navigation extends Subsystem {
 
 	public double[] getAdjustments() {	
 		double[] navData = location.getNavLocationData();
-		desiredHeading = calculateDesiredHeading();
+		desiredHeading = 0; //calculateDesiredHeading();
 
 		/**
 		 * If the robot is moving in a positive direction...
@@ -176,7 +177,7 @@ public class Navigation extends Subsystem {
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.absAngle(navData[2] - desiredHeading) >
+			if (DeadReckon.absAngle(navData[2] - desiredHeading) <
 			DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
@@ -198,7 +199,7 @@ public class Navigation extends Subsystem {
 				 * If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) <
+			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) >
 					DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
@@ -234,7 +235,7 @@ public class Navigation extends Subsystem {
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.absAngle(navData[2] - desiredHeading) <
+			if (DeadReckon.absAngle(navData[2] - desiredHeading) >
 					DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
@@ -255,7 +256,7 @@ public class Navigation extends Subsystem {
 			/* If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) >
+			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) <
 			DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
