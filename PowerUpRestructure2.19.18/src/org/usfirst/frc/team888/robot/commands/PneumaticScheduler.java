@@ -61,7 +61,7 @@ public class PneumaticScheduler extends Command {
 		if(oi.getGamepadButton(3)){
 			desiredPosition = 2115;
 		}
-		pincer.setPincerPosition(desiredPosition, oi.getGamepadButton(8), oi.getGamepadAxis(2));
+		pincer.setPincerPosition(desiredPosition, oi.getGamepadButton(8), oi.getGamepadAxis(1));
 
 		pincer.pince(oi.getRightStickButton(3));
 
