@@ -39,6 +39,10 @@ public class Pincer extends Subsystem {
 	protected double maintainerConstantIterator = 0.00005;
 	protected double maxSpeed = 0;
 	protected double reflexHigh = 0.5;
+	protected boolean input = false;
+	protected boolean lastInput = false;
+	protected boolean press = false;
+	protected boolean output = false;
 	protected int reflexLength = 20;
 	protected int reflexTimer = 0;
 	protected int reflexStart = 0;
@@ -69,7 +73,7 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("pincer output", pincerSpeed);
 	}
 	 */
-	public void setPincerPosition(double desiredAngle){
+	public void setPincerPosition(double desiredAngle, boolean button, double axis){
 		SmartDashboard.putNumber("desiredAngle", desiredAngle);
 		SmartDashboard.putNumber("currentAngle", currentAngle);
 		SmartDashboard.putNumber("maintainerConstant", maintainerConstant);
@@ -132,8 +136,13 @@ public class Pincer extends Subsystem {
 		}
 		lastAngle = currentAngle;
 		currentAngle = pincerEncoder.getValue();
-		pincerMotor.set(ControlMode.PercentOutput, pincerPower);
 		reflexTimer = reflexTimer+1;
+		if(button){
+		pincerMotor.set(ControlMode.PercentOutput, pincerPower);
+		}
+		else{
+			pincerMotor.set(ControlMode.PercentOutput, -0.4*axis);
+		}
 	}
 	public void displaySensorValues() {
 		SmartDashboard.putBoolean("proximity", proximity.get());
@@ -141,10 +150,23 @@ public class Pincer extends Subsystem {
 
 	//Uses pistons to close pincer
 	public void pince(boolean button) {
-		if(button) {
-			pincerPiston.set(DoubleSolenoid.Value.kReverse);
-		} else{
+		if (input == true && lastInput == false) {
+			press = true;
+		} else {
+			press = false;
+		}
+
+		if (press) {
+			output = !output;
+		}
+
+		lastInput = input;
+		input = button;
+
+		if(output) {
 			pincerPiston.set(DoubleSolenoid.Value.kForward);
+		} else {
+			pincerPiston.set(DoubleSolenoid.Value.kReverse);
 		}
 	}
 
