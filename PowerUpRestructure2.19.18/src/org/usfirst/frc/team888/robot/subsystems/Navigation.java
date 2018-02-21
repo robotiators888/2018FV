@@ -30,7 +30,7 @@ public class Navigation extends Subsystem {
 
 	protected int schedulerOffset = 0;
 
-	protected boolean manualControl = true;
+	protected boolean manualControl = false;
 
 	protected boolean input = false;
 	protected boolean lastInput = false;
@@ -177,7 +177,7 @@ public class Navigation extends Subsystem {
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.absAngle(navData[2] - desiredHeading) >
+			if (DeadReckon.absAngle(navData[2] - desiredHeading) <
 			DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
@@ -199,7 +199,7 @@ public class Navigation extends Subsystem {
 				 * If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) <
+			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) >
 					DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**

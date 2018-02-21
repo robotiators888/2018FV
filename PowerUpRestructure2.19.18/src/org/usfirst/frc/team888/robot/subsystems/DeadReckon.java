@@ -104,7 +104,7 @@ public class DeadReckon extends Subsystem {
      * @return The change in X
      */
     private double calculateX(double avgChangeInEncoder, double heading) {
-    	return -(avgMovement * Math.sin(heading));
+    	return (avgMovement * Math.sin(heading));
     }
     
     /**
@@ -114,7 +114,7 @@ public class DeadReckon extends Subsystem {
      * @return The change in Y
      */
     private double calculateY(double avgChangeInEncoder, double heading) {
-    	return -(avgMovement * Math.cos(heading));
+    	return (avgMovement * Math.cos(heading));
     	
     }
     
