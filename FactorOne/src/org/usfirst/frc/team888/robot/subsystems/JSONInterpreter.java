@@ -134,9 +134,9 @@ public class JSONInterpreter {
 		LinkedList<String> scenarioKeys = new LinkedList<String>(); //Make a queue (LinkedList implementation).
 		
 		try {
-			JSONObject s = scenarios.getJSONObject(scenarioVer); //Get the JSONObject for the given Scenario.
-			JSONObject p = s.getJSONObject(startPos); //Get the JSONObject for the given start position.
-			JSONArray a = p.getJSONArray(fieldConfiguration); //Get the waypoint key list (scenario) for the given field config. 
+			JSONArray a = scenarios.getJSONObject(scenarioVer) //Get the JSONObject for the given Scenario.
+								   .getJSONObject(startPos) //Get the JSONObject for the given start position.
+								   .getJSONArray(fieldConfiguration); //Get the waypoint key list (scenario) for the given field config.
 			for(int i = 0; i < a.length(); i++) scenarioKeys.add(a.getString(i)); //Add the keys into the queue.
 			scenarios = null; //Destruct the scenarios object.
 			return scenarioKeys;
