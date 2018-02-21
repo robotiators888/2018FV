@@ -28,62 +28,60 @@ public class Navigation extends Subsystem {
 
 	protected double[] desiredLocation;
 
-	protected int schedulerOffset = 0;
+	protected boolean manualControl = true;
 
-	protected boolean manualControl = false;
+	protected int schedulerOffset = 0;
 
 	protected boolean input = false;
 	protected boolean lastInput = false;
 	protected boolean output = false;
 	protected boolean press = false;
 
-	/*Camera Stuff
-	protected String camera = "frontCamera";
-	protected byte[] byteCameraMessage = camera.getBytes();
-	protected boolean previousCameraButtonState = false;
-	protected byte[] ip = {10, 8, 88, 12};
-	protected InetAddress cameraAddress;
+	/*
+ 	protected boolean previousCameraButtonState = false;
+ 	protected byte[] ip = {10, 8, 88, 12};
+ 	protected InetAddress cameraAddress;
 
-	protected DatagramSocket sock;
-	protected DatagramPacket message;
-*/
+ 	protected DatagramSocket sock;
+ 	protected DatagramPacket message;
+	 */
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, OI p_oi) {
 		drive = p_drive;
 		location = p_location;
 		oi = p_oi;
-/*
-		try {
-			sock = new DatagramSocket(7777);
-			message = new DatagramPacket(byteCameraMessage, camera.length(), cameraAddress, 8888);
-			cameraAddress = InetAddress.getByAddress(ip);
-		} catch (Exception e) {
 
-		} */
+		/* try {
+ 			sock = new DatagramSocket(7777);
+ 			message = new DatagramPacket(byteCameraMessage, camera.length(), cameraAddress, 8888);
+ 			cameraAddress = InetAddress.getByAddress(ip);
+ 		} catch (Exception e) {
+
+ 		} */
 	}
 
 	public void navigationInit() {
 		schedulerOffset = 0;
 
 		drive.resetEncoderPositions();
-		location.reset();
 
-		/*send first message to pi to start camera feed
-		try {
-			sock.send(message);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} */
+		//send first message to pi to start camera feed
+		/* try {
+		 			sock.send(message);
+		 		} catch (IOException e) {
+		 			e.printStackTrace();
+		 		} */
 	}
-
+	//send first message to pi to start camera feed
 	public void navigationExecute() {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
 
-		/*if (schedulerOffset == 0) {
-			updateCamera();
-		} */
+
+		if (schedulerOffset == 0) {
+			//updateCamera();
+		}
 
 		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
@@ -92,24 +90,24 @@ public class Navigation extends Subsystem {
 		desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
 
-	/*public void updateCamera() {
-		if(oi.getRightStickButton(2) && !previousCameraButtonState) {
-			if(camera.equals("cameraFront")) {
-				camera = "backCamera";
-			} else {
-				camera = "frontCamera";
-			}
+	/* 	public void updateCamera() {
+ 		if(oi.getRightStickButton(2) && !previousCameraButtonState) {
+ 			if(camera.equals("cameraFront")) {
+ 				camera = "backCamera";
+ 			} else {
+ 				camera = "frontCamera";
+ 			}
 
-			try {
-				sock.send(message);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			previousCameraButtonState = true;
-		} else if (!oi.getRightStickButton(2)) {
-			previousCameraButtonState = false;
-		}
-	} */
+ 			try {
+ 				sock.send(message);
+ 			} catch (IOException e) {
+ 				e.printStackTrace();
+ 			}
+ 			previousCameraButtonState = true;
+ 		} else if (!oi.getRightStickButton(2)) {
+ 			previousCameraButtonState = false;
+ 		}
+ 	} */
 
 	/**
 	 * Gets the encoder values and finds what adjustments need to be done
@@ -178,7 +176,7 @@ public class Navigation extends Subsystem {
 			 */
 
 			if (DeadReckon.absAngle(navData[2] - desiredHeading) <
-			DeadReckon.absAngle(desiredHeading - navData[2])) {
+					DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the left side would be slower
@@ -200,7 +198,7 @@ public class Navigation extends Subsystem {
 				 */		
 
 			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) >
-					DeadReckon.absAngle(desiredHeading - navData[2])) {
+			DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the right side would be slower
@@ -235,8 +233,8 @@ public class Navigation extends Subsystem {
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.absAngle(navData[2] - desiredHeading) <
-					DeadReckon.absAngle(desiredHeading - navData[2])) {
+			if (DeadReckon.absAngle(navData[2] - desiredHeading) >
+			DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the left side would be slower
@@ -253,11 +251,11 @@ public class Navigation extends Subsystem {
 				}
 
 				/**
-			/* If the right side is moving slower than left...
+ 			/* If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) >
-			DeadReckon.absAngle(desiredHeading - navData[2])) {
+			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) <
+					DeadReckon.absAngle(desiredHeading - navData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the right side would be slower
@@ -274,7 +272,7 @@ public class Navigation extends Subsystem {
 				}
 
 				/**
-			/* If the robot is already moving straight add no adjustments
+ 			/* If the robot is already moving straight add no adjustments
 				 */	
 
 			} else {
