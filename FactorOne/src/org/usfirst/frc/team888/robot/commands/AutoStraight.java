@@ -25,7 +25,7 @@ public class AutoStraight extends Command implements StraightDrive {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	dt.move(RobotMap.LEFT_AUTO_SPEED, RobotMap.RIGHT_AUTO_SPEED, getAdjustmentsForStraight());
+    	dt.move(RobotMap.LEFT_AUTO_SPEED, RobotMap.RIGHT_AUTO_SPEED, getAdjustments());
     }
 
     // Sets this command to never end.
