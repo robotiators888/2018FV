@@ -24,16 +24,15 @@ import threading
 # define frame fragment maximum send size
 maxFragmentSize = 61440
 
-# defines server address to work on all TCP stacks
+# defines server address of the driver station
 HOST    = "0.0.0.0"
 PORT    = 9999
 ADDRESS = (HOST, PORT)
 
-# defines camera frame provider address
-cameraHost    = "10.8.88.12"
+# defines camera frame provider (raspberry pi) address
+cameraHost    = "10.8.88.14"
 cameraPort    = 8888
 cameraAddress = (cameraHost, cameraPort)
-
 
 # create a UDP socket endpoint
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -41,50 +40,33 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # attaches socket to server address
 sock.bind(ADDRESS)
 
+
 inputs = [sock]
 outputs = []
 
-fragmentList = []
+#fragmentList = []
 
 state = 'idle'
 
-cameraMessage = "frontCamera"
-
-sock.sendto(cameraMessage, cameraAddress)
-
 # set up GUI
-root = tk.Tk() #makes main window
-root.wm_title("camera feed")
-root.config(background="#FFFFFF")
+#root = tk.Tk()
+#root.wm_title("camera feed")
+#root.config(background="#FFFFFF")
 
 # graphics window
-imageFrame = tk.Frame(root, width=600, height=500)
-imageFrame.grid(row=0, column=0, padx=10, pady=2)
+#imageFrame = tk.Frame(root, width=600, height=500)
+#imageFrame.grid(row=0, column=0, padx=10, pady=2)
 
-lmain = tk.Label(imageFrame)
-lmain.grid(row=0, column=0)
+#lmain = tk.Label(imageFrame)
+#lmain.grid(row=0, column=0)
 
-def switchToBack():
-    print "back"
-    cameraMessage = "backCamera"
-    sock.sendto(cameraMessage, cameraAddress)
 
-def switchToFront():
-    print "front"
-    cameraMessage = "frontCamera"
-    sock.sendto(cameraMessage, cameraAddress)
+#def show():
 
-b = tk.Button(root, text="FRONT", command=switchToFront)
-b.grid(row=1, column=0)
-
-b = tk.Button(root, text="BACK", command=switchToBack)
-b.grid(row=1, column=1)
-
-def show():
-  state = 'idle'
+state = 'idle'
   
-  # keep looping
-  while True:
+# keep looping
+while True:
 
     readable, _, _ = select.select(inputs, outputs, inputs, 0.25)
 	
@@ -92,10 +74,10 @@ def show():
     try:
 	    if readable:
 		    # attempt to read message from socket
-		    #msg, address = sock.recvfrom(65507)
+			#msg, address = sock.recvfrom(65507)
 		    msg, address = sock.recvfrom(65536)
 	    else: 
-		    sock.sendto(cameraMessage, cameraAddress)
+		    sock.sendto("camera", cameraAddress)
 		    msg = None
 		    address = None
 
@@ -109,28 +91,27 @@ def show():
     # if a message was received...
     if msg and (len(msg) >= 8):
 
-        # process current message.
+        # process current message
 
         msgId, msgLength = struct.unpack('!2I', msg[0:8])
 
-        
         # If this is message 10....
         if msgId == 10:
 
             # process message 10
-            
+
             fragmentSize = msgLength - 8
 
-            fragment, = struct.unpack("!8x{0}s".format(fragmentSize), msg)
+            fragment, = \
+                struct.unpack("!8x{0}s".format(fragmentSize), msg)
 
-            #flattenedFrame = fragment
-            fragmentList = [fragment]
-            
+            flattenedFrame = fragment
+            #fragmentList = [fragment]
+
             state = 'loading'
-        
 
         # If this is message 11....
-        if msgId == 11:
+        elif msgId == 11:
 
             if state == 'loading':
 
@@ -143,38 +124,32 @@ def show():
                 fragment = \
                     struct.unpack("!8x2I{0}s".format(fragmentSize), msg)
 
-                #flattenedFrame += fragment
+                flattenedFrame += fragment
 
-                fragmentList.append(fragment)
+                #fragmentList.append(fragment)
 
                 if last == 1:
                     state = 'show'
 
     if state == 'show':
-        
+
         try:
-            flattenedFrame = ''.join(fragmentList)
+            #flattenedFrame = ''.join(fragmentList)
             
             imgencode = pickle.loads(flattenedFrame)
             frame = cv2.imdecode(imgencode, 1)
 
-            cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-            img = Image.fromarray(cv2image)
-            imgtk = ImageTk.PhotoImage(image=img)
-
-            lmain.imgtk = imgtk
-            lmain.configure(image=imgtk)
+            #cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+            #img = Image.fromArray(cv2image)
+            #imgtk = ImageTk.PhotoImage(image=img)
             
-            #cv2.imshow("Frame", frame)
-            #cv2.waitKey(100)
+            cv2.imshow("Frame", frame)
+            cv2.waitKey(100)
         except Exception:
             None
-            
         state = 'idle'
 
 
-threading.Thread(target=show).start()
+#threading.Thread(target=show).start()
 
-root.mainloop()
-
-
+#root.mainloop()
