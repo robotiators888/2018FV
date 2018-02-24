@@ -18,7 +18,7 @@ public class DeadReckon extends Subsystem {
 	protected Timer timer;
 	protected DriveTrain drive;
 
-	double[][] deadReckonData = new double[7][500];
+	double[][] deadReckonData = new double[500][7];
 	int sampleCount = 0;
 
 	protected double angle;
@@ -113,14 +113,18 @@ public class DeadReckon extends Subsystem {
 			bw = new BufferedWriter(new OutputStreamWriter(fos));
 			
 			for (int i = 0; i < 500; i++) {
-				bw.write(String.format("%f,%f,%f,%f,%f,%f,%f", deadReckonData[sampleCount][0],
-				deadReckonData[sampleCount][1],
-				deadReckonData[sampleCount][2],
-				deadReckonData[sampleCount][3],
-				deadReckonData[sampleCount][4],
-				deadReckonData[sampleCount][5],
-				deadReckonData[sampleCount][6]));
+				bw.write(String.format("%d,%f,%f,%f,%f,%f,%f,%f\n",
+				i,
+				deadReckonData[i][0],
+				deadReckonData[i][1],
+				deadReckonData[i][2],
+				deadReckonData[i][3],
+				deadReckonData[i][4],
+				deadReckonData[i][5],
+				deadReckonData[i][6]));
 			}
+			
+			sampleCount++;
 		}
 	}
 

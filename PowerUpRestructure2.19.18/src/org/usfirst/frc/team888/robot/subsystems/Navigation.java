@@ -1,10 +1,5 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
@@ -77,7 +72,6 @@ public class Navigation extends Subsystem {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
-
 
 		if (schedulerOffset == 0) {
 			//updateCamera();

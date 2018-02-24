@@ -33,7 +33,7 @@ public class Navigation extends Subsystem {
 
 	protected double[] desiredLocation;
 
-	protected boolean manualControl = false;
+	protected boolean manualControl = true;
 
 	protected int schedulerOffset = 0;
 
