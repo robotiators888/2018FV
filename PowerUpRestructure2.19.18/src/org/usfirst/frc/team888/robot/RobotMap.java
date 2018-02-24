@@ -95,5 +95,4 @@ public class RobotMap {
 	public static final double LEFT_AUTO_SPEED = 0.3;
 	public static final double RIGHT_AUTO_SPEED = 0.3; 
 	public static final double[] DESIRED_LOCATION = {-120, -120};
-	
 }
