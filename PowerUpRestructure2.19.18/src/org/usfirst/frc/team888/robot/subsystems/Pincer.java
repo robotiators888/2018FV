@@ -37,7 +37,7 @@ public class Pincer extends Subsystem {
 	protected double manualPower = 0;
 	protected double maintainerConstant = 0;
 	protected double movementThreshold = 30;
-	protected double maintainerConstantIterator = 0.0001;
+	protected double maintainerConstantIterator = 0.001;
 	protected double maxSpeed = 0;
 	protected double reflexHigh = 0.5;
 	protected boolean input = false;
@@ -75,7 +75,7 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("pincerPower", pincerPower);
 		SmartDashboard.putNumber("timer", reflexTimer);
 		if(!proximity.get()){
-			maxSpeed = 0.40;
+			maxSpeed = 0.45;
 		}
 		if(proximity.get()){
 			maxSpeed = 0.30;
@@ -86,8 +86,8 @@ public class Pincer extends Subsystem {
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
 			pincerPower = maintainerConstant*Math.abs(currentAngle - desiredAngle);
-			if(pincerPower > (maxSpeed-0.1)){
-				pincerPower = maxSpeed-0.1;
+			if(pincerPower > (maxSpeed-0.05)){
+				pincerPower = maxSpeed-0.05;
 			}
 			reflexStart = reflexTimer;
 			SmartDashboard.putBoolean("I'm here", false);

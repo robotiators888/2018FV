@@ -53,10 +53,10 @@ public class PneumaticScheduler extends Command {
 
 		pincer.displaySensorValues();
 		if(oi.getGamepadButton(1)){
-			desiredPosition = 825;
+			desiredPosition = 700;
 		}
 		if(oi.getGamepadButton(2)){
-			desiredPosition = 1650;
+			desiredPosition = 1700;
 		}
 		if(oi.getGamepadButton(4)){
 			desiredPosition = 2115;

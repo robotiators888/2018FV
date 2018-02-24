@@ -93,8 +93,6 @@ public class Navigation extends Subsystem {
 	}
 	//send first message to pi to start camera feed
 	public void navigationExecute() throws IOException {
-		updateCamera();
-		
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
@@ -102,7 +100,7 @@ public class Navigation extends Subsystem {
 
 
 		if (schedulerOffset == 0) {
-			//updateCamera();
+			updateCamera();
 		}
 
 		location.updateDashborad();
