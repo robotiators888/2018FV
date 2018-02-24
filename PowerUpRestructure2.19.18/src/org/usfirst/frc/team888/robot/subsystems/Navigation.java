@@ -26,7 +26,7 @@ public class Navigation extends Subsystem {
 	protected double leftDriveOutput = 0.0;
 	protected double rightDriveOutput = 0.0;
 
-	protected double[] desiredLocation;
+	protected double[] desiredLocation = RobotMap.DESIRED_LOCATION;
 
 	protected boolean manualControl = true;
 
@@ -161,7 +161,7 @@ public class Navigation extends Subsystem {
 
 	public double[] getAdjustments() {	
 		double[] navData = location.getNavLocationData();
-		desiredHeading = 0; //calculateDesiredHeading();
+		desiredHeading = calculateDesiredHeading();
 
 		/**
 		 * If the robot is moving in a positive direction...
