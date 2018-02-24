@@ -63,7 +63,7 @@ public class PneumaticScheduler extends Command {
 		}
 		pincer.setPincerPosition(desiredPosition, oi.getGamepadButton(8), oi.getGamepadAxis(1));
 
-		pincer.pince(oi.getRightStickButton(3));
+		pincer.pince(oi.getRightStickButton(3) || oi.getLeftStickButton(3));
 
 		if (oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
 			lock = true;

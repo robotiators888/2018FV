@@ -57,8 +57,8 @@ public class DeadReckon extends Subsystem {
 		changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
 		changeInEncoderRight = encoderRightValue - lastEncoderRight;
 		changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-		changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
-		angle = heading + (changeInHeading / 2);
+		changeInHeading = absAngle((changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE);
+		angle = absAngle(heading + (changeInHeading / 2));
 
 		timePassed = time - lastTime;
 
@@ -66,11 +66,11 @@ public class DeadReckon extends Subsystem {
 		changeInY = changeInDistance * Math.cos(angle);
 		clickPosX += changeInX;
 		clickPosY += changeInY;
-		heading += changeInHeading;
+		heading = absAngle(heading + changeInHeading);
 
 		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
 				/ (timePassed);
-
+		
 		posX = clickPosX / RobotMap.CLICKS_PER_INCH;
 		posY = clickPosY / RobotMap.CLICKS_PER_INCH;
 	}
@@ -110,12 +110,12 @@ public class DeadReckon extends Subsystem {
 	 */
 	public void reset() {
 		drive.resetEncoderPositions();
-		
+
 		encoderLeftValue = 0;
 		encoderRightValue = 0;
 
 		time = timer.get();
-		
+
 		calibrated = false;
 	}
 

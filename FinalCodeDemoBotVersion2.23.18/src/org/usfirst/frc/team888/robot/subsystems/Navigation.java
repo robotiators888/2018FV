@@ -1,5 +1,10 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 //import java.io.IOException;
 //import java.net.DatagramPacket;
 //import java.net.DatagramSocket;
@@ -28,7 +33,7 @@ public class Navigation extends Subsystem {
 
 	protected double[] desiredLocation;
 
-	protected boolean manualControl = true;
+	protected boolean manualControl = false;
 
 	protected int schedulerOffset = 0;
 
@@ -37,6 +42,16 @@ public class Navigation extends Subsystem {
 	protected boolean output = false;
 	protected boolean press = false;
 	protected boolean init = true;
+	
+ 	protected boolean previousCameraButtonState = false;
+ 	protected byte[] ip = {10, 8, 88, 14};
+ 	protected InetAddress cameraAddress;
+
+ 	protected DatagramSocket sock;
+ 	protected DatagramPacket message;
+ 	
+ 	protected String cameraMessage = "frontCamera";
+ 	protected byte[] byteCameraMessage = cameraMessage.getBytes();
 
 	/*
  	protected boolean previousCameraButtonState = false;
@@ -52,13 +67,14 @@ public class Navigation extends Subsystem {
 		location = p_location;
 		oi = p_oi;
 
-		/* try {
+		try {
+			cameraAddress = InetAddress.getByAddress(ip);
  			sock = new DatagramSocket(7777);
- 			message = new DatagramPacket(byteCameraMessage, camera.length(), cameraAddress, 8888);
- 			cameraAddress = InetAddress.getByAddress(ip);
+ 			message = new DatagramPacket(byteCameraMessage, byteCameraMessage.length, cameraAddress, 8888);
+
  		} catch (Exception e) {
 
- 		} */
+ 		} 
 	}
 
 	public void navigationInit() {
@@ -77,9 +93,12 @@ public class Navigation extends Subsystem {
 	}
 	//send first message to pi to start camera feed
 	public void navigationExecute() {
+		updateCamera();
+		
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
+		location.updateDashborad();
 
 
 		if (schedulerOffset == 0) {
@@ -328,6 +347,43 @@ public class Navigation extends Subsystem {
 		double[] j = {0,0};
 		return j;
 	}
+	
+	
+	
+	public void updateCamera() {
+		SmartDashboard.putBoolean("button at beginning", previousCameraButtonState);
+		
+ 		if(oi.getRightStickButton(2) && !previousCameraButtonState) {
+ 			if(cameraMessage.equals("frontCamera")) {
+ 				cameraMessage = "backCamera";
+ 				byteCameraMessage = cameraMessage.getBytes();
+ 				SmartDashboard.putString("changed message", "back");
+ 			} else {
+ 				cameraMessage = "frontCamera";
+ 				byteCameraMessage = cameraMessage.getBytes();
+ 				SmartDashboard.putString("changed message", "front");
+ 			}
+ 			
+ 			SmartDashboard.putString("camera message after button press", cameraMessage);
+
+ 			try {
+ 				message.setData(byteCameraMessage);
+ 				sock.send(message);
+ 				SmartDashboard.putString("sent", cameraMessage);
+ 			} catch (IOException e) {
+ 				e.printStackTrace();
+ 			}
+ 			previousCameraButtonState = true;
+ 			SmartDashboard.putBoolean("button after pressed", previousCameraButtonState);
+ 		} else if (!oi.getRightStickButton(2)) {
+ 			previousCameraButtonState = false;
+ 			SmartDashboard.putBoolean("button when not pressed", previousCameraButtonState);
+ 		}
+
+ 	}
+	
+	
+	
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.

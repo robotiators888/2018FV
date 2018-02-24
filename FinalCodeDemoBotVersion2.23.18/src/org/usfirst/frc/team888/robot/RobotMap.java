@@ -56,10 +56,10 @@ public class RobotMap {
 	public static final int GP_R_Y_AXIS = 5;
 	
 	//CAN bus IDs for the motor controllers for the drive train
-	public static final int MOTOR_FRONT_RIGHT = 0;
-	public static final int MOTOR_REAR_RIGHT = 1;
-	public static final int MOTOR_REAR_LEFT = 2;
-	public static final int MOTOR_FRONT_LEFT = 3;
+	public static final int MOTOR_FRONT_RIGHT = 8;
+	public static final int MOTOR_REAR_RIGHT = 6;
+	public static final int MOTOR_REAR_LEFT = 7;
+	public static final int MOTOR_FRONT_LEFT = 9;
 	
 	
 	//CAN bus ID for the pincer motor controller
@@ -97,8 +97,8 @@ public class RobotMap {
 	
 	//Sets the speed for autonomous and the adjustments to add for driving straight.
 	public static final double DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT = 0.1;
-	public static final double LEFT_AUTO_SPEED = 0.3;
-	public static final double RIGHT_AUTO_SPEED = 0.3; 
+	public static final double LEFT_AUTO_SPEED = 0.8;
+	public static final double RIGHT_AUTO_SPEED = 0.8; 
 	public static final double[] DESIRED_LOCATION = {0, 120};
 	
 }

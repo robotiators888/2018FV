@@ -34,6 +34,7 @@ public class Pincer extends Subsystem {
 	protected double lastAngle = 0;
 	protected double angleThreshold = 200;
 	protected double pincerPower = 0;
+	protected double manualPower = 0;
 	protected double maintainerConstant = 0;
 	protected double movementThreshold = 30;
 	protected double maintainerConstantIterator = 0.00005;
@@ -43,7 +44,7 @@ public class Pincer extends Subsystem {
 	protected boolean lastInput = false;
 	protected boolean press = false;
 	protected boolean output = false;
-	protected int reflexLength = 20;
+	protected int reflexLength = 40;
 	protected int reflexTimer = 0;
 	protected int reflexStart = 0;
 	public Pincer() {
@@ -67,12 +68,6 @@ public class Pincer extends Subsystem {
 	public void pincerInit() {
 		pincerMotor.setSelectedSensorPosition(0, 0, 0);
 	}
-	/*
-	public void setPincerPosition(double pincerSpeed) {
-		pincerMotor.set(ControlMode.PercentOutput, pincerSpeed);
-		SmartDashboard.putNumber("pincer output", pincerSpeed);
-	}
-	 */
 	public void setPincerPosition(double desiredAngle, boolean button, double axis){
 		SmartDashboard.putNumber("desiredAngle", desiredAngle);
 		SmartDashboard.putNumber("currentAngle", currentAngle);
@@ -113,23 +108,16 @@ public class Pincer extends Subsystem {
 			reflexStart = reflexTimer;
 		}
 		else{
-			SmartDashboard.putBoolean("I'm Here", true);
-			SmartDashboard.putNumber("test variable", reflexTimer-reflexStart);
 			pincerPower = (-pincerPower*Math.abs(currentAngle - desiredAngle)*(reflexHigh)*0.0025)/Math.abs(pincerPower);
 			if(reflexTimer-reflexStart > reflexLength){
 				maintainerConstant = 0;
 				pincerPower = 0;
 			}
-			if(bottomLimit.get()){
-				pincerPower = 0;
+			if(reflexTimer-reflexStart < reflexLength){
+				pincerPower = -0.2;
 			}
-			if(topLimit.get()){
-				if(reflexTimer-reflexStart < reflexLength){
-					pincerPower = -0.2;
-				}
-				else{
-					pincerPower = 0;
-				}
+			else{
+				pincerPower = 0;
 			}
 			//stuff to maintain position, want to do a thing where it puts slight 
 			//power in the opposite direction to oppose movement and brake
@@ -137,11 +125,28 @@ public class Pincer extends Subsystem {
 		lastAngle = currentAngle;
 		currentAngle = pincerEncoder.getValue();
 		reflexTimer = reflexTimer+1;
+		manualPower = -0.4*axis;
+		if(topLimit.get()){
+			if(pincerPower > 0){
+				pincerPower = 0;
+			}
+			if(manualPower > 0){
+				manualPower = 0;
+			}
+		}
+		if(bottomLimit.get()){
+			if(pincerPower < 0){
+				pincerPower = 0;
+			}
+			if(manualPower < 0){
+				manualPower = 0;
+			}
+		}
 		if(button){
 		pincerMotor.set(ControlMode.PercentOutput, pincerPower);
 		}
 		else{
-			pincerMotor.set(ControlMode.PercentOutput, -0.4*axis);
+			pincerMotor.set(ControlMode.PercentOutput, manualPower);
 		}
 	}
 	public void displaySensorValues() {
@@ -168,6 +173,7 @@ public class Pincer extends Subsystem {
 		} else {
 			pincerPiston.set(DoubleSolenoid.Value.kReverse);
 		}
+
 	}
 
 	public void initDefaultCommand() {
