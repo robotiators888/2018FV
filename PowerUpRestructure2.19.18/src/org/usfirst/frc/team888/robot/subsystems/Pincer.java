@@ -11,6 +11,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -25,6 +27,8 @@ public class Pincer extends Subsystem {
 	protected DigitalInput topLimit;
 	protected DigitalInput bottomLimit;
 
+	protected PowerDistributionPanel pdp;
+	
 	protected int pincerDesiredPosition;
 	protected int pincerClicks;	
 
@@ -58,7 +62,7 @@ public class Pincer extends Subsystem {
 		pincerEncoder = new AnalogInput(0);
 		pincerEncoder.setOversampleBits(2);
 		pincerEncoder.setAverageBits(2);
-
+		
 		proximity = new DigitalInput(0);
 
 		bottomLimit = new DigitalInput(2);
@@ -69,6 +73,8 @@ public class Pincer extends Subsystem {
 		pincerMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 	public void setPincerPosition(double desiredAngle, boolean button, double axis){
+		SmartDashboard.putNumber("outputvoltage",pincerMotor.getMotorOutputVoltage());
+		SmartDashboard.putNumber("busvoltage",pincerMotor.getBusVoltage());
 		SmartDashboard.putNumber("desiredAngle", desiredAngle);
 		SmartDashboard.putNumber("currentAngle", currentAngle);
 		SmartDashboard.putNumber("maintainerConstant", maintainerConstant);
