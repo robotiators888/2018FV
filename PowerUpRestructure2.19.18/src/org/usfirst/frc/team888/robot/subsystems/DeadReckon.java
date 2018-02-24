@@ -42,6 +42,8 @@ public class DeadReckon extends Subsystem {
 	protected double posX;
 	protected double posY;
 	protected double heading;
+	protected double avgMovement;
+	protected double avgChangeInEncoder;
 
 	protected boolean calibrated;
 	private BufferedWriter bw;
@@ -61,30 +63,59 @@ public class DeadReckon extends Subsystem {
 		reset();
 	}
 
-	public void updateTracker() {
-		updateEncoderVals();
+    public void updateTracker() {
+    	updateEncoderVals();
 
-		changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
-		changeInEncoderRight = encoderRightValue - lastEncoderRight;
-		changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-
-		changeInHeading = absAngle( (changeInEncoderRight - changeInEncoderLeft) / RobotMap.WHEEL_BASE);
-		angle = absAngle(heading + (changeInHeading / 2));
-
-		timePassed = time - lastTime;
-
-		changeInX = changeInDistance * Math.sin(angle);
-		changeInY = changeInDistance * Math.cos(angle);
-		clickPosX += changeInX;
-		clickPosY += changeInY;
-		heading = absAngle(heading + changeInHeading);
-
-		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
-				/ (timePassed);
-		
-		posX = clickPosX / RobotMap.CLICKS_PER_INCH;
-		posY = clickPosY / RobotMap.CLICKS_PER_INCH;
-	}
+    	changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
+    	changeInEncoderRight = encoderRightValue - lastEncoderRight;
+    	avgMovement = (changeInEncoderLeft + changeInEncoderRight) / 2;
+    	avgChangeInEncoder = changeInEncoderLeft - changeInEncoderRight;
+    	
+    	timePassed = time - lastTime;
+    	
+    	heading = absAngle(lastHeading + calculateHeading(heading, avgChangeInEncoder));
+    	changeInX = calculateX(avgChangeInEncoder, heading);
+    	changeInY = calculateY(avgChangeInEncoder, heading);
+    	clickPosX += changeInX;
+    	clickPosY += changeInY;
+    	
+    	speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
+    			/ (timePassed);
+    	
+    	posX = clickPosX / RobotMap.CLICKS_PER_INCH;
+    	posY = clickPosY / RobotMap.CLICKS_PER_INCH;
+    }
+    
+    /**
+     * Calculates the current heading based on given data.
+     * @param oldHeading The previous heading in radians.
+     * @param avgChangeInEncoder The difference between the number of encoder clicks.
+     * @return The new heading measurement in radians.
+     */
+    private double calculateHeading(double oldHeading, double avgChangeInEncoder) {
+    	return ((avgChangeInEncoder / RobotMap.WHEEL_BASE));
+    }
+    
+    /**
+     * Calculates the change in X based on given data.
+     * @param avgChangeInEncoder The difference between the number of encoder clicks.
+     * @param heading The current heading measurement in radians.
+     * @return The change in X
+     */
+    private double calculateX(double avgChangeInEncoder, double heading) {
+    	return (avgMovement * Math.sin(heading));
+    }
+    
+    /**
+     * Calculates the change in Y based on given data.
+     * @param avgChangeInEncoder The difference between the number of encoder clicks.
+     * @param heading The current heading measurement in radians.
+     * @return The change in Y
+     */
+    private double calculateY(double avgChangeInEncoder, double heading) {
+    	return (avgMovement * Math.cos(heading));
+    	
+    }
 
 	public void updateDashborad() throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
@@ -114,7 +145,7 @@ public class DeadReckon extends Subsystem {
 			bw = new BufferedWriter(new OutputStreamWriter(fos));
 			
 			for (int i = 0; i < 1500; i++) {
-				bw.write(String.format("%d,%f,%f,%f,%f,%f,%f,%f\n",
+				bw.write(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
 				(int) deadReckonData[i][7],
 				deadReckonData[i][0],
 				deadReckonData[i][1],
