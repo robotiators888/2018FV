@@ -5,11 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-//import java.io.IOException;
-//import java.net.DatagramPacket;
-//import java.net.DatagramSocket;
-//import java.net.InetAddress;
-
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 

@@ -63,16 +63,15 @@ public class RobotMap {
 	public static final int MOTOR_FRONT_LEFT = 3;
 	
 	
-	//CAN bus ID for the pincer motor controller
+	//CAN bus ID for the pincer Talon SRX motor controller
 	public static final int PINCER_MOTOR = 4;
 	
+	//CAN bus ID for the pneumatic compressor
 	public static final int COMPRESSOR = 5;
-	
 	
 	//PWM ports for climber motor controllers
 	public static final int CLIMBER_MOTOR_LEFT = 0;
 	public static final int CLIMBER_MOTOR_RIGHT = 1;
-	
 	
 	//The width between the two wheels the encoders measure off of.
 	public static final double WHEEL_BASE = 17060.859;
