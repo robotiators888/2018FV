@@ -18,7 +18,7 @@ public class DeadReckon extends Subsystem {
 	protected Timer timer;
 	protected DriveTrain drive;
 
-	double[][] deadReckonData = new double[1500][7];
+	double[][] deadReckonData = new double[1500][8];
 	int sampleCount = 0;
 
 	protected double angle;
@@ -103,6 +103,7 @@ public class DeadReckon extends Subsystem {
 			deadReckonData[sampleCount][4] = posX;
 			deadReckonData[sampleCount][5] = posY;
 			deadReckonData[sampleCount][6] = calibrated ? 1.0 : 0.0;
+			deadReckonData[sampleCount][6] = (double) sampleCount;
 			
 			sampleCount++;
 					
@@ -114,7 +115,7 @@ public class DeadReckon extends Subsystem {
 			
 			for (int i = 0; i < 1500; i++) {
 				bw.write(String.format("%d,%f,%f,%f,%f,%f,%f,%f\n",
-				i,
+				(int) deadReckonData[i][7],
 				deadReckonData[i][0],
 				deadReckonData[i][1],
 				deadReckonData[i][2],
@@ -135,7 +136,7 @@ public class DeadReckon extends Subsystem {
 
 		lastHeading = heading;
 		lastTime = time;
-		time = timer.get();
+		time = Timer.getFPGATimestamp();
 
 		int[] vals = drive.getEncoderVals();
 		if (calibrated) {
@@ -161,8 +162,6 @@ public class DeadReckon extends Subsystem {
 
 		encoderLeftValue = 0;
 		encoderRightValue = 0;
-
-		time = timer.get();
 
 		calibrated = false;
 	}

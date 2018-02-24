@@ -53,14 +53,7 @@ public class Navigation extends Subsystem {
  	protected String cameraMessage = "frontCamera";
  	protected byte[] byteCameraMessage = cameraMessage.getBytes();
 
-	/*
- 	protected boolean previousCameraButtonState = false;
- 	protected byte[] ip = {10, 8, 88, 12};
- 	protected InetAddress cameraAddress;
 
- 	protected DatagramSocket sock;
- 	protected DatagramPacket message;
-	 */
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, OI p_oi) {
 		drive = p_drive;
@@ -84,12 +77,7 @@ public class Navigation extends Subsystem {
 			init = false;
 		}
 		
-		//send first message to pi to start camera feed
-		/* try {
-		 			sock.send(message);
-		 		} catch (IOException e) {
-		 			e.printStackTrace();
-		 		} */
+
 	}
 	//send first message to pi to start camera feed
 	public void navigationExecute() throws IOException {
@@ -102,7 +90,7 @@ public class Navigation extends Subsystem {
 
 
 		if (schedulerOffset == 0) {
-			//updateCamera();
+			updateCamera();
 		}
 
 		location.updateDashborad();
