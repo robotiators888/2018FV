@@ -53,8 +53,6 @@ public class Navigation extends Subsystem {
  	protected String cameraMessage = "frontCamera";
  	protected byte[] byteCameraMessage = cameraMessage.getBytes();
 
-
-
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, OI p_oi) {
 		drive = p_drive;
 		location = p_location;
@@ -77,12 +75,10 @@ public class Navigation extends Subsystem {
 			init = false;
 		}
 		
-
 	}
-	//send first message to pi to start camera feed
+
+	
 	public void navigationExecute() throws IOException {
-		updateCamera();
-		
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
@@ -103,24 +99,6 @@ public class Navigation extends Subsystem {
 		desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
 
-	/* 	public void updateCamera() {
- 		if(oi.getRightStickButton(2) && !previousCameraButtonState) {
- 			if(camera.equals("cameraFront")) {
- 				camera = "backCamera";
- 			} else {
- 				camera = "frontCamera";
- 			}
-
- 			try {
- 				sock.send(message);
- 			} catch (IOException e) {
- 				e.printStackTrace();
- 			}
- 			previousCameraButtonState = true;
- 		} else if (!oi.getRightStickButton(2)) {
- 			previousCameraButtonState = false;
- 		}
- 	} */
 
 	/**
 	 * Gets the encoder values and finds what adjustments need to be done

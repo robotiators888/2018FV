@@ -42,6 +42,7 @@ public class PneumaticScheduler extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
+		
 		//Climber moves via gamepad triggers
 		if (oi.getGamepadAxis(RobotMap.GP_L_TRIGGER) > 0.2) {
 			climber.climberMoves(oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
@@ -53,10 +54,10 @@ public class PneumaticScheduler extends Command {
 
 		pincer.displaySensorValues();
 		if(oi.getGamepadButton(1)){
-			desiredPosition = 825;
+			desiredPosition = 700;
 		}
 		if(oi.getGamepadButton(2)){
-			desiredPosition = 1650;
+			desiredPosition = 1700;
 		}
 		if(oi.getGamepadButton(4)){
 			desiredPosition = 2115;
