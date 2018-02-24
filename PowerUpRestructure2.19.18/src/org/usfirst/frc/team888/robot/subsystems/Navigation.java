@@ -110,7 +110,7 @@ public class Navigation extends Subsystem {
 	public void updateMotion() {
 		if (!manualControl) {
 			double[] pos = location.getPos();
-			if (pos[1] < 120) {
+			if (pos[1] > -120) {
 				double[] adjustments = getAdjustments();
 				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 			} else {
