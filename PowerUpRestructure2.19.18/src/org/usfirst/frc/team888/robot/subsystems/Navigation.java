@@ -335,7 +335,6 @@ public class Navigation extends Subsystem {
 		try {
 			message.setData(byteCameraMessage);
 			sock.send(message);
-			SmartDashboard.putString("sent", cameraMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -351,27 +350,20 @@ public class Navigation extends Subsystem {
 			if(cameraMessage.equals("frontCamera")) {
 				cameraMessage = "backCamera";
 				byteCameraMessage = cameraMessage.getBytes();
-				SmartDashboard.putString("changed message", "back");
 			} else {
 				cameraMessage = "frontCamera";
 				byteCameraMessage = cameraMessage.getBytes();
-				SmartDashboard.putString("changed message", "front");
 			}
-
-			SmartDashboard.putString("camera message after button press", cameraMessage);
 
 			try {
 				message.setData(byteCameraMessage);
 				sock.send(message);
-				SmartDashboard.putString("sent", cameraMessage);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			previousCameraButtonState = true;
-			SmartDashboard.putBoolean("button after pressed", previousCameraButtonState);
 		} else if (!oi.getRightStickButton(5)) {
 			previousCameraButtonState = false;
-			SmartDashboard.putBoolean("button when not pressed", previousCameraButtonState);
 		}
 
 	}
