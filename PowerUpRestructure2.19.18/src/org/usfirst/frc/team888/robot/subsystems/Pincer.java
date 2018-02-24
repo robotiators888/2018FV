@@ -74,11 +74,11 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("maintainerConstant", maintainerConstant);
 		SmartDashboard.putNumber("pincerPower", pincerPower);
 		SmartDashboard.putNumber("timer", reflexTimer);
-		if(!proximity.get()){
+		
+		if (proximity.get()){
+			maxSpeed = 0.3;
+		} else {
 			maxSpeed = 0.4;
-		}
-		if(proximity.get()){
-			maxSpeed = 0.30;
 		}
 
 		if(currentAngle > (desiredAngle + angleThreshold)){
