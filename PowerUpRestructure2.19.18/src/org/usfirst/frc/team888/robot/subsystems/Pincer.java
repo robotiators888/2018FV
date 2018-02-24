@@ -36,7 +36,7 @@ public class Pincer extends Subsystem {
 
 	protected double currentAngle = 0;
 	protected double lastAngle = 0;
-	protected double angleThreshold = 150;
+	protected double angleThreshold = 100;
 	protected double pincerPower = 0;
 	protected double manualPower = 0;
 	protected double maintainerConstant = 0;
@@ -52,6 +52,13 @@ public class Pincer extends Subsystem {
 	protected int reflexTimer = 0;
 	protected int reflexStart = 0;
 	
+	protected double batteryVoltage = 0;
+	protected double maxBatteryVoltage = 12.0;
+	protected double withCubePercent = 0.55;
+	protected double withoutCubePercent = 0.35;
+	protected double withCubeReflex = 0.15;
+	protected double withoutCubeReflex = 0.05;
+
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 
@@ -74,8 +81,9 @@ public class Pincer extends Subsystem {
 		pincerMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 	public void setPincerPosition(double desiredAngle, boolean button, double axis){
-		SmartDashboard.putNumber("outputvoltage",pincerMotor.getMotorOutputVoltage());
-		SmartDashboard.putNumber("busvoltage",pincerMotor.getBusVoltage());
+		batteryVoltage = pincerMotor.getBusVoltage();
+		SmartDashboard.putNumber("busVoltage", pincerMotor.getBusVoltage());
+		SmartDashboard.putNumber("currentDraw", pincerMotor.getOutputCurrent());
 		SmartDashboard.putNumber("desiredAngle", desiredAngle);
 		SmartDashboard.putNumber("currentAngle", currentAngle);
 		SmartDashboard.putNumber("maintainerConstant", maintainerConstant);
@@ -84,9 +92,9 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("timer", reflexTimer);
 		
 		if (proximity.get()){
-			maxSpeed = 0.3;
+			maxSpeed = withoutCubePercent*(batteryVoltage/maxBatteryVoltage);
 		} else {
-			maxSpeed = 0.4;
+			maxSpeed = withCubePercent*(batteryVoltage/maxBatteryVoltage);
 		}
 
 		if(currentAngle > (desiredAngle + angleThreshold)){
@@ -125,10 +133,10 @@ public class Pincer extends Subsystem {
 			}
 			if(reflexTimer-reflexStart < reflexLength){
 				if(!proximity.get()){
-					pincerPower = -0.15;
+					pincerPower = -withCubeReflex*(batteryVoltage/maxBatteryVoltage);
 				}
 				if(proximity.get()){
-					pincerPower = -0.05;
+					pincerPower = -withoutCubeReflex*(batteryVoltage/maxBatteryVoltage);
 				}
 			}
 			else{
@@ -140,7 +148,7 @@ public class Pincer extends Subsystem {
 		lastAngle = currentAngle;
 		currentAngle = pincerEncoder.getValue();
 		reflexTimer = reflexTimer+1;
-		manualPower = 0.45*axis;
+		manualPower = 0.55*axis;
 		if(topLimit.get()){
 			if(pincerPower < 0){
 				pincerPower = 0;
@@ -150,7 +158,7 @@ public class Pincer extends Subsystem {
 			}
 		}
 		if(bottomLimit.get()){
-			if(pincerPower > 0){
+			if(pincerPower > 0.16){
 				pincerPower = 0;
 			}
 			if(manualPower > 0){

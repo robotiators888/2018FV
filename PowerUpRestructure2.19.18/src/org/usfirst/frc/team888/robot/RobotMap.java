@@ -88,7 +88,7 @@ public class RobotMap {
 	public static final int PICKUP_POSITION = 1600;
 	public static final int RESTING_POSITION = 0;
 	
-	//Sets the speed for autonomous and the adjustments to add for driving straight.
+	//Sets the speed for autonomous and the adjustments to add for driving straight
 	public static final double LEFT_AUTO_SPEED = 0.3;
 	public static final double RIGHT_AUTO_SPEED = 0.3; 
 	public static final double[] DESIRED_LOCATION = {-120, -120};
