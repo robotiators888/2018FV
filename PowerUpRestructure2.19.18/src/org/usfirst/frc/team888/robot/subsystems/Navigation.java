@@ -20,7 +20,6 @@ public class Navigation extends Subsystem {
 	protected double maxOutput = 1.0;
 	protected double leftSideAdjustment;
 	protected double rightSideAdjustment;
-	protected double desiredHeading;
 	protected double leftBaseDriveOutput = 0.0;
 	protected double rightBaseDriveOutput = 0.0;	
 	protected double leftDriveOutput = 0.0;
@@ -28,7 +27,7 @@ public class Navigation extends Subsystem {
 
 	protected double[] desiredLocation = RobotMap.DESIRED_LOCATION;
 
-	protected boolean manualControl = true;
+	protected boolean manualControl = false;
 
 	protected int schedulerOffset = 0;
 
@@ -116,6 +115,11 @@ public class Navigation extends Subsystem {
 			} else {
 				drive.move(0.0, 0.0);
 			}
+
+			if (oi.getLeftStickButton(8)) {
+				manualControl = true;
+			}
+
 		} else {
 			if(oi.getTriggers()) {
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
@@ -160,21 +164,21 @@ public class Navigation extends Subsystem {
 	}
 
 	public double[] getAdjustments() {	
-		double[] navData = location.getNavLocationData();
-		desiredHeading = calculateDesiredHeading();
+		double[] locationData = location.getNavLocationData();		
+		double[] headingData = calculateTurn();
 
 		/**
 		 * If the robot is moving in a positive direction...
 		 */
 
-		if ((navData[0] > 0) && (navData[1] > 0)) {
+		if ((locationData[0] > 0) && (locationData[1] > 0)) {
 
 			/**
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.absAngle(navData[2] - desiredHeading) <
-					DeadReckon.absAngle(desiredHeading - navData[2])) {
+			if (DeadReckon.absAngle(locationData[2] - headingData[0]) <
+					DeadReckon.absAngle(headingData[0] - locationData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the left side would be slower
@@ -182,12 +186,12 @@ public class Navigation extends Subsystem {
 				 * Otherwise, subtract the adjustments from the right side.
 				 */
 
-				if 	((RobotMap.LEFT_AUTO_SPEED + RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT)
+				if 	((RobotMap.LEFT_AUTO_SPEED + headingData[1])
 						<= maxOutput) {			
-					leftSideAdjustment = RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
+					leftSideAdjustment = headingData[1];
 					rightSideAdjustment = 0.0;
 				} else {
-					rightSideAdjustment = -RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
+					rightSideAdjustment = -headingData[1];
 					leftSideAdjustment = 0.0;
 				}
 
@@ -195,8 +199,8 @@ public class Navigation extends Subsystem {
 				 * If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) >
-			DeadReckon.absAngle(desiredHeading - navData[2])) {
+			} else if (DeadReckon.absAngle(locationData[2] - headingData[0]) >
+			DeadReckon.absAngle(headingData[0] - locationData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the right side would be slower
@@ -204,11 +208,11 @@ public class Navigation extends Subsystem {
 				 * Otherwise, subtract the adjustments from the left side.
 				 */
 
-				if 	((RobotMap.RIGHT_AUTO_SPEED + RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT) <= maxOutput) {			
-					rightSideAdjustment = RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
+				if 	((RobotMap.RIGHT_AUTO_SPEED + headingData[1]) <= maxOutput) {			
+					rightSideAdjustment = headingData[1];
 					leftSideAdjustment = 0.0;
 				} else {
-					leftSideAdjustment = -RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
+					leftSideAdjustment = -headingData[1];
 					rightSideAdjustment = 0.0;
 				}
 
@@ -225,14 +229,14 @@ public class Navigation extends Subsystem {
 			 * If the robot is moving in a negative direction...
 			 */
 
-		} else if((navData[0] < 0) && (navData[1] < 0)) {
+		} else if((locationData[0] < 0) && (locationData[1] < 0)) {
 
 			/**
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.absAngle(navData[2] - desiredHeading) >
-			DeadReckon.absAngle(desiredHeading - navData[2])) {
+			if (DeadReckon.absAngle(locationData[2] - headingData[0]) >
+			DeadReckon.absAngle(headingData[0] - locationData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the left side would be slower
@@ -240,11 +244,11 @@ public class Navigation extends Subsystem {
 				 * Otherwise, subtract the adjustments from the right side.
 				 */
 
-				if ((RobotMap.LEFT_AUTO_SPEED - RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT) >= -maxOutput) {
-					leftSideAdjustment = -RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
+				if ((RobotMap.LEFT_AUTO_SPEED - headingData[1]) >= -maxOutput) {
+					leftSideAdjustment = -headingData[1];
 					rightSideAdjustment = 0.0;
 				} else {
-					rightSideAdjustment = RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
+					rightSideAdjustment = headingData[1];
 					leftSideAdjustment = 0.0;
 				}
 
@@ -252,8 +256,8 @@ public class Navigation extends Subsystem {
  			/* If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) <
-					DeadReckon.absAngle(desiredHeading - navData[2])) {
+			} else if (DeadReckon.absAngle(locationData[2] - headingData[0]) <
+					DeadReckon.absAngle(headingData[0] - locationData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the right side would be slower
@@ -261,11 +265,11 @@ public class Navigation extends Subsystem {
 				 * Otherwise, subtract the adjustments from the left side.
 				 */
 
-				if ((RobotMap.RIGHT_AUTO_SPEED - RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT) >= -maxOutput) {
-					rightSideAdjustment = -RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
+				if ((RobotMap.RIGHT_AUTO_SPEED - headingData[1]) >= -maxOutput) {
+					rightSideAdjustment = -headingData[1];
 					leftSideAdjustment = 0.0;
 				} else {
-					leftSideAdjustment = RobotMap.DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT;
+					leftSideAdjustment = headingData[1];
 					rightSideAdjustment = 0.0;
 				}
 
@@ -300,7 +304,7 @@ public class Navigation extends Subsystem {
 		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
 	}
 
-	public double calculateDesiredHeading() {
+	public double[] calculateTurn() {
 		double[] pos = location.getPos();
 		double[] posToDesired = {0,0};
 
@@ -308,8 +312,15 @@ public class Navigation extends Subsystem {
 			posToDesired[i] = pos[i] - desiredLocation[i];
 		}
 
-		desiredHeading = DeadReckon.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
-		return desiredHeading;
+		double desiredHeading = DeadReckon.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
+		double driveAdjustment = (Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.6; 
+
+		double[] i = {
+				desiredHeading,
+				driveAdjustment
+		};
+
+		return i;
 	}
 
 	/**

@@ -134,7 +134,7 @@ public class DeadReckon extends Subsystem {
 			deadReckonData[sampleCount][4] = posX;
 			deadReckonData[sampleCount][5] = posY;
 			deadReckonData[sampleCount][6] = calibrated ? 1.0 : 0.0;
-			deadReckonData[sampleCount][6] = (double) sampleCount;
+			deadReckonData[sampleCount][7] = (double) sampleCount;
 			
 			sampleCount++;
 					
