@@ -92,7 +92,7 @@ public class Navigation extends Subsystem {
 		 		} */
 	}
 	//send first message to pi to start camera feed
-	public void navigationExecute() {
+	public void navigationExecute() throws IOException {
 		updateCamera();
 		
 		location.updateTracker();
