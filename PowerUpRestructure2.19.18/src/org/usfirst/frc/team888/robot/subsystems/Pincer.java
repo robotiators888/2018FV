@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 public class Pincer extends Subsystem {
 
 	protected TalonSRX pincerMotor;
@@ -79,6 +80,7 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("currentAngle", currentAngle);
 		SmartDashboard.putNumber("maintainerConstant", maintainerConstant);
 		SmartDashboard.putNumber("pincerPower", pincerPower);
+		SmartDashboard.putNumber("manualPower", manualPower);
 		SmartDashboard.putNumber("timer", reflexTimer);
 		
 		if (proximity.get()){
@@ -91,7 +93,9 @@ public class Pincer extends Subsystem {
 			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
+			
 			pincerPower = maintainerConstant*Math.abs(currentAngle - desiredAngle);
+			
 			if(pincerPower > (maxSpeed-0.05)){
 				pincerPower = maxSpeed-0.05;
 			}
