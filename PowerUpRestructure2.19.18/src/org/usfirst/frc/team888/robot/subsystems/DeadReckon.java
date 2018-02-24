@@ -18,7 +18,7 @@ public class DeadReckon extends Subsystem {
 	protected Timer timer;
 	protected DriveTrain drive;
 
-	double[][] deadReckonData = new double[500][7];
+	double[][] deadReckonData = new double[1500][7];
 	int sampleCount = 0;
 
 	protected double angle;
@@ -68,8 +68,8 @@ public class DeadReckon extends Subsystem {
 		changeInEncoderRight = encoderRightValue - lastEncoderRight;
 		changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
 
-		changeInHeading = (changeInEncoderRight - changeInEncoderLeft) / RobotMap.WHEEL_BASE;
-		angle = heading + (changeInHeading / 2);
+		changeInHeading = absAngle( (changeInEncoderRight - changeInEncoderLeft) / RobotMap.WHEEL_BASE);
+		angle = absAngle(heading + (changeInHeading / 2));
 
 		timePassed = time - lastTime;
 
@@ -95,7 +95,7 @@ public class DeadReckon extends Subsystem {
 		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
 		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
 
-		if (sampleCount < 500) {
+		if (sampleCount < 1500) {
 			deadReckonData[sampleCount][0] = encoderLeftValue;
 			deadReckonData[sampleCount][1] = encoderRightValue;
 			deadReckonData[sampleCount][2] = time;
@@ -106,13 +106,13 @@ public class DeadReckon extends Subsystem {
 			
 			sampleCount++;
 					
-		} else if (sampleCount == 500) {
+		} else if (sampleCount == 1500) {
 			
 			File fData = new File("/tmp/fData");
 			FileOutputStream fos = new FileOutputStream(fData);
 			bw = new BufferedWriter(new OutputStreamWriter(fos));
 			
-			for (int i = 0; i < 500; i++) {
+			for (int i = 0; i < 1500; i++) {
 				bw.write(String.format("%d,%f,%f,%f,%f,%f,%f,%f\n",
 				i,
 				deadReckonData[i][0],

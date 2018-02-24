@@ -7,8 +7,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class DriveTrain extends Subsystem {
 
     protected TalonSRX rearLeft;
@@ -43,9 +41,6 @@ public class DriveTrain extends Subsystem {
     public int[] getEncoderVals() {
     	int leftClicks = rearLeft.getSelectedSensorPosition(0);
     	int rightClicks = -rearRight.getSelectedSensorPosition(0);
-    	
-    	SmartDashboard.putNumber("Left Encoder", leftClicks);
-    	SmartDashboard.putNumber("Right Encoder", rightClicks);
     	
     	int[] i = {leftClicks, rightClicks};
     	

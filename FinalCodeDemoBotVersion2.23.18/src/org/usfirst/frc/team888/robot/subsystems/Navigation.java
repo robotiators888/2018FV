@@ -44,7 +44,7 @@ public class Navigation extends Subsystem {
 	protected boolean init = true;
 	
  	protected boolean previousCameraButtonState = false;
- 	protected byte[] ip = {10, 8, 88, 14};
+ 	protected byte[] ip = {10, 88, 88, 14};
  	protected InetAddress cameraAddress;
 
  	protected DatagramSocket sock;

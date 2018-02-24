@@ -1,5 +1,15 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+//import java.io.IOException;
+//import java.net.DatagramPacket;
+//import java.net.DatagramSocket;
+//import java.net.InetAddress;
+
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
@@ -31,6 +41,17 @@ public class Navigation extends Subsystem {
 	protected boolean lastInput = false;
 	protected boolean output = false;
 	protected boolean press = false;
+	protected boolean init = true;
+	
+ 	protected boolean previousCameraButtonState = false;
+ 	protected byte[] ip = {10, 8, 88, 14};
+ 	protected InetAddress cameraAddress;
+
+ 	protected DatagramSocket sock;
+ 	protected DatagramPacket message;
+ 	
+ 	protected String cameraMessage = "frontCamera";
+ 	protected byte[] byteCameraMessage = cameraMessage.getBytes();
 
 	/*
  	protected boolean previousCameraButtonState = false;
@@ -46,20 +67,23 @@ public class Navigation extends Subsystem {
 		location = p_location;
 		oi = p_oi;
 
-		/* try {
+		try {
+			cameraAddress = InetAddress.getByAddress(ip);
  			sock = new DatagramSocket(7777);
- 			message = new DatagramPacket(byteCameraMessage, camera.length(), cameraAddress, 8888);
- 			cameraAddress = InetAddress.getByAddress(ip);
+ 			message = new DatagramPacket(byteCameraMessage, byteCameraMessage.length, cameraAddress, 8888);
+
  		} catch (Exception e) {
 
- 		} */
+ 		} 
 	}
 
 	public void navigationInit() {
-		schedulerOffset = 0;
-
-		drive.resetEncoderPositions();
-
+		if (init) {
+			schedulerOffset = 0;
+			location.reset();
+			init = false;
+		}
+		
 		//send first message to pi to start camera feed
 		/* try {
 		 			sock.send(message);
@@ -68,15 +92,22 @@ public class Navigation extends Subsystem {
 		 		} */
 	}
 	//send first message to pi to start camera feed
-	public void navigationExecute() {
+	public void navigationExecute() throws IOException {
+		updateCamera();
+		
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
+		location.updateDashborad();
+
 
 		if (schedulerOffset == 0) {
 			//updateCamera();
 		}
 
+		location.updateDashborad();
+		updateDashboard();
+		
 		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
 
@@ -110,8 +141,13 @@ public class Navigation extends Subsystem {
 
 	public void updateMotion() {
 		if (!manualControl) {
-			double[] adjustments = getAdjustments();
-			drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+			double[] pos = location.getPos();
+			if (pos[1] < 120) {
+				double[] adjustments = getAdjustments();
+				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+			} else {
+				drive.move(0.0, 0.0);
+			}
 		} else {
 			if(oi.getTriggers()) {
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
@@ -141,11 +177,11 @@ public class Navigation extends Subsystem {
 			input = oi.getLeftStickButton(2) || oi.getRightStickButton(2);
 
 			if(output) {
-				leftDriveOutput = leftBaseDriveOutput;
-				rightDriveOutput = rightBaseDriveOutput;
+				rightDriveOutput = leftBaseDriveOutput;
+				leftDriveOutput = rightBaseDriveOutput;
 			} else {
-				leftDriveOutput = -rightBaseDriveOutput;
-				rightDriveOutput = -leftBaseDriveOutput;
+				rightDriveOutput = -rightBaseDriveOutput;
+				leftDriveOutput = -leftBaseDriveOutput;
 			}
 
 			SmartDashboard.putNumber("leftOutput", leftDriveOutput);
@@ -283,9 +319,6 @@ public class Navigation extends Subsystem {
 			rightSideAdjustment = 0.0;
 		}
 
-		SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
-		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
-
 		double[] adjustments = {
 				leftSideAdjustment,
 				rightSideAdjustment
@@ -294,6 +327,11 @@ public class Navigation extends Subsystem {
 		return adjustments;		
 	}
 
+	public void updateDashboard() {
+		SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
+		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
+	}
+	
 	public double calculateDesiredHeading() {
 		double[] pos = location.getPos();
 		double[] posToDesired = {0,0};
@@ -314,7 +352,41 @@ public class Navigation extends Subsystem {
 		double[] j = {0,0};
 		return j;
 	}
+	
+	
+	
+	public void updateCamera() {
+		SmartDashboard.putBoolean("button at beginning", previousCameraButtonState);
+		
+ 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
+ 			if(cameraMessage.equals("frontCamera")) {
+ 				cameraMessage = "backCamera";
+ 				byteCameraMessage = cameraMessage.getBytes();
+ 				SmartDashboard.putString("changed message", "back");
+ 			} else {
+ 				cameraMessage = "frontCamera";
+ 				byteCameraMessage = cameraMessage.getBytes();
+ 				SmartDashboard.putString("changed message", "front");
+ 			}
+ 			
+ 			SmartDashboard.putString("camera message after button press", cameraMessage);
 
+ 			try {
+ 				message.setData(byteCameraMessage);
+ 				sock.send(message);
+ 				SmartDashboard.putString("sent", cameraMessage);
+ 			} catch (IOException e) {
+ 				e.printStackTrace();
+ 			}
+ 			previousCameraButtonState = true;
+ 			SmartDashboard.putBoolean("button after pressed", previousCameraButtonState);
+ 		} else if (!oi.getRightStickButton(5)) {
+ 			previousCameraButtonState = false;
+ 			SmartDashboard.putBoolean("button when not pressed", previousCameraButtonState);
+ 		}
+
+ 	}
+	
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		//setDefaultCommand(new MySpecialCommand());

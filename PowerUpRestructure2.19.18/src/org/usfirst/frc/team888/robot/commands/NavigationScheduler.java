@@ -1,5 +1,7 @@
 package org.usfirst.frc.team888.robot.commands;
 
+import java.io.IOException;
+
 import org.usfirst.frc.team888.robot.subsystems.Navigation;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -20,7 +22,12 @@ public class NavigationScheduler extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		navigation.navigationExecute();
+		try {
+			navigation.navigationExecute();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

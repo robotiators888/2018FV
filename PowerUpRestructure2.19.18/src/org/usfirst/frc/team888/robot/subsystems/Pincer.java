@@ -32,19 +32,19 @@ public class Pincer extends Subsystem {
 
 	protected double currentAngle = 0;
 	protected double lastAngle = 0;
-	protected double angleThreshold = 200;
+	protected double angleThreshold = 150;
 	protected double pincerPower = 0;
 	protected double manualPower = 0;
 	protected double maintainerConstant = 0;
 	protected double movementThreshold = 30;
-	protected double maintainerConstantIterator = 0.00005;
+	protected double maintainerConstantIterator = 0.0001;
 	protected double maxSpeed = 0;
 	protected double reflexHigh = 0.5;
 	protected boolean input = false;
 	protected boolean lastInput = false;
 	protected boolean press = false;
 	protected boolean output = false;
-	protected int reflexLength = 40;
+	protected int reflexLength = 1000;
 	protected int reflexTimer = 0;
 	protected int reflexStart = 0;
 	public Pincer() {
@@ -73,16 +73,15 @@ public class Pincer extends Subsystem {
 		SmartDashboard.putNumber("currentAngle", currentAngle);
 		SmartDashboard.putNumber("maintainerConstant", maintainerConstant);
 		SmartDashboard.putNumber("pincerPower", pincerPower);
-		SmartDashboard.putNumber("change", currentAngle - lastAngle);
+		SmartDashboard.putNumber("timer", reflexTimer);
 		if(!proximity.get()){
-			maxSpeed = 0.45;
+			maxSpeed = 0.40;
 		}
 		if(proximity.get()){
-			maxSpeed = 0.4;
+			maxSpeed = 0.30;
 		}
 
 		if(currentAngle > (desiredAngle + angleThreshold)){
-			SmartDashboard.putBoolean("I'm Here", false);
 			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
@@ -91,11 +90,10 @@ public class Pincer extends Subsystem {
 				pincerPower = maxSpeed-0.1;
 			}
 			reflexStart = reflexTimer;
-
+			SmartDashboard.putBoolean("I'm here", false);
 			//stuff to bring down to angle
 		}
 		else if(currentAngle < (desiredAngle - angleThreshold)){
-			SmartDashboard.putBoolean("I'm Here", false);
 			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
@@ -106,15 +104,22 @@ public class Pincer extends Subsystem {
 			pincerPower = -pincerPower;
 			//stuff to bring up to angle
 			reflexStart = reflexTimer;
+			SmartDashboard.putBoolean("I'm here", false);
 		}
 		else{
+			SmartDashboard.putBoolean("I'm here", true);
 			pincerPower = (-pincerPower*Math.abs(currentAngle - desiredAngle)*(reflexHigh)*0.0025)/Math.abs(pincerPower);
 			if(reflexTimer-reflexStart > reflexLength){
 				maintainerConstant = 0;
 				pincerPower = 0;
 			}
 			if(reflexTimer-reflexStart < reflexLength){
-				pincerPower = -0.2;
+				if(!proximity.get()){
+					pincerPower = -0.15;
+				}
+				if(proximity.get()){
+					pincerPower = -0.05;
+				}
 			}
 			else{
 				pincerPower = 0;
@@ -125,20 +130,20 @@ public class Pincer extends Subsystem {
 		lastAngle = currentAngle;
 		currentAngle = pincerEncoder.getValue();
 		reflexTimer = reflexTimer+1;
-		manualPower = -0.4*axis;
+		manualPower = 0.45*axis;
 		if(topLimit.get()){
-			if(pincerPower > 0){
-				pincerPower = 0;
-			}
-			if(manualPower > 0){
-				manualPower = 0;
-			}
-		}
-		if(bottomLimit.get()){
 			if(pincerPower < 0){
 				pincerPower = 0;
 			}
 			if(manualPower < 0){
+				manualPower = 0;
+			}
+		}
+		if(bottomLimit.get()){
+			if(pincerPower > 0){
+				pincerPower = 0;
+			}
+			if(manualPower > 0){
 				manualPower = 0;
 			}
 		}
