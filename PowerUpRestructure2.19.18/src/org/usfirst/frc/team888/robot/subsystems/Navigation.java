@@ -116,7 +116,7 @@ public class Navigation extends Subsystem {
 				drive.move(0.0, 0.0);
 			}
 
-			if (oi.getLeftStickButton(8)) {
+			if (oi.getLeftStickButton(7)) {
 				manualControl = true;
 			}
 
