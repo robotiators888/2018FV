@@ -20,14 +20,12 @@ public class RobotMap {
 	public static final int RIGHT_JOYSTICK = 1;
 	public static final int GAMEPAD_PORT = 2;
 	
-	
 	//Button ID values on the Joysticks
 	public static final int L_TRIGGER = 1;
 	public static final int L_CENTER_BUTTON = 3;
 	
 	public static final int R_TRIGGER = 1;
 	public static final int R_CENTER_BUTTON = 3;
-	
 	
 	//Axes values for Joysticks
 	public static final int L_X_AXIS = 0;
@@ -89,7 +87,6 @@ public class RobotMap {
 	public static final int LOW_DROPOFF_POSITION = 1000;
 	public static final int PICKUP_POSITION = 1600;
 	public static final int RESTING_POSITION = 0;
-	
 	
 	//Sets the speed for autonomous and the adjustments to add for driving straight.
 	public static final double LEFT_AUTO_SPEED = 0.3;
