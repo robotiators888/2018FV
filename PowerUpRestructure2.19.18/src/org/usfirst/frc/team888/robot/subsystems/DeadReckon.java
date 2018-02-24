@@ -123,8 +123,9 @@ public class DeadReckon extends Subsystem {
 				deadReckonData[i][4],
 				deadReckonData[i][5],
 				deadReckonData[i][6]));
+				bw.flush();
 			}
-			
+			bw.close();
 			sampleCount++;
 		}
 	}
