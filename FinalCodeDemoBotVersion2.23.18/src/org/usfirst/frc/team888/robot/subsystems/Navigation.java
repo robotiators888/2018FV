@@ -83,7 +83,7 @@ public class Navigation extends Subsystem {
 			location.reset();
 			init = false;
 		}
-
+		
 		//send first message to pi to start camera feed
 		/* try {
 		 			sock.send(message);
@@ -105,6 +105,9 @@ public class Navigation extends Subsystem {
 			//updateCamera();
 		}
 
+		location.updateDashborad();
+		updateDashboard();
+		
 		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
 
@@ -316,9 +319,6 @@ public class Navigation extends Subsystem {
 			rightSideAdjustment = 0.0;
 		}
 
-		SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
-		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
-
 		double[] adjustments = {
 				leftSideAdjustment,
 				rightSideAdjustment
@@ -327,6 +327,11 @@ public class Navigation extends Subsystem {
 		return adjustments;		
 	}
 
+	public void updateDashboard() {
+		SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
+		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
+	}
+	
 	public double calculateDesiredHeading() {
 		double[] pos = location.getPos();
 		double[] posToDesired = {0,0};

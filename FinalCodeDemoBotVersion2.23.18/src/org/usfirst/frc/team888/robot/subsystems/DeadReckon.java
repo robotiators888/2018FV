@@ -1,5 +1,12 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 
@@ -11,6 +18,9 @@ public class DeadReckon extends Subsystem {
 
 	protected Timer timer;
 	protected DriveTrain drive;
+
+	double[][] deadReckonData = new double[7][500];
+	int sampleCount = 0;
 
 	protected double angle;
 	protected double encoderLeftValue;
@@ -35,6 +45,7 @@ public class DeadReckon extends Subsystem {
 	protected double heading;
 
 	protected boolean calibrated;
+	private BufferedWriter bw;
 
 	public DeadReckon(DriveTrain p_drive) {
 		timer = new Timer();
@@ -57,8 +68,9 @@ public class DeadReckon extends Subsystem {
 		changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
 		changeInEncoderRight = encoderRightValue - lastEncoderRight;
 		changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-		changeInHeading = absAngle((changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE);
-		angle = absAngle(heading + (changeInHeading / 2));
+
+		changeInHeading = (changeInEncoderRight - changeInEncoderLeft) / RobotMap.WHEEL_BASE;
+		angle = heading + (changeInHeading / 2);
 
 		timePassed = time - lastTime;
 
@@ -75,12 +87,42 @@ public class DeadReckon extends Subsystem {
 		posY = clickPosY / RobotMap.CLICKS_PER_INCH;
 	}
 
-	public void updateDashborad() {
+	public void updateDashborad() throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
 		SmartDashboard.putNumber("Y Position", posY);
 		SmartDashboard.putNumber("Heading", Math.toDegrees(heading));
 		SmartDashboard.putNumber("Speed", speed);
 		SmartDashboard.putNumber("DeltaTime", timePassed);
+		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
+		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
+
+		if (sampleCount < 500) {
+			deadReckonData[sampleCount][0] = encoderLeftValue;
+			deadReckonData[sampleCount][1] = encoderRightValue;
+			deadReckonData[sampleCount][2] = time;
+			deadReckonData[sampleCount][3] = heading;
+			deadReckonData[sampleCount][4] = posX;
+			deadReckonData[sampleCount][5] = posY;
+			deadReckonData[sampleCount][6] = calibrated ? 1.0 : 0.0;
+			
+			sampleCount++;
+					
+		} else if (sampleCount == 500) {
+			
+			File fData = new File("/tmp/fData");
+			FileOutputStream fos = new FileOutputStream(fData);
+			bw = new BufferedWriter(new OutputStreamWriter(fos));
+			
+			for (int i = 0; i < 500; i++) {
+				bw.write(String.format("%f,%f,%f,%f,%f,%f,%f", deadReckonData[sampleCount][0],
+				deadReckonData[sampleCount][1],
+				deadReckonData[sampleCount][2],
+				deadReckonData[sampleCount][3],
+				deadReckonData[sampleCount][4],
+				deadReckonData[sampleCount][5],
+				deadReckonData[sampleCount][6]));
+			}
+		}
 	}
 
 	/**
@@ -111,17 +153,15 @@ public class DeadReckon extends Subsystem {
 	public void reset() {
 		drive.resetEncoderPositions();
 
+		timer.reset();
+		timer.start();
+
 		encoderLeftValue = 0;
 		encoderRightValue = 0;
 
 		time = timer.get();
 
 		calibrated = false;
-	}
-
-	public void startTimer() {
-		timer.reset();
-		timer.start();
 	}
 
 	/**
