@@ -42,16 +42,16 @@ public class Navigation extends Subsystem {
 	protected boolean output = false;
 	protected boolean press = false;
 	protected boolean init = true;
-	
- 	protected boolean previousCameraButtonState = false;
- 	protected byte[] ip = {10, 8, 88, 14};
- 	protected InetAddress cameraAddress;
 
- 	protected DatagramSocket sock;
- 	protected DatagramPacket message;
- 	
- 	protected String cameraMessage = "frontCamera";
- 	protected byte[] byteCameraMessage = cameraMessage.getBytes();
+	protected boolean previousCameraButtonState = false;
+	protected byte[] ip = {10, 8, 88, 14};
+	protected InetAddress cameraAddress;
+
+	protected DatagramSocket sock;
+	protected DatagramPacket message;
+
+	protected String cameraMessage = "frontCamera";
+	protected byte[] byteCameraMessage = cameraMessage.getBytes();
 
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, OI p_oi) {
@@ -61,12 +61,12 @@ public class Navigation extends Subsystem {
 
 		try {
 			cameraAddress = InetAddress.getByAddress(ip);
- 			sock = new DatagramSocket(7777);
- 			message = new DatagramPacket(byteCameraMessage, byteCameraMessage.length, cameraAddress, 8888);
+			sock = new DatagramSocket(7777);
+			message = new DatagramPacket(byteCameraMessage, byteCameraMessage.length, cameraAddress, 8888);
 
- 		} catch (Exception e) {
+		} catch (Exception e) {
 
- 		} 
+		} 
 	}
 
 	public void navigationInit() {
@@ -75,10 +75,10 @@ public class Navigation extends Subsystem {
 			location.reset();
 			init = false;
 		}
-		
+
 	}
 
-	
+
 	public void navigationExecute() throws IOException {
 		location.updateTracker();
 		updateGuidenceControl();
@@ -86,13 +86,19 @@ public class Navigation extends Subsystem {
 		location.updateDashborad();
 
 
-		if (schedulerOffset == 0) {
-			updateCamera();
+		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
+			if (schedulerOffset == 0) {
+				switchCamera();
+			}
+			previousCameraButtonState = true;
+		} else if (!oi.getRightStickButton(5)) {
+			previousCameraButtonState = false;
 		}
+
 
 		location.updateDashborad();
 		updateDashboard();
-		
+
 		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
 
@@ -298,7 +304,7 @@ public class Navigation extends Subsystem {
 		SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
 		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
 	}
-	
+
 	public double calculateDesiredHeading() {
 		double[] pos = location.getPos();
 		double[] posToDesired = {0,0};
@@ -319,41 +325,62 @@ public class Navigation extends Subsystem {
 		double[] j = {0,0};
 		return j;
 	}
-	
-	
-	
+
+
+	public void switchCamera() {
+
+		if(cameraMessage.equals("frontCamera")) {
+			cameraMessage = "backCamera";
+			byteCameraMessage = cameraMessage.getBytes();
+		} else {
+			cameraMessage = "frontCamera";
+			byteCameraMessage = cameraMessage.getBytes();
+		}
+
+		try {
+			message.setData(byteCameraMessage);
+			sock.send(message);
+			SmartDashboard.putString("sent", cameraMessage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+
 	public void updateCamera() {
 		SmartDashboard.putBoolean("button at beginning", previousCameraButtonState);
-		
- 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
- 			if(cameraMessage.equals("frontCamera")) {
- 				cameraMessage = "backCamera";
- 				byteCameraMessage = cameraMessage.getBytes();
- 				SmartDashboard.putString("changed message", "back");
- 			} else {
- 				cameraMessage = "frontCamera";
- 				byteCameraMessage = cameraMessage.getBytes();
- 				SmartDashboard.putString("changed message", "front");
- 			}
- 			
- 			SmartDashboard.putString("camera message after button press", cameraMessage);
 
- 			try {
- 				message.setData(byteCameraMessage);
- 				sock.send(message);
- 				SmartDashboard.putString("sent", cameraMessage);
- 			} catch (IOException e) {
- 				e.printStackTrace();
- 			}
- 			previousCameraButtonState = true;
- 			SmartDashboard.putBoolean("button after pressed", previousCameraButtonState);
- 		} else if (!oi.getRightStickButton(5)) {
- 			previousCameraButtonState = false;
- 			SmartDashboard.putBoolean("button when not pressed", previousCameraButtonState);
- 		}
+		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
+			if(cameraMessage.equals("frontCamera")) {
+				cameraMessage = "backCamera";
+				byteCameraMessage = cameraMessage.getBytes();
+				SmartDashboard.putString("changed message", "back");
+			} else {
+				cameraMessage = "frontCamera";
+				byteCameraMessage = cameraMessage.getBytes();
+				SmartDashboard.putString("changed message", "front");
+			}
 
- 	}
-	
+			SmartDashboard.putString("camera message after button press", cameraMessage);
+
+			try {
+				message.setData(byteCameraMessage);
+				sock.send(message);
+				SmartDashboard.putString("sent", cameraMessage);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			previousCameraButtonState = true;
+			SmartDashboard.putBoolean("button after pressed", previousCameraButtonState);
+		} else if (!oi.getRightStickButton(5)) {
+			previousCameraButtonState = false;
+			SmartDashboard.putBoolean("button when not pressed", previousCameraButtonState);
+		}
+
+	}
+
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		//setDefaultCommand(new MySpecialCommand());
