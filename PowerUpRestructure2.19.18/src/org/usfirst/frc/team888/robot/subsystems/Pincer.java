@@ -87,7 +87,9 @@ public class Pincer extends Subsystem {
 			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
+			
 			pincerPower = maintainerConstant*Math.abs(currentAngle - desiredAngle);
+			
 			if(pincerPower > (maxSpeed-0.05)){
 				pincerPower = maxSpeed-0.05;
 			}
