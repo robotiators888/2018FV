@@ -81,9 +81,7 @@ public class Navigation extends Subsystem {
 
 
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
-			if (schedulerOffset == 0) {
-				switchCamera();
-			}
+			switchCamera();
 			previousCameraButtonState = true;
 		} else if (!oi.getRightStickButton(5)) {
 			previousCameraButtonState = false;
@@ -352,32 +350,6 @@ public class Navigation extends Subsystem {
 
 	}
 
-
-
-	public void updateCamera() {
-		SmartDashboard.putBoolean("button at beginning", previousCameraButtonState);
-
-		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
-			if(cameraMessage.equals("frontCamera")) {
-				cameraMessage = "backCamera";
-				byteCameraMessage = cameraMessage.getBytes();
-			} else {
-				cameraMessage = "frontCamera";
-				byteCameraMessage = cameraMessage.getBytes();
-			}
-
-			try {
-				message.setData(byteCameraMessage);
-				sock.send(message);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			previousCameraButtonState = true;
-		} else if (!oi.getRightStickButton(5)) {
-			previousCameraButtonState = false;
-		}
-
-	}
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
