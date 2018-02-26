@@ -172,11 +172,13 @@ public class Navigation extends Subsystem {
 				state = 1;
 			}
 			break;
+		
 		case 1:
 			double turnTo = (Math.PI / 2);
 			if (location.getHeading() < turnTo)
 				drive.move(0.0, 0.3);
 			break;
+		
 		default:
 			drive.move(0.0, 0.0);
 		}
