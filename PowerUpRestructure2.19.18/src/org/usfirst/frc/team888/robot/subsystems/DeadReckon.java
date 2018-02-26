@@ -2,6 +2,7 @@ package org.usfirst.frc.team888.robot.subsystems;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -18,8 +19,14 @@ public class DeadReckon extends Subsystem {
 	protected Timer timer;
 	protected DriveTrain drive;
 
-	double[][] deadReckonData = new double[1500][8];
-	int sampleCount = 0;
+	double[][] deadReckonData = new double[1500][10];
+	protected int sampleCount = 0;
+	
+	protected File fData;
+	
+	protected FileOutputStream fos;
+	
+	private BufferedWriter bw;
 
 	protected double angle;
 	protected double encoderLeftValue;
@@ -46,9 +53,8 @@ public class DeadReckon extends Subsystem {
 	protected double avgChangeInEncoder;
 
 	protected boolean calibrated;
-	private BufferedWriter bw;
 
-	public DeadReckon(DriveTrain p_drive) {
+	public DeadReckon(DriveTrain p_drive) throws FileNotFoundException {
 		timer = new Timer();
 		drive = p_drive;
 
@@ -60,6 +66,10 @@ public class DeadReckon extends Subsystem {
 		posX = 0;
 		posY = 0;
 
+		fData = new File("/tmp/fData");
+		fos = new FileOutputStream(fData);
+		bw = new BufferedWriter(new OutputStreamWriter(fos));
+		
 		reset();
 	}
 
@@ -117,7 +127,7 @@ public class DeadReckon extends Subsystem {
     	
     }
 
-	public void updateDashborad() throws IOException {
+	public void updateDashboradCat() throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
 		SmartDashboard.putNumber("Y Position", posY);
 		SmartDashboard.putNumber("Heading", Math.toDegrees(heading));
@@ -135,17 +145,15 @@ public class DeadReckon extends Subsystem {
 			deadReckonData[sampleCount][5] = posY;
 			deadReckonData[sampleCount][6] = calibrated ? 1.0 : 0.0;
 			deadReckonData[sampleCount][7] = (double) sampleCount;
+			deadReckonData[sampleCount][8] = clickPosX;
+			deadReckonData[sampleCount][9] = clickPosY;
 			
 			sampleCount++;
 					
 		} else if (sampleCount == 1500) {
 			
-			File fData = new File("/tmp/fData");
-			FileOutputStream fos = new FileOutputStream(fData);
-			bw = new BufferedWriter(new OutputStreamWriter(fos));
-			
 			for (int i = 0; i < 1500; i++) {
-				bw.write(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
+				bw.write(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
 				(int) deadReckonData[i][7],
 				deadReckonData[i][0],
 				deadReckonData[i][1],
@@ -153,7 +161,9 @@ public class DeadReckon extends Subsystem {
 				deadReckonData[i][3],
 				deadReckonData[i][4],
 				deadReckonData[i][5],
-				deadReckonData[i][6]));
+				deadReckonData[i][6],
+				deadReckonData[i][8],
+				deadReckonData[i][9]));
 				bw.flush();
 			}
 			bw.close();

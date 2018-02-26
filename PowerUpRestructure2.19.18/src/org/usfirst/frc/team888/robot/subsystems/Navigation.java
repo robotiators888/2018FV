@@ -27,7 +27,7 @@ public class Navigation extends Subsystem {
 
 	protected double[] desiredLocation = RobotMap.DESIRED_LOCATION;
 
-	protected boolean manualControl = false;
+	protected boolean manualControl = true;
 
 	protected int schedulerOffset = 0;
 
@@ -38,7 +38,7 @@ public class Navigation extends Subsystem {
 	protected boolean init = true;
 
 	protected boolean previousCameraButtonState = false;
-	protected byte[] ip = {10, 8, 88, 14};
+	protected byte[] ip = {10, 8, 88, 12};
 	protected InetAddress cameraAddress;
 
 	protected DatagramSocket sock;
@@ -77,7 +77,7 @@ public class Navigation extends Subsystem {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
-		location.updateDashborad();
+		location.updateDashboradCat();
 
 
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
@@ -87,8 +87,6 @@ public class Navigation extends Subsystem {
 			previousCameraButtonState = false;
 		}
 
-
-		location.updateDashborad();
 		updateDashboard();
 
 		schedulerOffset = (schedulerOffset + 1) % 50;
@@ -352,30 +350,6 @@ public class Navigation extends Subsystem {
 		}
 	}
 
-	public void updateCamera() {
-		SmartDashboard.putBoolean("button at beginning", previousCameraButtonState);
-
-		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
-			if(cameraMessage.equals("frontCamera")) {
-				cameraMessage = "backCamera";
-				byteCameraMessage = cameraMessage.getBytes();
-			} else {
-				cameraMessage = "frontCamera";
-				byteCameraMessage = cameraMessage.getBytes();
-			}
-
-			try {
-				message.setData(byteCameraMessage);
-				sock.send(message);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			previousCameraButtonState = true;
-		} else if (!oi.getRightStickButton(5)) {
-			previousCameraButtonState = false;
-		}
-
-	}
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
