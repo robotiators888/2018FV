@@ -26,8 +26,6 @@ public class Pincer extends Subsystem {
 	protected DigitalInput proximity;
 	protected DigitalInput topLimit;
 	protected DigitalInput bottomLimit;
-
-	protected PowerDistributionPanel pdp;
 	
 	protected int pincerDesiredPosition;
 	protected int pincerClicks;	
