@@ -27,6 +27,8 @@ public class Pincer extends Subsystem {
 	protected DigitalInput topLimit;
 	protected DigitalInput bottomLimit;
 	
+	protected PowerDistributionPanel pdp;
+	
 	protected int pincerDesiredPosition;
 	protected int pincerClicks;	
 
@@ -70,7 +72,6 @@ public class Pincer extends Subsystem {
 		pincerEncoder.setAverageBits(2);
 		
 		proximity = new DigitalInput(0);
-
 		bottomLimit = new DigitalInput(2);
 		topLimit = new DigitalInput(1);
 	}

@@ -83,9 +83,7 @@ public class Navigation extends Subsystem {
 
 
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
-			if (schedulerOffset == 0) {
-				switchCamera();
-			}
+			switchCamera();
 			previousCameraButtonState = true;
 		} else if (!oi.getRightStickButton(5)) {
 			previousCameraButtonState = false;
