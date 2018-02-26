@@ -105,11 +105,14 @@ public class Navigation extends Subsystem {
 	 */
 
 	public void updateMotion() {
+		//AUTO CODE
 		if (!manualControl) {
 			double[] pos = location.getPos();
-			if (pos[1] > -120) {
+			if ((Math.abs(RobotMap.DESIRED_LOCATION[0] - pos[0]) < 15) && 
+					(Math.abs(RobotMap.DESIRED_LOCATION[0] - pos[0]) < 15)) {
 				double[] adjustments = getAdjustments();
-				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
+						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 			} else {
 				drive.move(0.0, 0.0);
 			}
@@ -118,6 +121,7 @@ public class Navigation extends Subsystem {
 				manualControl = true;
 			}
 
+		//TELEOP CODE	
 		} else {
 			if(oi.getTriggers()) {
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
@@ -185,7 +189,7 @@ public class Navigation extends Subsystem {
 				 */
 
 				if 	((RobotMap.LEFT_AUTO_SPEED + headingData[1])
-						<= maxOutput) {			
+						<= maxOutput) {
 					leftSideAdjustment = headingData[1];
 					rightSideAdjustment = 0.0;
 				} else {
@@ -311,7 +315,7 @@ public class Navigation extends Subsystem {
 		}
 
 		double desiredHeading = DeadReckon.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
-		double driveAdjustment = (Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.6; 
+		double driveAdjustment = (Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
 
 		double[] i = {
 				desiredHeading,
@@ -332,7 +336,6 @@ public class Navigation extends Subsystem {
 
 
 	public void switchCamera() {
-
 		if(cameraMessage.equals("frontCamera")) {
 			cameraMessage = "backCamera";
 			byteCameraMessage = cameraMessage.getBytes();
@@ -347,9 +350,32 @@ public class Navigation extends Subsystem {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
+	public void updateCamera() {
+		SmartDashboard.putBoolean("button at beginning", previousCameraButtonState);
+
+		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
+			if(cameraMessage.equals("frontCamera")) {
+				cameraMessage = "backCamera";
+				byteCameraMessage = cameraMessage.getBytes();
+			} else {
+				cameraMessage = "frontCamera";
+				byteCameraMessage = cameraMessage.getBytes();
+			}
+
+			try {
+				message.setData(byteCameraMessage);
+				sock.send(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			previousCameraButtonState = true;
+		} else if (!oi.getRightStickButton(5)) {
+			previousCameraButtonState = false;
+		}
+
+	}
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.

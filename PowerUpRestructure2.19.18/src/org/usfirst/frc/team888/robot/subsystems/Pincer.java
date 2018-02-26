@@ -51,12 +51,14 @@ public class Pincer extends Subsystem {
 	protected int reflexLength = 1000;
 	protected int reflexTimer = 0;
 	protected int reflexStart = 0;
+	
 	protected double batteryVoltage = 0;
 	protected double maxBatteryVoltage = 12.0;
 	protected double withCubePercent = 0.55;
 	protected double withoutCubePercent = 0.35;
 	protected double withCubeReflex = 0.15;
 	protected double withoutCubeReflex = 0.05;
+
 	public Pincer() {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 
