@@ -27,9 +27,11 @@ public class Navigation extends Subsystem {
 
 	protected double[] desiredLocation = RobotMap.DESIRED_LOCATION;
 
-	protected boolean manualControl = true;
+	protected boolean manualControl = false;
 
 	protected int schedulerOffset = 0;
+
+	protected int state = 0;
 
 	protected boolean input = false;
 	protected boolean lastInput = false;
@@ -105,21 +107,12 @@ public class Navigation extends Subsystem {
 	public void updateMotion() {
 		//AUTO CODE
 		if (!manualControl) {
-			double[] pos = location.getPos();
-			if ((Math.abs(RobotMap.DESIRED_LOCATION[0] - pos[0]) < 15) && 
-					(Math.abs(RobotMap.DESIRED_LOCATION[0] - pos[0]) < 15)) {
-				double[] adjustments = getAdjustments();
-				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
-						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
-			} else {
-				drive.move(0.0, 0.0);
-			}
-
+			autoRun();
 			if (oi.getLeftStickButton(7)) {
 				manualControl = true;
 			}
 
-		//TELEOP CODE	
+			//TELEOP CODE	
 		} else {
 			if(oi.getTriggers()) {
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
@@ -162,6 +155,27 @@ public class Navigation extends Subsystem {
 			drive.move(leftDriveOutput, rightDriveOutput);
 		}
 	}
+
+	public void autoRun() {
+		double[] pos = location.getPos();
+			if ((Math.abs(RobotMap.DESIRED_LOCATION[0] - pos[0]) > 15) && 
+					(Math.abs(RobotMap.DESIRED_LOCATION[1] - pos[1]) > 15)) {
+				double[] adjustments = getAdjustments();
+				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
+						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+			} else {
+				drive.move(0.0, 0.0);
+			}
+			/*
+			double turnTo = (Math.PI / 2);
+			if (location.getHeading() < turnTo)
+				drive.move(0.0, 0.3);
+			else{
+				SmartDashboard.putString("where", "170");
+			}
+			drive.move(0,0);
+			*/
+		}
 
 	public double[] getAdjustments() {	
 		double[] locationData = location.getNavLocationData();		
