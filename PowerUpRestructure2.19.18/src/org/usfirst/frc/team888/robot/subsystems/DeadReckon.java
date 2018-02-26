@@ -73,7 +73,7 @@ public class DeadReckon extends Subsystem {
     	
     	timePassed = time - lastTime;
     	
-    	heading = absAngle(lastHeading + calculateHeading(heading, avgChangeInEncoder));
+    	heading = absAngle(lastHeading + calculateHeading(avgChangeInEncoder));
     	changeInX = calculateX(avgChangeInEncoder, heading);
     	changeInY = calculateY(avgChangeInEncoder, heading);
     	clickPosX += changeInX;
@@ -92,7 +92,7 @@ public class DeadReckon extends Subsystem {
      * @param avgChangeInEncoder The difference between the number of encoder clicks.
      * @return The new heading measurement in radians.
      */
-    private double calculateHeading(double oldHeading, double avgChangeInEncoder) {
+    private double calculateHeading(double avgChangeInEncoder) {
     	return ((avgChangeInEncoder / RobotMap.WHEEL_BASE));
     }
     
