@@ -2,6 +2,7 @@ package org.usfirst.frc.team888.robot.subsystems;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -18,35 +19,35 @@ public class DeadReckon extends Subsystem {
 	protected Timer timer;
 	protected DriveTrain drive;
 
-	double[][] deadReckonData = new double[1500][8];
+	double[][] deadReckonData = new double[7500][8];
 	int sampleCount = 0;
 
 	protected double angle;
-	protected double encoderLeftValue;
-	protected double encoderRightValue;
-	protected double lastEncoderLeft;
-	protected double lastEncoderRight;
-	protected double lastHeading;
+	protected double changeInDistance;
 	protected double changeInEncoderLeft;
 	protected double changeInEncoderRight;
 	protected double changeInHeading;
-	protected double changeInDistance;
 	protected double changeInX;
 	protected double changeInY;
 	protected double clickPosX;
 	protected double clickPosY;
-	protected double time;
+	protected double encoderLeftValue;
+	protected double encoderRightValue;
+	protected double heading;
+	protected double lastEncoderLeft;
+	protected double lastEncoderRight;
+	protected double lastHeading;
 	protected double lastTime;
-	protected double timePassed;
-	protected double speed;
 	protected double posX;
 	protected double posY;
-	protected double heading;
-	protected double avgMovement;
-	protected double avgChangeInEncoder;
+	protected double speed;
+	protected double time;
+	protected double timePassed;
 
 	protected boolean calibrated;
 	private BufferedWriter bw;
+	File encoderData;
+	FileOutputStream fos;
 
 	public DeadReckon(DriveTrain p_drive) {
 		timer = new Timer();
@@ -60,61 +61,48 @@ public class DeadReckon extends Subsystem {
 		posX = 0;
 		posY = 0;
 
+		encoderData = new File("/tmp/encoderData");
+		
+		try {
+			fos = new FileOutputStream(encoderData);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		bw = new BufferedWriter(new OutputStreamWriter(fos));
+		
 		reset();
 	}
 
     public void updateTracker() {
     	updateEncoderVals();
-
+    	
     	changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
     	changeInEncoderRight = encoderRightValue - lastEncoderRight;
-    	avgMovement = (changeInEncoderLeft + changeInEncoderRight) / 2;
-    	avgChangeInEncoder = changeInEncoderLeft - changeInEncoderRight;
     	
     	timePassed = time - lastTime;
     	
-    	heading = absAngle(lastHeading + calculateHeading(avgChangeInEncoder));
-    	changeInX = calculateX(avgChangeInEncoder, heading);
-    	changeInY = calculateY(avgChangeInEncoder, heading);
-    	clickPosX += changeInX;
-    	clickPosY += changeInY;
+    	if (changeInEncoderLeft <= 0) {
+    		if (changeInEncoderRight <= 0) {
+    			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
+    	    	changeInHeading = modAngle(changeInEncoderRight - changeInEncoderLeft);
+    	    	angle = modAngle(heading + (changeInHeading / 2));
+    	    	
+    	    	heading = modAngle(heading + changeInHeading);
+    	    	changeInX = changeInDistance * Math.sin(angle);
+    	    	changeInY = changeInDistance * Math.cos(angle);
+    	    	clickPosX += changeInX;
+    	    	clickPosY += changeInY;
+    		} else {
+    			
+    		}
+    	}
     	
     	speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
     			/ (timePassed);
     	
     	posX = clickPosX / RobotMap.CLICKS_PER_INCH;
     	posY = clickPosY / RobotMap.CLICKS_PER_INCH;
-    }
-    
-    /**
-     * Calculates the current heading based on given data.
-     * @param oldHeading The previous heading in radians.
-     * @param avgChangeInEncoder The difference between the number of encoder clicks.
-     * @return The new heading measurement in radians.
-     */
-    private double calculateHeading(double avgChangeInEncoder) {
-    	return ((avgChangeInEncoder / RobotMap.WHEEL_BASE));
-    }
-    
-    /**
-     * Calculates the change in X based on given data.
-     * @param avgChangeInEncoder The difference between the number of encoder clicks.
-     * @param heading The current heading measurement in radians.
-     * @return The change in X
-     */
-    private double calculateX(double avgChangeInEncoder, double heading) {
-    	return (avgMovement * Math.sin(heading));
-    }
-    
-    /**
-     * Calculates the change in Y based on given data.
-     * @param avgChangeInEncoder The difference between the number of encoder clicks.
-     * @param heading The current heading measurement in radians.
-     * @return The change in Y
-     */
-    private double calculateY(double avgChangeInEncoder, double heading) {
-    	return (avgMovement * Math.cos(heading));
-    	
     }
 
 	public void updateDashborad() throws IOException {
@@ -139,11 +127,7 @@ public class DeadReckon extends Subsystem {
 			sampleCount++;
 					
 		} else if (sampleCount == 1500) {
-			
-			File fData = new File("/tmp/fData");
-			FileOutputStream fos = new FileOutputStream(fData);
-			bw = new BufferedWriter(new OutputStreamWriter(fos));
-			
+				
 			for (int i = 0; i < 1500; i++) {
 				bw.write(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
 				(int) deadReckonData[i][7],
@@ -228,7 +212,7 @@ public class DeadReckon extends Subsystem {
 	 * @param angle Angle measurement in radians.
 	 * @return Angle measurement in radians from 0 - 2Pi.
 	 */
-	public static double absAngle(double angle) {
+	public static double modAngle(double angle) {
 		angle %= 2 * Math.PI;
 		if (angle < 0){
 			angle += 2 * Math.PI;

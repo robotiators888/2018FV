@@ -198,8 +198,8 @@ public class Navigation extends Subsystem {
 					 * If the left side is moving slower than right...
 					 */
 
-					if (DeadReckon.absAngle(locationData[2] - headingData[0]) <
-							DeadReckon.absAngle(headingData[0] - locationData[2])) {
+					if (DeadReckon.modAngle(locationData[2] - headingData[0]) <
+							DeadReckon.modAngle(headingData[0] - locationData[2])) {
 
 						/**
 						 * If the speed plus the adjustment for the left side would be slower
@@ -220,8 +220,8 @@ public class Navigation extends Subsystem {
 						 * If the right side is moving slower than left...
 						 */		
 
-					} else if (DeadReckon.absAngle(locationData[2] - headingData[0]) >
-					DeadReckon.absAngle(headingData[0] - locationData[2])) {
+					} else if (DeadReckon.modAngle(locationData[2] - headingData[0]) >
+					DeadReckon.modAngle(headingData[0] - locationData[2])) {
 
 						/**
 						 * If the speed plus the adjustment for the right side would be slower
@@ -256,8 +256,8 @@ public class Navigation extends Subsystem {
 					 * If the left side is moving slower than right...
 					 */
 
-					if (DeadReckon.absAngle(locationData[2] - headingData[0]) >
-					DeadReckon.absAngle(headingData[0] - locationData[2])) {
+					if (DeadReckon.modAngle(locationData[2] - headingData[0]) >
+					DeadReckon.modAngle(headingData[0] - locationData[2])) {
 
 						/**
 						 * If the speed plus the adjustment for the left side would be slower
@@ -277,8 +277,8 @@ public class Navigation extends Subsystem {
  			/* If the right side is moving slower than left...
 						 */		
 
-					} else if (DeadReckon.absAngle(locationData[2] - headingData[0]) <
-							DeadReckon.absAngle(headingData[0] - locationData[2])) {
+					} else if (DeadReckon.modAngle(locationData[2] - headingData[0]) <
+							DeadReckon.modAngle(headingData[0] - locationData[2])) {
 
 						/**
 						 * If the speed plus the adjustment for the right side would be slower
@@ -333,7 +333,7 @@ public class Navigation extends Subsystem {
 					posToDesired[i] = pos[i] - desiredLocation[i];
 				}
 
-				double desiredHeading = DeadReckon.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
+				double desiredHeading = DeadReckon.modAngle(Math.atan2(posToDesired[0], posToDesired[1]));
 				double driveAdjustment = (Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
 
 				double[] i = {
