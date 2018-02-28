@@ -193,8 +193,8 @@ public class Navigation extends Subsystem {
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.absAngle(navData[2] - desiredHeading) <
-					DeadReckon.absAngle(desiredHeading - navData[2])) {
+			if (DeadReckon.modAngle(navData[2] - desiredHeading) <
+					DeadReckon.modAngle(desiredHeading - navData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the left side would be slower
@@ -215,8 +215,8 @@ public class Navigation extends Subsystem {
 				 * If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) >
-			DeadReckon.absAngle(desiredHeading - navData[2])) {
+			} else if (DeadReckon.modAngle(navData[2] - desiredHeading) >
+			DeadReckon.modAngle(desiredHeading - navData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the right side would be slower
@@ -251,8 +251,8 @@ public class Navigation extends Subsystem {
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.absAngle(navData[2] - desiredHeading) >
-			DeadReckon.absAngle(desiredHeading - navData[2])) {
+			if (DeadReckon.modAngle(navData[2] - desiredHeading) >
+			DeadReckon.modAngle(desiredHeading - navData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the left side would be slower
@@ -272,8 +272,8 @@ public class Navigation extends Subsystem {
  			/* If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.absAngle(navData[2] - desiredHeading) <
-					DeadReckon.absAngle(desiredHeading - navData[2])) {
+			} else if (DeadReckon.modAngle(navData[2] - desiredHeading) <
+					DeadReckon.modAngle(desiredHeading - navData[2])) {
 
 				/**
 				 * If the speed plus the adjustment for the right side would be slower
@@ -328,7 +328,7 @@ public class Navigation extends Subsystem {
 			posToDesired[i] = pos[i] - desiredLocation[i];
 		}
 
-		desiredHeading = DeadReckon.absAngle(Math.atan2(posToDesired[0], posToDesired[1]));
+		desiredHeading = DeadReckon.modAngle(Math.atan2(posToDesired[0], posToDesired[1]));
 		return desiredHeading;
 	}
 

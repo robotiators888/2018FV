@@ -2,6 +2,7 @@ package org.usfirst.frc.team888.robot.subsystems;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -18,33 +19,37 @@ public class DeadReckon extends Subsystem {
 	protected Timer timer;
 	protected DriveTrain drive;
 
-	double[][] deadReckonData = new double[500][7];
+	double[][] deadReckonData = new double[7500][10];
 	int sampleCount = 0;
 
 	protected double angle;
-	protected double encoderLeftValue;
-	protected double encoderRightValue;
-	protected double lastEncoderLeft;
-	protected double lastEncoderRight;
-	protected double lastHeading;
+	protected double changeInDistance;
 	protected double changeInEncoderLeft;
 	protected double changeInEncoderRight;
 	protected double changeInHeading;
-	protected double changeInDistance;
 	protected double changeInX;
 	protected double changeInY;
 	protected double clickPosX;
 	protected double clickPosY;
-	protected double time;
+	protected double encoderLeftValue;
+	protected double encoderRightValue;
+	protected double heading;
+	protected double lastEncoderLeft;
+	protected double lastEncoderRight;
+	protected double lastHeading;
 	protected double lastTime;
-	protected double timePassed;
-	protected double speed;
+	protected double PORtoLeft;
+	protected double PORtoRight;
 	protected double posX;
 	protected double posY;
-	protected double heading;
+	protected double speed;
+	protected double time;
+	protected double timePassed;
 
 	protected boolean calibrated;
 	private BufferedWriter bw;
+	File encoderData;
+	FileOutputStream fos;
 
 	public DeadReckon(DriveTrain p_drive) {
 		timer = new Timer();
@@ -58,6 +63,16 @@ public class DeadReckon extends Subsystem {
 		posX = 0;
 		posY = 0;
 
+		encoderData = new File("/tmp/encoderData");
+
+		try {
+			fos = new FileOutputStream(encoderData);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		bw = new BufferedWriter(new OutputStreamWriter(fos));
+
 		reset();
 	}
 
@@ -66,22 +81,70 @@ public class DeadReckon extends Subsystem {
 
 		changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
 		changeInEncoderRight = encoderRightValue - lastEncoderRight;
-		changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-
-		changeInHeading = (changeInEncoderRight - changeInEncoderLeft) / RobotMap.WHEEL_BASE;
-		angle = heading + (changeInHeading / 2);
 
 		timePassed = time - lastTime;
 
+		if (changeInEncoderLeft <= 0) {
+			if (changeInEncoderRight <= 0) {
+				changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
+				changeInHeading = modAngle(changeInEncoderRight - changeInEncoderLeft);
+
+			} else {
+				PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
+						(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
+				PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
+
+				if (PORtoLeft >= PORtoRight) {
+					changeInHeading = Math.acos((Math.pow(changeInEncoderLeft, 2) 
+							- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
+					changeInDistance = Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+
+				} else {
+					changeInHeading = Math.acos((Math.pow(changeInEncoderRight, 2) 
+							- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
+					changeInDistance = Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+				}
+			}
+
+		} else {
+			if (changeInEncoderRight > 0) {
+				changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
+				changeInHeading = modAngle(changeInEncoderRight - changeInEncoderLeft);
+
+			} else {
+				PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
+						(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
+				PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
+
+				if (PORtoLeft >= PORtoRight) {
+					changeInHeading = -Math.acos((Math.pow(changeInEncoderLeft, 2) 
+							- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
+					changeInDistance = -Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+
+				} else {
+					changeInHeading = -Math.acos((Math.pow(changeInEncoderRight, 2) 
+							- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
+					changeInDistance = -Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+				}
+			}
+		}
+
+		angle = modAngle(heading + (changeInHeading / 2));
+		heading = modAngle(heading + changeInHeading);
+
 		changeInX = changeInDistance * Math.sin(angle);
 		changeInY = changeInDistance * Math.cos(angle);
+
 		clickPosX += changeInX;
 		clickPosY += changeInY;
-		heading = absAngle(heading + changeInHeading);
 
 		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
 				/ (timePassed);
-		
+
 		posX = clickPosX / RobotMap.CLICKS_PER_INCH;
 		posY = clickPosY / RobotMap.CLICKS_PER_INCH;
 	}
@@ -95,7 +158,7 @@ public class DeadReckon extends Subsystem {
 		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
 		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
 
-		if (sampleCount < 500) {
+		if (sampleCount < 1500) {
 			deadReckonData[sampleCount][0] = encoderLeftValue;
 			deadReckonData[sampleCount][1] = encoderRightValue;
 			deadReckonData[sampleCount][2] = time;
@@ -103,27 +166,28 @@ public class DeadReckon extends Subsystem {
 			deadReckonData[sampleCount][4] = posX;
 			deadReckonData[sampleCount][5] = posY;
 			deadReckonData[sampleCount][6] = calibrated ? 1.0 : 0.0;
-			
+			deadReckonData[sampleCount][7] = (double) sampleCount;
+			deadReckonData[sampleCount][8] = clickPosX;
+			deadReckonData[sampleCount][9] = clickPosY;
+
 			sampleCount++;
-					
-		} else if (sampleCount == 500) {
-			
-			File fData = new File("/tmp/fData");
-			FileOutputStream fos = new FileOutputStream(fData);
-			bw = new BufferedWriter(new OutputStreamWriter(fos));
-			
-			for (int i = 0; i < 500; i++) {
-				bw.write(String.format("%d,%f,%f,%f,%f,%f,%f,%f\n",
-				i,
-				deadReckonData[i][0],
-				deadReckonData[i][1],
-				deadReckonData[i][2],
-				deadReckonData[i][3],
-				deadReckonData[i][4],
-				deadReckonData[i][5],
-				deadReckonData[i][6]));
+
+		} else if (sampleCount == 1500) {
+			for (int i = 0; i < 1500; i++) {
+				bw.write(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
+						(int) deadReckonData[i][7],
+						deadReckonData[i][0],
+						deadReckonData[i][1],
+						deadReckonData[i][2],
+						deadReckonData[i][3],
+						deadReckonData[i][4],
+						deadReckonData[i][5],
+						deadReckonData[i][6],
+						deadReckonData[i][8],
+						deadReckonData[i][9]));
+				bw.flush();
 			}
-			
+			bw.close();
 			sampleCount++;
 		}
 	}
@@ -135,7 +199,7 @@ public class DeadReckon extends Subsystem {
 
 		lastHeading = heading;
 		lastTime = time;
-		time = timer.get();
+		time = Timer.getFPGATimestamp();
 
 		int[] vals = drive.getEncoderVals();
 		if (calibrated) {
@@ -161,8 +225,6 @@ public class DeadReckon extends Subsystem {
 
 		encoderLeftValue = 0;
 		encoderRightValue = 0;
-
-		time = timer.get();
 
 		calibrated = false;
 	}
@@ -197,7 +259,7 @@ public class DeadReckon extends Subsystem {
 	 * @param angle Angle measurement in radians.
 	 * @return Angle measurement in radians from 0 - 2Pi.
 	 */
-	public static double absAngle(double angle) {
+	public static double modAngle(double angle) {
 		angle %= 2 * Math.PI;
 		if (angle < 0){
 			angle += 2 * Math.PI;

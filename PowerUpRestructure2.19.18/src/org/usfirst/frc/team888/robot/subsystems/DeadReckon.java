@@ -19,7 +19,7 @@ public class DeadReckon extends Subsystem {
 	protected Timer timer;
 	protected DriveTrain drive;
 
-	double[][] deadReckonData = new double[7500][8];
+	double[][] deadReckonData = new double[7500][10];
 	int sampleCount = 0;
 
 	protected double angle;
