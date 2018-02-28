@@ -49,7 +49,7 @@ public class DeadReckon extends Subsystem {
 	File encoderData;
 	FileOutputStream fos;
 
-	public DeadReckon(DriveTrain p_drive) {
+	public DeadReckon(DriveTrain p_drive) throws FileNotFoundException {
 		timer = new Timer();
 		drive = p_drive;
 
@@ -105,7 +105,7 @@ public class DeadReckon extends Subsystem {
     	posY = clickPosY / RobotMap.CLICKS_PER_INCH;
     }
 
-	public void updateDashborad() throws IOException {
+	public void updateDashboradCat() throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
 		SmartDashboard.putNumber("Y Position", posY);
 		SmartDashboard.putNumber("Heading", Math.toDegrees(heading));
@@ -123,13 +123,14 @@ public class DeadReckon extends Subsystem {
 			deadReckonData[sampleCount][5] = posY;
 			deadReckonData[sampleCount][6] = calibrated ? 1.0 : 0.0;
 			deadReckonData[sampleCount][7] = (double) sampleCount;
+			deadReckonData[sampleCount][8] = clickPosX;
+			deadReckonData[sampleCount][9] = clickPosY;
 			
 			sampleCount++;
 					
 		} else if (sampleCount == 1500) {
-				
 			for (int i = 0; i < 1500; i++) {
-				bw.write(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
+				bw.write(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
 				(int) deadReckonData[i][7],
 				deadReckonData[i][0],
 				deadReckonData[i][1],
@@ -137,7 +138,9 @@ public class DeadReckon extends Subsystem {
 				deadReckonData[i][3],
 				deadReckonData[i][4],
 				deadReckonData[i][5],
-				deadReckonData[i][6]));
+				deadReckonData[i][6],
+				deadReckonData[i][8],
+				deadReckonData[i][9]));
 				bw.flush();
 			}
 			bw.close();

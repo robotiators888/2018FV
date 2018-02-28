@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.io.FileNotFoundException;
+
 import org.usfirst.frc.team888.robot.commands.NavigationScheduler;
 import org.usfirst.frc.team888.robot.commands.PneumaticScheduler;
 import org.usfirst.frc.team888.robot.subsystems.Climber;
@@ -56,7 +58,12 @@ public class Robot extends TimedRobot {
 		oi = new OI();
 
 		drive = new DriveTrain();
-		location = new DeadReckon(drive);
+		try {
+			location = new DeadReckon(drive);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		navigation =  new Navigation(drive, location, oi);
 
 		compressor =  new RunCompressor();

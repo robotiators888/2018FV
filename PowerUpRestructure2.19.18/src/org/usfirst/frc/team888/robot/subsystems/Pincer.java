@@ -36,7 +36,7 @@ public class Pincer extends Subsystem {
 
 	protected double currentAngle = 0;
 	protected double lastAngle = 0;
-	protected double angleThreshold = 100;
+	protected double angleThreshold = 150;
 	protected double pincerPower = 0;
 	protected double manualPower = 0;
 	protected double maintainerConstant = 0;

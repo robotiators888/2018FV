@@ -40,7 +40,7 @@ public class Navigation extends Subsystem {
 	protected boolean init = true;
 
 	protected boolean previousCameraButtonState = false;
-	protected byte[] ip = {10, 8, 88, 14};
+	protected byte[] ip = {10, 8, 88, 12};
 	protected InetAddress cameraAddress;
 
 	protected DatagramSocket sock;
@@ -79,7 +79,7 @@ public class Navigation extends Subsystem {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
-		location.updateDashborad();
+		location.updateDashboradCat();
 
 
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
@@ -89,8 +89,6 @@ public class Navigation extends Subsystem {
 			previousCameraButtonState = false;
 		}
 
-
-		location.updateDashborad();
 		updateDashboard();
 
 		schedulerOffset = (schedulerOffset + 1) % 50;
@@ -160,244 +158,209 @@ public class Navigation extends Subsystem {
 
 	public void autoRun() {
 		double[] pos = location.getPos();
-		switch (state) {
-		case 0:
-			if ((Math.abs(RobotMap.DESIRED_LOCATION[0] - pos[0]) < 15) && 
-					(Math.abs(RobotMap.DESIRED_LOCATION[1] - pos[1]) < 15)) {
-				double[] adjustments = getAdjustments();
-				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
-						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
-			} else {
-				drive.move(0.0, 0.0);
-				state = 1;
-			}
-			break;
-		
-		case 1:
+		if ((Math.abs(RobotMap.DESIRED_LOCATION[0] - pos[0]) > 15) && 
+				(Math.abs(RobotMap.DESIRED_LOCATION[1] - pos[1]) > 15)) {
+			double[] adjustments = getAdjustments();
+			drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
+					RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+		} else {
+			drive.move(0.0, 0.0);
+		}
+		/*
 			double turnTo = (Math.PI / 2);
 			if (location.getHeading() < turnTo)
 				drive.move(0.0, 0.3);
-			break;
-		
-		default:
-			drive.move(0.0, 0.0);
-		}
+			else{
+				SmartDashboard.putString("where", "170");
+			}
+			drive.move(0,0);
+		 */
 	}
 
-			public double[] getAdjustments() {	
-				double[] locationData = location.getNavLocationData();		
-				double[] headingData = calculateTurn();
+	public double[] getAdjustments() {	
+		double[] locationData = location.getNavLocationData();		
+		double[] headingData = calculateTurn();
+
+		/**
+		 * If the robot is moving in a positive direction...
+		 */
+
+		if ((locationData[0] > 0) && (locationData[1] > 0)) {
+
+			/**
+			 * If the left side is moving slower than right...
+			 */
+
+			if (DeadReckon.modAngle(locationData[2] - headingData[0]) <
+					DeadReckon.modAngle(headingData[0] - locationData[2])) {
 
 				/**
-				 * If the robot is moving in a positive direction...
+				 * If the speed plus the adjustment for the left side would be slower
+				 * than the max speed add the adjustments to the left side.
+				 * Otherwise, subtract the adjustments from the right side.
 				 */
 
-				if ((locationData[0] > 0) && (locationData[1] > 0)) {
-
-					/**
-					 * If the left side is moving slower than right...
-					 */
-
-					if (DeadReckon.modAngle(locationData[2] - headingData[0]) <
-							DeadReckon.modAngle(headingData[0] - locationData[2])) {
-
-						/**
-						 * If the speed plus the adjustment for the left side would be slower
-						 * than the max speed add the adjustments to the left side.
-						 * Otherwise, subtract the adjustments from the right side.
-						 */
-
-						if 	((RobotMap.LEFT_AUTO_SPEED + headingData[1])
-								<= maxOutput) {
-							leftSideAdjustment = headingData[1];
-							rightSideAdjustment = 0.0;
-						} else {
-							rightSideAdjustment = -headingData[1];
-							leftSideAdjustment = 0.0;
-						}
-
-						/**
-						 * If the right side is moving slower than left...
-						 */		
-
-					} else if (DeadReckon.modAngle(locationData[2] - headingData[0]) >
-					DeadReckon.modAngle(headingData[0] - locationData[2])) {
-
-						/**
-						 * If the speed plus the adjustment for the right side would be slower
-						 * than the max speed add the adjustments to the right side.
-						 * Otherwise, subtract the adjustments from the left side.
-						 */
-
-						if 	((RobotMap.RIGHT_AUTO_SPEED + headingData[1]) <= maxOutput) {			
-							rightSideAdjustment = headingData[1];
-							leftSideAdjustment = 0.0;
-						} else {
-							leftSideAdjustment = -headingData[1];
-							rightSideAdjustment = 0.0;
-						}
-
-						/**
-						 * If the robot is already moving straight add no adjustments
-						 */
-
-					} else {
-						leftSideAdjustment = 0.0;
-						rightSideAdjustment = 0.0;
-					}	
-
-					/**
-					 * If the robot is moving in a negative direction...
-					 */
-
-				} else if((locationData[0] < 0) && (locationData[1] < 0)) {
-
-					/**
-					 * If the left side is moving slower than right...
-					 */
-
-					if (DeadReckon.modAngle(locationData[2] - headingData[0]) >
-					DeadReckon.modAngle(headingData[0] - locationData[2])) {
-
-						/**
-						 * If the speed plus the adjustment for the left side would be slower
-						 * than the max speed add the adjustments to the left side.
-						 * Otherwise, subtract the adjustments from the right side.
-						 */
-
-						if ((RobotMap.LEFT_AUTO_SPEED - headingData[1]) >= -maxOutput) {
-							leftSideAdjustment = -headingData[1];
-							rightSideAdjustment = 0.0;
-						} else {
-							rightSideAdjustment = headingData[1];
-							leftSideAdjustment = 0.0;
-						}
-
-						/**
- 			/* If the right side is moving slower than left...
-						 */		
-
-					} else if (DeadReckon.modAngle(locationData[2] - headingData[0]) <
-							DeadReckon.modAngle(headingData[0] - locationData[2])) {
-
-						/**
-						 * If the speed plus the adjustment for the right side would be slower
-						 * than the max speed add the adjustments to the right side.
-						 * Otherwise, subtract the adjustments from the left side.
-						 */
-
-						if ((RobotMap.RIGHT_AUTO_SPEED - headingData[1]) >= -maxOutput) {
-							rightSideAdjustment = -headingData[1];
-							leftSideAdjustment = 0.0;
-						} else {
-							leftSideAdjustment = headingData[1];
-							rightSideAdjustment = 0.0;
-						}
-
-						/**
- 			/* If the robot is already moving straight add no adjustments
-						 */	
-
-					} else {
-						leftSideAdjustment = 0.0;
-						rightSideAdjustment = 0.0;
-					}	
-
-					/**
-					 * If the robot is not moving or turning, add no adjustments.
-					 */
+				if 	((RobotMap.LEFT_AUTO_SPEED + headingData[1])
+						<= maxOutput) {
+					leftSideAdjustment = headingData[1];
+					rightSideAdjustment = 0.0;
 
 				} else {
+					rightSideAdjustment = -headingData[1];
 					leftSideAdjustment = 0.0;
+				}
+
+				/**
+				 * If the right side is moving slower than left...
+				 */		
+
+			} else if (DeadReckon.modAngle(locationData[2] - headingData[0]) >
+			DeadReckon.modAngle(headingData[0] - locationData[2])) {
+
+				/**
+				 * If the speed plus the adjustment for the right side would be slower
+				 * than the max speed add the adjustments to the right side.
+				 * Otherwise, subtract the adjustments from the left side.
+				 */
+
+				if 	((RobotMap.RIGHT_AUTO_SPEED + headingData[1]) <= maxOutput) {			
+					rightSideAdjustment = headingData[1];
+					leftSideAdjustment = 0.0;
+				} else {
+					leftSideAdjustment = -headingData[1];
 					rightSideAdjustment = 0.0;
 				}
-
-				double[] adjustments = {
-						leftSideAdjustment,
-						rightSideAdjustment
-				};
-
-				return adjustments;		
-			}
-
-			public void updateDashboard() {
-				SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
-				SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
-			}
-
-			public double[] calculateTurn() {
-				double[] pos = location.getPos();
-				double[] posToDesired = {0,0};
-
-				for (int i = 0; i < pos.length; i++) {
-					posToDesired[i] = pos[i] - desiredLocation[i];
-				}
-
-				double desiredHeading = DeadReckon.modAngle(Math.atan2(posToDesired[0], posToDesired[1]));
-				double driveAdjustment = (Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
-
-				double[] i = {
-						desiredHeading,
-						driveAdjustment
-				};
-
-				return i;
 			}
 
 			/**
-			 * @return The array with zeros for both adjustments
+			 * If the robot is moving in a negative direction...
 			 */
 
-			public double[] reset() {
-				double[] j = {0,0};
-				return j;
-			}
+		} else if((locationData[0] < 0) && (locationData[1] < 0)) {
 
+			/**
+			 * If the left side is moving slower than right...
+			 */
 
-			public void switchCamera() {
-				if(cameraMessage.equals("frontCamera")) {
-					cameraMessage = "backCamera";
-					byteCameraMessage = cameraMessage.getBytes();
+			if (DeadReckon.modAngle(locationData[2] - headingData[0]) >
+			DeadReckon.modAngle(headingData[0] - locationData[2])) {
+
+				/**
+				 * If the speed plus the adjustment for the left side would be slower
+				 * than the max speed add the adjustments to the left side.
+				 * Otherwise, subtract the adjustments from the right side.
+				 */
+
+				if ((RobotMap.LEFT_AUTO_SPEED - headingData[1]) >= -maxOutput) {
+					leftSideAdjustment = -headingData[1];
+					rightSideAdjustment = 0.0;
 				} else {
-					cameraMessage = "frontCamera";
-					byteCameraMessage = cameraMessage.getBytes();
+					rightSideAdjustment = headingData[1];
+					leftSideAdjustment = 0.0;
 				}
 
-				try {
-					message.setData(byteCameraMessage);
-					sock.send(message);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+				/**
+ 			/* If the right side is moving slower than left...
+				 */		
 
-			public void updateCamera() {
-				SmartDashboard.putBoolean("button at beginning", previousCameraButtonState);
+			} else if (DeadReckon.modAngle(locationData[2] - headingData[0]) <
+					DeadReckon.modAngle(headingData[0] - locationData[2])) {
 
-				if(oi.getRightStickButton(5) && !previousCameraButtonState) {
-					if(cameraMessage.equals("frontCamera")) {
-						cameraMessage = "backCamera";
-						byteCameraMessage = cameraMessage.getBytes();
-					} else {
-						cameraMessage = "frontCamera";
-						byteCameraMessage = cameraMessage.getBytes();
-					}
+				/**
+				 * If the speed plus the adjustment for the right side would be slower
+				 * than the max speed add the adjustments to the right side.
+				 * Otherwise, subtract the adjustments from the left side.
+				 */
 
-					try {
-						message.setData(byteCameraMessage);
-						sock.send(message);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					previousCameraButtonState = true;
-				} else if (!oi.getRightStickButton(5)) {
-					previousCameraButtonState = false;
+				if ((RobotMap.RIGHT_AUTO_SPEED - headingData[1]) >= -maxOutput) {
+					rightSideAdjustment = -headingData[1];
+					leftSideAdjustment = 0.0;
+				} else {
+					leftSideAdjustment = headingData[1];
+					rightSideAdjustment = 0.0;
 				}
 
-			}
+				/**
+ 			/* If the robot is already moving straight add no adjustments
+				 */	
 
-			public void initDefaultCommand() {
-				// Set the default command for a subsystem here.
-				//setDefaultCommand(new MySpecialCommand());
-			}
+			} else {
+				leftSideAdjustment = 0.0;
+				rightSideAdjustment = 0.0;
+			}	
+
+			/**
+			 * If the robot is not moving or turning, add no adjustments.
+			 */
+
+		} else {
+			leftSideAdjustment = 0.0;
+			rightSideAdjustment = 0.0;
 		}
+
+		double[] adjustments = {
+				leftSideAdjustment,
+				rightSideAdjustment
+		};
+
+		return adjustments;		
+
+	}
+
+	public void updateDashboard() {
+		SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
+		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
+	}
+
+	public double[] calculateTurn() {
+		double[] pos = location.getPos();
+		double[] posToDesired = {0,0};
+
+		for (int i = 0; i < pos.length; i++) {
+			posToDesired[i] = pos[i] - desiredLocation[i];
+		}
+
+		double desiredHeading = DeadReckon.modAngle(Math.atan2(posToDesired[0], posToDesired[1]));
+		double driveAdjustment = (Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
+
+		double[] i = {
+				desiredHeading,
+				driveAdjustment
+		};
+
+		return i;
+	}
+
+	/**
+	 * @return The array with zeros for both adjustments
+	 */
+
+	public double[] reset() {
+		double[] j = {0,0};
+		return j;
+	}
+
+
+	public void switchCamera() {
+		if(cameraMessage.equals("frontCamera")) {
+			cameraMessage = "backCamera";
+			byteCameraMessage = cameraMessage.getBytes();
+		} else {
+			cameraMessage = "frontCamera";
+			byteCameraMessage = cameraMessage.getBytes();
+		}
+
+		try {
+			message.setData(byteCameraMessage);
+			sock.send(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public void initDefaultCommand() {
+		// Set the default command for a subsystem here.
+		//setDefaultCommand(new MySpecialCommand());
+	}
+}
