@@ -38,6 +38,8 @@ public class DeadReckon extends Subsystem {
 	protected double lastEncoderRight;
 	protected double lastHeading;
 	protected double lastTime;
+	protected double PORtoLeft;
+	protected double PORtoRight;
 	protected double posX;
 	protected double posY;
 	protected double speed;
@@ -62,7 +64,7 @@ public class DeadReckon extends Subsystem {
 		posY = 0;
 
 		encoderData = new File("/tmp/encoderData");
-		
+
 		try {
 			fos = new FileOutputStream(encoderData);
 		} catch (FileNotFoundException e) {
@@ -70,40 +72,82 @@ public class DeadReckon extends Subsystem {
 			e.printStackTrace();
 		}
 		bw = new BufferedWriter(new OutputStreamWriter(fos));
-		
+
 		reset();
 	}
 
-    public void updateTracker() {
-    	updateEncoderVals();
-    	
-    	changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
-    	changeInEncoderRight = encoderRightValue - lastEncoderRight;
-    	
-    	timePassed = time - lastTime;
-    	
-    	if (changeInEncoderLeft <= 0) {
-    		if (changeInEncoderRight <= 0) {
-    			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-    	    	changeInHeading = modAngle(changeInEncoderRight - changeInEncoderLeft);
-    	    	angle = modAngle(heading + (changeInHeading / 2));
-    	    	
-    	    	heading = modAngle(heading + changeInHeading);
-    	    	changeInX = changeInDistance * Math.sin(angle);
-    	    	changeInY = changeInDistance * Math.cos(angle);
-    	    	clickPosX += changeInX;
-    	    	clickPosY += changeInY;
-    		} else {
-    			
-    		}
-    	}
-    	
-    	speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
-    			/ (timePassed);
-    	
-    	posX = clickPosX / RobotMap.CLICKS_PER_INCH;
-    	posY = clickPosY / RobotMap.CLICKS_PER_INCH;
-    }
+	public void updateTracker() {
+		updateEncoderVals();
+
+		changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
+		changeInEncoderRight = encoderRightValue - lastEncoderRight;
+
+		timePassed = time - lastTime;
+
+		if (changeInEncoderLeft <= 0) {
+			if (changeInEncoderRight <= 0) {
+				changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
+				changeInHeading = modAngle(changeInEncoderRight - changeInEncoderLeft);
+
+			} else {
+				PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
+						(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
+				PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
+
+				if (PORtoLeft >= PORtoRight) {
+					changeInHeading = Math.acos((Math.pow(changeInEncoderLeft, 2) 
+							- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
+					changeInDistance = Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+
+				} else {
+					changeInHeading = Math.acos((Math.pow(changeInEncoderRight, 2) 
+							- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
+					changeInDistance = Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+				}
+			}
+
+		} else {
+			if (changeInEncoderRight > 0) {
+				changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
+				changeInHeading = modAngle(changeInEncoderRight - changeInEncoderLeft);
+
+			} else {
+				PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
+						(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
+				PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
+
+				if (PORtoLeft >= PORtoRight) {
+					changeInHeading = -Math.acos((Math.pow(changeInEncoderLeft, 2) 
+							- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
+					changeInDistance = -Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+
+				} else {
+					changeInHeading = -Math.acos((Math.pow(changeInEncoderRight, 2) 
+							- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
+					changeInDistance = -Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+				}
+			}
+		}
+
+		angle = modAngle(heading + (changeInHeading / 2));
+		heading = modAngle(heading + changeInHeading);
+
+		changeInX = changeInDistance * Math.sin(angle);
+		changeInY = changeInDistance * Math.cos(angle);
+
+		clickPosX += changeInX;
+		clickPosY += changeInY;
+
+		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
+				/ (timePassed);
+
+		posX = clickPosX / RobotMap.CLICKS_PER_INCH;
+		posY = clickPosY / RobotMap.CLICKS_PER_INCH;
+	}
 
 	public void updateDashboradCat() throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
@@ -125,22 +169,22 @@ public class DeadReckon extends Subsystem {
 			deadReckonData[sampleCount][7] = (double) sampleCount;
 			deadReckonData[sampleCount][8] = clickPosX;
 			deadReckonData[sampleCount][9] = clickPosY;
-			
+
 			sampleCount++;
-					
+
 		} else if (sampleCount == 1500) {
 			for (int i = 0; i < 1500; i++) {
 				bw.write(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
-				(int) deadReckonData[i][7],
-				deadReckonData[i][0],
-				deadReckonData[i][1],
-				deadReckonData[i][2],
-				deadReckonData[i][3],
-				deadReckonData[i][4],
-				deadReckonData[i][5],
-				deadReckonData[i][6],
-				deadReckonData[i][8],
-				deadReckonData[i][9]));
+						(int) deadReckonData[i][7],
+						deadReckonData[i][0],
+						deadReckonData[i][1],
+						deadReckonData[i][2],
+						deadReckonData[i][3],
+						deadReckonData[i][4],
+						deadReckonData[i][5],
+						deadReckonData[i][6],
+						deadReckonData[i][8],
+						deadReckonData[i][9]));
 				bw.flush();
 			}
 			bw.close();
