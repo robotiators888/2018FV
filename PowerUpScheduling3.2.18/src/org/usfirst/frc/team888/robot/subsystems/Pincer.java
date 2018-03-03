@@ -1,5 +1,6 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -18,6 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pincer extends Subsystem {
 
+	protected OI oi;
+	
 	protected TalonSRX pincerMotor;
 	protected DoubleSolenoid pincerPiston;
 
@@ -58,8 +61,12 @@ public class Pincer extends Subsystem {
 	protected double withoutCubePercent = 0.35;
 	protected double withCubeReflex = 0.15;
 	protected double withoutCubeReflex = 0.05;
+	
+	protected double desiredPosition = 2115;
 
-	public Pincer() {
+	public Pincer(OI p_oi) {
+		oi = p_oi;
+		
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 
 		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
@@ -78,7 +85,23 @@ public class Pincer extends Subsystem {
 
 	public void pincerInit() {
 		pincerMotor.setSelectedSensorPosition(0, 0, 0);
-	}	
+	}
+	
+	public void pincerExecute() {
+		displaySensorValues();
+		if(oi.getGamepadButton(1)){
+			desiredPosition = 700;
+		}
+		if(oi.getGamepadButton(2)){
+			desiredPosition = 1700;
+		}
+		if(oi.getGamepadButton(4)){
+			desiredPosition = 2115;
+		}
+		setPincerPosition(desiredPosition, oi.getGamepadButton(8), oi.getGamepadAxis(1));
+
+		pince(oi.getRightStickButton(3) || oi.getLeftStickButton(3));
+	}
 	
 	public void setPincerPosition(double desiredAngle, boolean button, double axis){
 		batteryVoltage = pincerMotor.getBusVoltage();
