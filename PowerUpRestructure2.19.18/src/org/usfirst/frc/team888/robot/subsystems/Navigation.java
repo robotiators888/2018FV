@@ -30,7 +30,6 @@ public class Navigation extends Subsystem {
 	protected boolean manualControl = false;
 
 	protected int schedulerOffset = 0;
-
 	protected int state = 0;
 
 	protected boolean input = false;
