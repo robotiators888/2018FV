@@ -87,7 +87,7 @@ public class DeadReckon extends Subsystem {
 		if (changeInEncoderLeft <= 0) {
 			if (changeInEncoderRight <= 0) {
 				changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-				changeInHeading = modAngle(changeInEncoderRight - changeInEncoderLeft);
+				changeInHeading = (changeInEncoderRight - changeInEncoderLeft) / RobotMap.WHEEL_BASE;
 
 			} else {
 				PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
@@ -111,7 +111,7 @@ public class DeadReckon extends Subsystem {
 		} else {
 			if (changeInEncoderRight > 0) {
 				changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-				changeInHeading = modAngle(changeInEncoderRight - changeInEncoderLeft);
+				changeInHeading = (changeInEncoderRight - changeInEncoderLeft) / RobotMap.WHEEL_BASE;
 
 			} else {
 				PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
@@ -133,7 +133,7 @@ public class DeadReckon extends Subsystem {
 			}
 		}
 
-		angle = modAngle(heading + (changeInHeading / 2));
+		angle = (heading + (changeInHeading / 2));
 		heading = modAngle(heading + changeInHeading);
 
 		changeInX = changeInDistance * Math.sin(angle);

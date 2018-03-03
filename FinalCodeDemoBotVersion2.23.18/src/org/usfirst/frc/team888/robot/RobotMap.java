@@ -61,37 +61,11 @@ public class RobotMap {
 	public static final int MOTOR_REAR_LEFT = 7;
 	public static final int MOTOR_FRONT_LEFT = 9;
 	
-	
-	//CAN bus ID for the pincer motor controller
-	public static final int PINCER_MOTOR = 4;
-	
-	public static final int COMPRESSOR = 5;
-	
-	
-	//PWM ports for climber motor controllers
-	public static final int CLIMBER_MOTOR_LEFT = 0;
-	public static final int CLIMBER_MOTOR_RIGHT = 1;
-	
-	
 	//The width between the two wheels the encoders measure off of.
-	public static final double WHEEL_BASE = 17060.859;
+	public static final double WHEEL_BASE = 2996;
 	
 	//Conversion factor for clicks to inches
-	public static final double CLICKS_PER_INCH = 745.8299;
-	
-	//Max climber speed
-	public static final double CLIMBER_MOTOR_SPEED = 0.4;
-	
-	//Max pincer speed
-	public static final double PINCER_MOTOR_SPEED = 0.2;
-	
-	
-	//Establishes the encoder position for each level of the climber
-	public static final int HIGH_DROPOFF_POSITION = 200;
-	public static final int LOW_DROPOFF_POSITION = 1000;
-	public static final int PICKUP_POSITION = 1600;
-	public static final int RESTING_POSITION = 0;
-	
+	public static final double CLICKS_PER_INCH = 107;
 	
 	//Sets the speed for autonomous and the adjustments to add for driving straight.
 	public static final double DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT = 0.1;

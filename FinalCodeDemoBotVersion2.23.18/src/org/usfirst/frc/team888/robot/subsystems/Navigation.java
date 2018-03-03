@@ -92,13 +92,18 @@ public class Navigation extends Subsystem {
 		 		} */
 	}
 	//send first message to pi to start camera feed
-	public void navigationExecute() throws IOException {
+	public void navigationExecute() {
 		updateCamera();
 
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
-		location.updateDashborad();
+		try {
+			location.updateDashborad();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
@@ -110,7 +115,6 @@ public class Navigation extends Subsystem {
 			previousCameraButtonState = false;
 		}
 
-		location.updateDashborad();
 		updateDashboard();
 
 		schedulerOffset = (schedulerOffset + 1) % 50;
@@ -136,6 +140,7 @@ public class Navigation extends Subsystem {
 			} else {
 				drive.move(0.0, 0.0);
 			}
+			
 		} else {
 			if(oi.getTriggers()) {
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
@@ -175,7 +180,7 @@ public class Navigation extends Subsystem {
 			SmartDashboard.putNumber("leftOutput", leftDriveOutput);
 			SmartDashboard.putNumber("rightOutput", rightDriveOutput); 
 
-			drive.move(leftDriveOutput, rightDriveOutput);
+			drive.move(-leftDriveOutput, -rightDriveOutput);
 		}
 	}
 
