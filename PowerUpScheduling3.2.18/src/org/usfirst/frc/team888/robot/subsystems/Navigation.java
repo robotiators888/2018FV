@@ -8,7 +8,6 @@ import java.net.InetAddress;
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -17,7 +16,7 @@ public class Navigation extends Subsystem {
 	protected DriveTrain drive;
 	protected DeadReckon location;
 	protected OI oi;
-
+	
 	protected String gameData;
 
 	protected double maxOutput = 1.0;
@@ -75,7 +74,6 @@ public class Navigation extends Subsystem {
 			init = false;
 		}
 
-		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
 
@@ -99,7 +97,7 @@ public class Navigation extends Subsystem {
 	}
 
 	public void updateGuidenceControl() {
-		desiredLocation = RobotMap.DESIRED_LOCATION;
+			desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
 
 
