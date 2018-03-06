@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -98,12 +99,8 @@ public class Navigation extends Subsystem {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
-		try {
-			location.updateDashborad();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		location.updateDashboard();
+
 
 
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
@@ -132,6 +129,8 @@ public class Navigation extends Subsystem {
 	 */
 
 	public void updateMotion() {
+		manualControl = !DriverStation.getInstance().isAutonomous();
+
 		if (!manualControl) {
 			double[] pos = location.getPos();
 			if (pos[1] < 120) {
@@ -140,7 +139,7 @@ public class Navigation extends Subsystem {
 			} else {
 				drive.move(0.0, 0.0);
 			}
-			
+
 		} else {
 			if(oi.getTriggers()) {
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
