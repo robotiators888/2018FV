@@ -126,7 +126,6 @@ public class Navigation extends Subsystem {
 	}
 
 	public void updateGuidenceControl() {
-		desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
 
 
@@ -428,7 +427,7 @@ public class Navigation extends Subsystem {
 		double[] pos = location.getPos();
 		double[] posToDesired = {0,0};
 
-		for (int i = 0; i < pos.length; i++) {
+		for (int i = 0; i < desiredLocation.length; i++) {
 			posToDesired[i] = pos[i] - desiredLocation[i];
 		}
 

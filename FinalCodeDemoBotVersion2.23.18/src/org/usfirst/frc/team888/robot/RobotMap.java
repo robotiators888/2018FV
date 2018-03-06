@@ -70,7 +70,5 @@ public class RobotMap {
 	//Sets the speed for autonomous and the adjustments to add for driving straight.
 	public static final double DRIVE_STRAIGHT_ADJUSTMENT_AMOUNT = 0.1;
 	public static final double LEFT_AUTO_SPEED = 0.8;
-	public static final double RIGHT_AUTO_SPEED = 0.8; 
-	public static final double[] DESIRED_LOCATION = {0, 120};
-	
+	public static final double RIGHT_AUTO_SPEED = 0.8;
 }
