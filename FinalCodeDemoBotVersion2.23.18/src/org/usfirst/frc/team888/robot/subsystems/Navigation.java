@@ -370,8 +370,6 @@ public class Navigation extends Subsystem {
 			e.printStackTrace();
 		}
 		SmartDashboard.putBoolean("button after pressed", previousCameraButtonState);
-
-
 	}
 
 	public void initDefaultCommand() {
