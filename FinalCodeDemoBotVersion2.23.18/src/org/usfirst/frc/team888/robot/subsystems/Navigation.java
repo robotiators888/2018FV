@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Navigation extends Subsystem {
 
+	protected String gameData;
+	
 	protected DriveTrain drive;
 	protected DeadReckon location;
 	protected OI oi;
@@ -32,6 +34,8 @@ public class Navigation extends Subsystem {
 	protected double leftDriveOutput = 0.0;
 	protected double rightDriveOutput = 0.0;
 
+	protected int state;
+	
 	protected double[] desiredLocation;
 
 	protected boolean manualControl = true;
@@ -76,6 +80,8 @@ public class Navigation extends Subsystem {
 		} catch (Exception e) {
 
 		} 
+		
+		state = 0;
 	}
 
 	public void navigationInit() {
@@ -85,6 +91,8 @@ public class Navigation extends Subsystem {
 			init = false;
 		}
 
+		
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		//send first message to pi to start camera feed
 		/* try {
 		 			sock.send(message);
@@ -183,9 +191,101 @@ public class Navigation extends Subsystem {
 		}
 	}
 
+
+	public void runAuto() {
+		double[] pos = location.getPos();
+		switch (state) {
+		case 0:
+			desiredLocation = new double[] {0, 72};
+			if ((Math.abs(desiredLocation[0] - pos[0]) < 15) && 
+					(Math.abs(desiredLocation[1] - pos[1]) < 15)) {
+				drive.move(0.0, 0.0);
+				state = 1;
+			} else {
+				double[] adjustments = getAdjustments();
+				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
+						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+			}
+			break;
+		case 1:
+			if (gameData.charAt(0) == 'L') {
+				if (location.getHeading() > ((Math.PI * 14) / 9)) {
+					drive.move(-0.2, 0.2);
+				}
+				else if (location.getHeading() < ((Math.PI * 13) / 9)){
+					drive.move(0.2, -0.2);
+				}
+				else {
+					drive.move(0, 0);
+					state = 2;
+				}
+			}
+			else {
+				if (location.getHeading() > ((Math.PI * 4) / 9)) {
+					drive.move(0.2, -0.2);
+				}
+				else if (location.getHeading() < ((Math.PI * 5) / 9)){
+					drive.move(-0.2, 0.2);
+				}
+				else {
+					drive.move(0, 0);
+					state = 2;
+				}
+			}
+			break;
+		case 2:
+			if (gameData.charAt(0) == 'L') {
+				desiredLocation = new double[] {72, 72};
+			}
+			else {
+				desiredLocation = new double[] {-72, 72};
+			}
+			if ((Math.abs(desiredLocation[0] - pos[0]) < 15) && 
+					(Math.abs(desiredLocation[1] - pos[1]) < 15)) {
+				drive.move(0.0, 0.0);
+				state = 3;
+			} else {
+				double[] adjustments = getAdjustments();
+				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
+						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+			}
+			break;
+		case 3:
+			if (gameData.charAt(0) == 'L' && (location.getHeading() > (Math.PI / 12))) {
+				drive.move(-0.2, 0.2);
+			}
+			else if (gameData.charAt(0) == 'R' && (location.getHeading() < ((Math.PI * 11)/ 12))) {
+				drive.move(-0.2, 0.2);
+			}
+			else {
+				drive.move(0.0, 0.0);
+				state = 4;
+			}
+			break;
+		case 4:
+			if (gameData.charAt(0) == 'L') {
+				desiredLocation = new double[] {72, 140};
+			}
+			else {
+				desiredLocation = new double[] {-72, 140};
+			}
+			if ((Math.abs(desiredLocation[0] - pos[0]) < 15) && 
+					(Math.abs(desiredLocation[1] - pos[1]) < 15)) {
+				drive.move(0.0, 0.0);
+				state = 5;
+			} else {
+				double[] adjustments = getAdjustments();
+				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
+						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+			}
+			break;
+		default:
+		}
+	}
+
 	public double[] getAdjustments() {	
 		double[] navData = location.getNavLocationData();
-		desiredHeading = 0; //calculateDesiredHeading();
+		desiredHeading = calculateDesiredHeading();
 
 		/**
 		 * If the robot is moving in a positive direction...
