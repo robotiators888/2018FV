@@ -32,11 +32,11 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void move(double leftSpeed, double rightSpeed) {
-		rearLeft.set(leftSpeed);
-		frontLeft.set(leftSpeed);
+		rearLeft.set(-leftSpeed);
+		frontLeft.set(-leftSpeed);
 
-		rearRight.set(-rightSpeed);
-		frontRight.set(-rightSpeed);
+		rearRight.set(rightSpeed);
+		frontRight.set(rightSpeed);
 	}
 
 	public int[] getEncoderVals() {

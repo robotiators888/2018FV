@@ -29,6 +29,7 @@ public class DeadReckon extends Subsystem {
 	protected double changeInY;
 	protected double clickPosX;
 	protected double clickPosY;
+	protected String direction;
 	protected double encoderLeftValue;
 	protected double encoderRightValue;
 	protected double heading;
@@ -132,12 +133,16 @@ public class DeadReckon extends Subsystem {
 
 			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
 			changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
+			
+			direction = "forward";
 		} 
 
 		else if (changeInEncoderLeft >= 0  && changeInEncoderRight >= 0) {
 
 			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
 			changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
+			
+			direction = "backward";
 		}
 
 		else if (changeInEncoderLeft >= 0  && changeInEncoderRight <= 0) {
@@ -171,6 +176,8 @@ public class DeadReckon extends Subsystem {
 				changeInDistance = Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
 						Math.sin((Math.PI - changeInHeading) / 2);
 			}
+			
+			direction = "SCW";
 		}
 
 		else if (changeInEncoderLeft <= 0  && changeInEncoderRight >= 0) {
@@ -205,6 +212,8 @@ public class DeadReckon extends Subsystem {
 				changeInDistance = -Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
 						Math.sin((Math.PI - changeInHeading) / 2);
 			}
+			
+			direction = "SCCW";
 		}
 
 
@@ -336,9 +345,8 @@ public class DeadReckon extends Subsystem {
 	/**
 	 * @return Returns the data for the navigation class
 	 */
-	public double[] getNavLocationData() {
-		double[] i = {changeInEncoderLeft, changeInEncoderRight, heading};
-		return i;
+	public String getDirection() {
+		return direction;
 	}
 
 	/**
