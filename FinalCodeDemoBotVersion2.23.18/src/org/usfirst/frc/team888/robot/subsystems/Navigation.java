@@ -181,7 +181,7 @@ public class Navigation extends Subsystem {
 				drive.move(0.0, 0.0);
 				state = 1;
 			} else {
-				double[] adjustments = getAdjustments();
+				double[] adjustments = getToWaypoint();
 				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
 						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 			}
@@ -229,7 +229,7 @@ public class Navigation extends Subsystem {
 				drive.move(0.0, 0.0);
 				state = 3;
 			} else {
-				double[] adjustments = getAdjustments();
+				double[] adjustments = getToWaypoint();
 				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
 						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 			}
@@ -259,7 +259,7 @@ public class Navigation extends Subsystem {
 				drive.move(0.0, 0.0);
 				state = 5;
 			} else {
-				double[] adjustments = getAdjustments();
+				double[] adjustments = getToWaypoint();
 				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
 						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 			}
@@ -274,13 +274,13 @@ public class Navigation extends Subsystem {
 			}
 			break;
 		default:
-			SmartDashboard.putString("i want", "to die");
+			drive.move(0.0, 0.0);
 		}
 		
 		SmartDashboard.putNumber("state", state);
 	}
 
-	public double[] getAdjustments() {
+	public double[] getToWaypoint() {
 		String direction = location.getDirection();
 		double heading = location.getHeading();		
 		double[] targetData = calculateTurn();
@@ -397,7 +397,9 @@ public class Navigation extends Subsystem {
 			 * If the robot is not moving or turning, add no adjustments.
 			 */
 
-		} else {
+		}
+	
+		else {
 			leftSideAdjustment = 0.0;
 			rightSideAdjustment = 0.0;
 		}
@@ -409,6 +411,53 @@ public class Navigation extends Subsystem {
 
 		return adjustments;		
 
+	}
+	
+	public void getOriented(double heading) {
+		if (location.getDirection().equals("SCW")) {
+
+			if (DeadReckon.modAngle(heading - targetData[0]) <
+					DeadReckon.modAngle(targetData[0] - heading)) {
+
+				/**
+				 * If the speed plus the adjustment for the left side would be slower
+				 * than the max speed add the adjustments to the left side.
+				 * Otherwise, subtract the adjustments from the right side.
+				 */
+
+				if 	((RobotMap.LEFT_AUTO_SPEED + targetData[1])
+						<= maxOutput) {
+					leftSideAdjustment = targetData[1];
+					rightSideAdjustment = 0.0;
+
+				} else {
+					rightSideAdjustment = -targetData[1];
+					leftSideAdjustment = 0.0;
+				}
+
+				/**
+				 * If the right side is moving slower than left...
+				 */		
+
+			} else if (DeadReckon.modAngle(heading - targetData[0]) >
+			DeadReckon.modAngle(targetData[0] - heading)) {
+
+				/**
+				 * If the speed plus the adjustment for the right side would be slower
+				 * than the max speed add the adjustments to the right side.
+				 * Otherwise, subtract the adjustments from the left side.
+				 */
+
+				if 	((RobotMap.RIGHT_AUTO_SPEED + targetData[1]) <= maxOutput) {			
+					rightSideAdjustment = targetData[1];
+					leftSideAdjustment = 0.0;
+				} else {
+					leftSideAdjustment = -targetData[1];
+					rightSideAdjustment = 0.0;
+				}
+			}
+			
+		}
 	}
 
 	//Sends navigation data to the dashboard
