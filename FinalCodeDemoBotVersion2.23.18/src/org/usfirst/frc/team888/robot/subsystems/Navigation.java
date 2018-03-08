@@ -124,13 +124,7 @@ public class Navigation extends Subsystem {
 		manualControl = !DriverStation.getInstance().isAutonomous();
 
 		if (!manualControl) {
-			double[] pos = location.getPos();
-			if (pos[1] < 120) {
-				double[] adjustments = getAdjustments();
-				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
-			} else {
-				drive.move(0.0, 0.0);
-			}
+			runAuto();
 
 		} else {
 			if(oi.getTriggers()) {
@@ -182,8 +176,8 @@ public class Navigation extends Subsystem {
 		case 0:
 			desiredLocation[0] = 0;
 			desiredLocation[1] = 72;
-			if ((Math.abs(desiredLocation[0] - pos[0]) < 15) && 
-					(Math.abs(desiredLocation[1] - pos[1]) < 15)) {
+			if ((Math.abs(desiredLocation[0] - pos[0]) < 3) && 
+					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
 				drive.move(0.0, 0.0);
 				state = 1;
 			} else {
@@ -195,10 +189,10 @@ public class Navigation extends Subsystem {
 		case 1:
 			if (gameData.charAt(0) == 'L') {
 				if (location.getHeading() > ((Math.PI * 14) / 9)) {
-					drive.move(-0.2, 0.2);
+					drive.move(0.2, -0.2);
 				}
 				else if (location.getHeading() < ((Math.PI * 13) / 9)){
-					drive.move(0.2, -0.2);
+					drive.move(-0.2, 0.2);
 				}
 				else {
 					drive.move(0, 0);
@@ -206,11 +200,13 @@ public class Navigation extends Subsystem {
 				}
 			}
 			else {
-				if (location.getHeading() > ((Math.PI * 4) / 9)) {
-					drive.move(0.2, -0.2);
+				if (location.getHeading() < ((Math.PI * 4) / 9)) {
+					drive.move(-0.4, 0.4);
+					SmartDashboard.putString("boi", "CW");
 				}
-				else if (location.getHeading() < ((Math.PI * 5) / 9)){
-					drive.move(-0.2, 0.2);
+				else if (location.getHeading() > ((Math.PI * 5) / 9)){
+					drive.move(0.6, -0.6);
+					SmartDashboard.putString("boi", "CCW");
 				}
 				else {
 					drive.move(0, 0);
@@ -220,13 +216,16 @@ public class Navigation extends Subsystem {
 			break;
 		case 2:
 			if (gameData.charAt(0) == 'L') {
-				desiredLocation = new double[] {72, 72};
+				desiredLocation[0] = -72;
+				desiredLocation[1] = 72;		
 			}
 			else {
-				desiredLocation = new double[] {-72, 72};
+				desiredLocation[0] = 72;
+				desiredLocation[1] = 72;
 			}
-			if ((Math.abs(desiredLocation[0] - pos[0]) < 15) && 
-					(Math.abs(desiredLocation[1] - pos[1]) < 15)) {
+			
+			if ((Math.abs(desiredLocation[0] - pos[0]) < 3) && 
+					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
 				drive.move(0.0, 0.0);
 				state = 3;
 			} else {
@@ -239,8 +238,8 @@ public class Navigation extends Subsystem {
 			if (gameData.charAt(0) == 'L' && (location.getHeading() > (Math.PI / 12))) {
 				drive.move(-0.2, 0.2);
 			}
-			else if (gameData.charAt(0) == 'R' && (location.getHeading() < ((Math.PI * 11)/ 12))) {
-				drive.move(-0.2, 0.2);
+			else if (gameData.charAt(0) == 'R' && (location.getHeading() < ((Math.PI * 23)/ 12))) {
+				drive.move(-0.6, 0.6);
 			}
 			else {
 				drive.move(0.0, 0.0);
@@ -252,10 +251,11 @@ public class Navigation extends Subsystem {
 				desiredLocation = new double[] {72, 140};
 			}
 			else {
-				desiredLocation = new double[] {-72, 140};
+				desiredLocation[0] = 72;
+				desiredLocation[1] = 144;
 			}
-			if ((Math.abs(desiredLocation[0] - pos[0]) < 15) && 
-					(Math.abs(desiredLocation[1] - pos[1]) < 15)) {
+			if ((Math.abs(desiredLocation[0] - pos[0]) < 3) && 
+					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
 				drive.move(0.0, 0.0);
 				state = 5;
 			} else {
@@ -264,8 +264,20 @@ public class Navigation extends Subsystem {
 						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 			}
 			break;
+		case 5:
+			if (location.getHeading() < ((Math.PI * 23)/ 12) && location.getHeading() > (Math.PI / 12)) {
+				drive.move(-0.6, 0.6);
+			}
+			else {
+				drive.move(0.0, 0.0);
+				state = 6;
+			}
+			break;
 		default:
+			SmartDashboard.putString("i want", "to die");
 		}
+		
+		SmartDashboard.putNumber("state", state);
 	}
 
 	public double[] getAdjustments() {
