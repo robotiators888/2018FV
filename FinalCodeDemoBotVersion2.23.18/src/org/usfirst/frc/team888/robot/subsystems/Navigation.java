@@ -26,8 +26,6 @@ public class Navigation extends Subsystem {
 	protected OI oi;
 
 	protected double maxOutput = 1.0;
-	protected double leftSideAdjustment;
-	protected double rightSideAdjustment;
 	protected double desiredHeading;
 	protected double leftBaseDriveOutput = 0.0;
 	protected double rightBaseDriveOutput = 0.0;	
@@ -282,8 +280,11 @@ public class Navigation extends Subsystem {
 
 	public double[] getToWaypoint() {
 		String direction = location.getDirection();
-		double heading = location.getHeading();		
+		double heading = location.getHeading();
+		double rightSideAdjustment = 0;
+		double leftSideAdjustment = 0;
 		double[] targetData = calculateTurn();
+
 
 		/**
 		 * If the robot is moving in a positive direction...
@@ -413,7 +414,12 @@ public class Navigation extends Subsystem {
 
 	}
 	
-	public void getOriented(double heading) {
+	public double[] getOriented(double desiredHeading) {
+		double[] targetData = calculateTurn();
+		double heading = location.getHeading();
+		double leftTurnSpeed = 0;
+		double rightTurnSpeed = 0;
+		
 		if (location.getDirection().equals("SCW")) {
 
 			if (DeadReckon.modAngle(heading - targetData[0]) <
@@ -427,12 +433,12 @@ public class Navigation extends Subsystem {
 
 				if 	((RobotMap.LEFT_AUTO_SPEED + targetData[1])
 						<= maxOutput) {
-					leftSideAdjustment = targetData[1];
-					rightSideAdjustment = 0.0;
+					leftTurnSpeed = targetData[1];
+					rightTurnSpeed = 0.0;
 
 				} else {
-					rightSideAdjustment = -targetData[1];
-					leftSideAdjustment = 0.0;
+					rightTurnSpeed = -targetData[1];
+					leftTurnSpeed = 0.0;
 				}
 
 				/**
@@ -449,21 +455,27 @@ public class Navigation extends Subsystem {
 				 */
 
 				if 	((RobotMap.RIGHT_AUTO_SPEED + targetData[1]) <= maxOutput) {			
-					rightSideAdjustment = targetData[1];
-					leftSideAdjustment = 0.0;
+					rightTurnSpeed = targetData[1];
+					leftTurnSpeed = 0.0;
 				} else {
-					leftSideAdjustment = -targetData[1];
-					rightSideAdjustment = 0.0;
+					leftTurnSpeed = -targetData[1];
+					rightTurnSpeed = 0.0;
 				}
-			}
-			
+			}		
 		}
+		
+		double[] turnSpeeds = {
+				leftTurnSpeed,
+				rightTurnSpeed
+		};
+
+		return turnSpeeds;	
 	}
 
 	//Sends navigation data to the dashboard
 	public void updateDashboard() {
-		SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
-		SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
+		//SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
+		//SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
 		SmartDashboard.putString("Game Pattern", gameData);
 		SmartDashboard.putNumber("leftOutput", leftDriveOutput);
 		SmartDashboard.putNumber("rightOutput", rightDriveOutput);
