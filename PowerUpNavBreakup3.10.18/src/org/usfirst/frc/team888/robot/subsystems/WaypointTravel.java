@@ -215,15 +215,15 @@ public class WaypointTravel extends Subsystem {
 		if (DeadReckon.modAngle(heading - desiredHeading) >=
 				DeadReckon.modAngle(desiredHeading - heading)) {
 
-			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED * 2;
-			rightTurnSpeed = -RobotMap.RIGHT_AUTO_SPEED * 2;
+			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED * 1.5;
+			rightTurnSpeed = -RobotMap.RIGHT_AUTO_SPEED * 1.5;
 
 		}
 		
 		else {
 
-			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED * 2;
-			rightTurnSpeed = RobotMap.RIGHT_AUTO_SPEED * 2;		
+			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED * 1.5;
+			rightTurnSpeed = RobotMap.RIGHT_AUTO_SPEED * 1.5;		
 		}
 
 		double[] turnSpeeds = {
@@ -241,25 +241,32 @@ public class WaypointTravel extends Subsystem {
 	 * @return An array with the heading the robot should travel and the adjustment to add to the motor output
 	 */
 	public double[] calculateTurn(double desiredX, double desiredY) {
-
-		//Calculates the direction the robot should travel in to get to the next waypoint
+		double heading = location.getHeading();
+		
+		//Calculates the direction the robot should travel in to get to the next waypoint.
 		double[] pos = location.getPos();
 
 		double desiredHeading = DeadReckon.modAngle(Math.atan2(desiredX - pos[0],
 				desiredY - pos[1]));
-
-		SmartDashboard.putNumber("desired x", desiredX);
-		SmartDashboard.putNumber("desired y", desiredY);
-		SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
-
+		
+		double headingDifference = DeadReckon.modAngle(desiredHeading - heading);
+		if (headingDifference > Math.PI) {
+			headingDifference = Math.PI - headingDifference;
+		}
+		
 		//Calculates the adjustment based on how much the robot needs to turn
-		double driveAdjustment = 0.1; //(Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
+		double driveAdjustment = 0.26666; //Math.max(0.03, Math.min(0.3, (Math.abs(headingDifference) / Math.PI * 0.3)));
 
 		double[] i = {
 				desiredHeading,
 				driveAdjustment
 		};
 
+		SmartDashboard.putNumber("desired x", desiredX);
+		SmartDashboard.putNumber("desired y", desiredY);
+		SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
+		SmartDashboard.putNumber("ajustment proportion", driveAdjustment);
+		
 		return i;
 	}
 
