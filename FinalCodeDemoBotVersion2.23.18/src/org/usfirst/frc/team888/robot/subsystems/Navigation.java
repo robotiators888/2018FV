@@ -419,8 +419,6 @@ public class Navigation extends Subsystem {
 		double heading = location.getHeading();
 		double leftTurnSpeed = 0;
 		double rightTurnSpeed = 0;
-		
-		if (location.getDirection().equals("SCW")) {
 
 			if (DeadReckon.modAngle(heading - targetData[0]) <
 					DeadReckon.modAngle(targetData[0] - heading)) {
@@ -452,7 +450,7 @@ public class Navigation extends Subsystem {
 				 * If the speed plus the adjustment for the right side would be slower
 				 * than the max speed add the adjustments to the right side.
 				 * Otherwise, subtract the adjustments from the left side.
-				 */
+				 *INVERT ONE TURN SPEED/
 
 				if 	((RobotMap.RIGHT_AUTO_SPEED + targetData[1]) <= maxOutput) {			
 					rightTurnSpeed = targetData[1];
@@ -462,8 +460,7 @@ public class Navigation extends Subsystem {
 					rightTurnSpeed = 0.0;
 				}
 			}		
-		}
-		
+				
 		double[] turnSpeeds = {
 				leftTurnSpeed,
 				rightTurnSpeed
