@@ -66,7 +66,7 @@ public class Navigation extends Subsystem {
 
 		//Declares the start position and the start location options
 		startPosition = new SendableChooser<String>();
-		startPosition.addDefault("You Need to Choose One", "Middle");
+		startPosition.addDefault("Middle Start Position", "Middle");
 		startPosition.addObject("Left Start Position", "Left");
 		startPosition.addObject("Right Start Position", "Right");
 		
@@ -269,6 +269,8 @@ public class Navigation extends Subsystem {
 			default:
 			}
 		}
+		
+		SmartDashboard.putNumber("State", state);
 	}
 
 

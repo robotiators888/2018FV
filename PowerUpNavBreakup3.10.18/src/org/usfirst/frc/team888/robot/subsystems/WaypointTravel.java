@@ -31,8 +31,8 @@ public class WaypointTravel extends Subsystem {
 
 		switch (state) {
 		case 0:
-			if ((Math.abs(desiredX - pos[0]) < 3) && 
-					(Math.abs(desiredY - pos[1]) < 3)) {
+			if ((Math.abs(desiredX - pos[0]) < 6) && 
+					(Math.abs(desiredY - pos[1]) < 6)) {
 				drive.move(0.0, 0.0);
 				state = 1;
 			} else {
@@ -45,7 +45,7 @@ public class WaypointTravel extends Subsystem {
 			if (headingDifference > Math.PI) {
 				headingDifference = Math.PI - headingDifference;
 			}
-			if (Math.abs(headingDifference) > (Math.PI / 24)) {
+			if (Math.abs(headingDifference) > (Math.PI / 48)) {
 				double[] rotationSpeed = moveToOrientation(desiredHeading);
 				drive.move(rotationSpeed[0], rotationSpeed[1]);
 			}
@@ -56,7 +56,7 @@ public class WaypointTravel extends Subsystem {
 			break;
 		case 2:
 			arrived = true;
-			state = 3;
+			state = 0;
 		default:;
 		}
 
