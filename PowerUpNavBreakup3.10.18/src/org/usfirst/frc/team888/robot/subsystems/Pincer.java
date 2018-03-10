@@ -220,11 +220,15 @@ public class Pincer extends Subsystem {
 		if(output) {
 			pincerPiston.set(DoubleSolenoid.Value.kForward);
 			pincerPosition = "Open";
-			lights.set(0);
 		} else {
 			pincerPiston.set(DoubleSolenoid.Value.kReverse);
 			pincerPosition = "Closed";
-			lights.set(1);
+		}
+		if(DriverStation.getInstance().isDisabled()){
+			lights.set(1.0);
+		}
+		else{
+			lights.set(-0.11);
 		}
 
 	}
