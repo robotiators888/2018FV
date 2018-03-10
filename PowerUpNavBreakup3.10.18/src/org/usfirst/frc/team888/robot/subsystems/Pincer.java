@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
 public class Pincer extends Subsystem {
 
 	protected OI oi;
