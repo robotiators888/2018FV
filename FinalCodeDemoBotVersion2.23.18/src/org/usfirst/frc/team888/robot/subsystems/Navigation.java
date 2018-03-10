@@ -221,7 +221,7 @@ public class Navigation extends Subsystem {
 				desiredLocation[0] = 72;
 				desiredLocation[1] = 72;
 			}
-			
+
 			if ((Math.abs(desiredLocation[0] - pos[0]) < 3) && 
 					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
 				drive.move(0.0, 0.0);
@@ -274,7 +274,7 @@ public class Navigation extends Subsystem {
 		default:
 			drive.move(0.0, 0.0);
 		}
-		
+
 		SmartDashboard.putNumber("state", state);
 	}
 
@@ -399,7 +399,7 @@ public class Navigation extends Subsystem {
 			 */
 
 		}
-	
+
 		else {
 			leftSideAdjustment = 0.0;
 			rightSideAdjustment = 0.0;
@@ -413,60 +413,76 @@ public class Navigation extends Subsystem {
 		return adjustments;		
 
 	}
-	
+
 	public double[] getOriented(double desiredHeading) {
 		double[] targetData = calculateTurn();
 		double heading = location.getHeading();
 		double leftTurnSpeed = 0;
 		double rightTurnSpeed = 0;
 
-			if (DeadReckon.modAngle(heading - targetData[0]) <
-					DeadReckon.modAngle(targetData[0] - heading)) {
+		if (DeadReckon.modAngle(heading - targetData[0]) <
+				DeadReckon.modAngle(targetData[0] - heading)) {
 
-				/**
-				 * If the speed plus the adjustment for the left side would be slower
-				 * than the max speed add the adjustments to the left side.
-				 * Otherwise, subtract the adjustments from the right side.
-				 */
+			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED;
+			rightTurnSpeed = -RobotMap.RIGHT_AUTO_SPEED;
 
-				if 	((RobotMap.LEFT_AUTO_SPEED + targetData[1])
-						<= maxOutput) {
-					leftTurnSpeed = targetData[1];
-					rightTurnSpeed = 0.0;
 
-				} else {
-					rightTurnSpeed = -targetData[1];
-					leftTurnSpeed = 0.0;
-				}
 
-				/**
-				 * If the right side is moving slower than left...
-				 */		
+		} else if (DeadReckon.modAngle(heading - targetData[0]) >
+		DeadReckon.modAngle(targetData[0] - heading)) {
 
-			} else if (DeadReckon.modAngle(heading - targetData[0]) >
-			DeadReckon.modAngle(targetData[0] - heading)) {
+			/**
+			 * If the speed plus the adjustment for the right side would be slower
+			 * than the max speed add the adjustments to the right side.
+			 * Otherwise, subtract the adjustments from the left side.
+			 *INVERT ONE TURN SPEED*/
 
-				/**
-				 * If the speed plus the adjustment for the right side would be slower
-				 * than the max speed add the adjustments to the right side.
-				 * Otherwise, subtract the adjustments from the left side.
-				 *INVERT ONE TURN SPEED/
+			if 	((RobotMap.RIGHT_AUTO_SPEED + targetData[1]) <= maxOutput) {			
+				rightTurnSpeed = targetData[1];
+				leftTurnSpeed = 0.0;
+			} else {
+				leftTurnSpeed = -targetData[1];
+				rightTurnSpeed = 0.0;
 
-				if 	((RobotMap.RIGHT_AUTO_SPEED + targetData[1]) <= maxOutput) {			
-					rightTurnSpeed = targetData[1];
-					leftTurnSpeed = 0.0;
-				} else {
-					leftTurnSpeed = -targetData[1];
-					rightTurnSpeed = 0.0;
-				}
 			}		
-				
+
+			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED;
+			rightTurnSpeed = RobotMap.RIGHT_AUTO_SPEED;		
+		}
+
 		double[] turnSpeeds = {
 				leftTurnSpeed,
 				rightTurnSpeed
 		};
 
 		return turnSpeeds;	
+	}
+
+	public boolean wayPointNavigation(double desiredX, double desiredY, double desiredHeading) {
+		double[] pos = location.getPos();
+		double heading = location.getHeading();
+		int state = 0;
+
+		switch (state) {
+		case 0:
+			if ((Math.abs(desiredX - pos[0]) < 3) && 
+					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
+				drive.move(0.0, 0.0);
+				state = 1;
+			} else {
+				double[] adjustments = getToWaypoint();
+				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
+						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+			}
+			break;
+		case 1:
+			if (Math.abs(heading - desiredHeading) > (Math.PI / 24)) {
+
+			}
+		default:;
+		}
+
+		return true;
 	}
 
 	//Sends navigation data to the dashboard
@@ -492,7 +508,7 @@ public class Navigation extends Subsystem {
 		SmartDashboard.putNumber("desired x", desiredLocation[0]);
 		SmartDashboard.putNumber("desired y", desiredLocation[1]);
 		SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
-		
+
 		//Calculates the adjustment based on how much the robot needs to turn
 		double driveAdjustment = 0.15; //(Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
 
