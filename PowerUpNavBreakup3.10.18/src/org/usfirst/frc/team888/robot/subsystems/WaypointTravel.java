@@ -35,7 +35,8 @@ public class WaypointTravel extends Subsystem {
 					(Math.abs(desiredY - pos[1]) < 6)) {
 				drive.move(0.0, 0.0);
 				state = 1;
-			} else {
+			}
+			else {
 				double[] adjustments = moveToWaypoint(desiredX, desiredY);
 				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
 						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
@@ -214,15 +215,15 @@ public class WaypointTravel extends Subsystem {
 		if (DeadReckon.modAngle(heading - desiredHeading) >=
 				DeadReckon.modAngle(desiredHeading - heading)) {
 
-			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED;
-			rightTurnSpeed = -RobotMap.RIGHT_AUTO_SPEED;
+			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED * 2;
+			rightTurnSpeed = -RobotMap.RIGHT_AUTO_SPEED * 2;
 
 		}
 		
 		else {
 
-			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED;
-			rightTurnSpeed = RobotMap.RIGHT_AUTO_SPEED;		
+			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED * 2;
+			rightTurnSpeed = RobotMap.RIGHT_AUTO_SPEED * 2;		
 		}
 
 		double[] turnSpeeds = {
