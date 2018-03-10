@@ -69,6 +69,7 @@ public class DeadReckon extends Subsystem {
 		//Sets certain location calculating values back to zero
 		clickPosX = 0;
 		clickPosY = 0;
+		direction = "forward";
 		lastChangeInEncoderLeft = 0;
 		lastChangeInEncoderRight = 0;
 		lastEncoderLeft = 0;

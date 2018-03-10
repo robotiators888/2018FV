@@ -251,7 +251,7 @@ public class WaypointTravel extends Subsystem {
 		SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
 
 		//Calculates the adjustment based on how much the robot needs to turn
-		double driveAdjustment = 0.15; //(Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
+		double driveAdjustment = 0.1; //(Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
 
 		double[] i = {
 				desiredHeading,
