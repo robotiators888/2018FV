@@ -46,7 +46,7 @@ public class WaypointTravel extends Subsystem {
 				headingDifference = Math.PI - headingDifference;
 			}
 			if (Math.abs(headingDifference) > (Math.PI / 24)) {
-				double[] rotationSpeed = moveToOrientation(desiredX, desiredY, desiredHeading);
+				double[] rotationSpeed = moveToOrientation(desiredHeading);
 				drive.move(rotationSpeed[0], rotationSpeed[1]);
 			}
 			else {
@@ -205,23 +205,20 @@ public class WaypointTravel extends Subsystem {
 
 	}
 
-	public double[] moveToOrientation(double desiredX, double desiredY, double desiredHeading) {
-		double[] targetData = calculateTurn(desiredX, desiredY);
+	public double[] moveToOrientation(double desiredHeading) {
 		double heading = location.getHeading();
 		double leftTurnSpeed = 0;
 		double rightTurnSpeed = 0;
 
-		if (DeadReckon.modAngle(heading - desiredHeading) <
-				DeadReckon.modAngle(targetData[0] - heading)) {
+		if (DeadReckon.modAngle(heading - desiredHeading) >=
+				DeadReckon.modAngle(desiredHeading - heading)) {
 
 			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED;
 			rightTurnSpeed = -RobotMap.RIGHT_AUTO_SPEED;
 
-
-
-		} else if (DeadReckon.modAngle(heading - desiredHeading) >
-		DeadReckon.modAngle(desiredHeading - heading)) {
-
+		}
+		
+		else {
 
 			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED;
 			rightTurnSpeed = RobotMap.RIGHT_AUTO_SPEED;		
