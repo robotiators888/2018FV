@@ -51,7 +51,7 @@ public class Navigation extends Subsystem {
 
 	//Instantiates initialized boolean
 	protected boolean init = true;
-	
+
 	protected boolean previousCameraButtonState = false;
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, Pincer p_pince, Vision p_vision, 
@@ -69,7 +69,7 @@ public class Navigation extends Subsystem {
 		startPosition.addDefault("Middle Start Position", "Middle");
 		startPosition.addObject("Left Start Position", "Left");
 		startPosition.addObject("Right Start Position", "Right");
-		
+
 	}
 
 	//Initializes objects in or called by navigation 
@@ -192,44 +192,6 @@ public class Navigation extends Subsystem {
 	public void autoRun() {
 		if (startPosition.getSelected().equals("Middle")) {
 			switch (state) {
-			case 2:
-				pincer.setPincerPosition(2115, true, 0.0);
-				if (gameData.charAt(0) == 'L') {
-					if (!gps.goToWaypoint(0, 52, ((Math.PI * 3) / 2))) {
-						gps.goToWaypoint(0, 52, ((Math.PI * 3) / 2));
-					}
-					else {
-						state = 1;
-					}
-				}
-				else {
-					if (!gps.goToWaypoint(0, 52, (Math.PI / 2))) {
-						gps.goToWaypoint(0, 52, (Math.PI / 2));
-					}
-					else {
-						state = 1;
-					}
-				}
-				break;
-			case 1:
-				pincer.setPincerPosition(1, true, 0.0);
-				if (gameData.charAt(0) == 'L') {
-					if (!gps.goToWaypoint(-60, 52, 0)) {
-						gps.goToWaypoint(-60, 52, 0);
-					}
-					else {
-						state = 2;
-					}
-				}
-				else {
-					if (!gps.goToWaypoint(60, 52, 0)) {
-						gps.goToWaypoint(60, 52, 0);
-					}
-					else {
-						state = 2;
-					}
-				}
-				break;
 			case 0:
 				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
@@ -237,7 +199,7 @@ public class Navigation extends Subsystem {
 						gps.goToWaypoint(-72, 94, 0);
 					}
 					else {
-						state = 3;
+						state = 1;
 					}
 				}
 				else {
@@ -245,15 +207,62 @@ public class Navigation extends Subsystem {
 						gps.goToWaypoint(72, 94, 0);
 					}
 					else {
+						state = 1;
+					}
+				}
+				break;
+			case 1:
+				pincer.setPincerPosition(1700, true, 0.0);
+				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+				state = 2;
+			default:
+			}
+		}
+
+		else if (startPosition.getSelected().equals("Left")){
+			switch (state) {
+			case 0: 
+				pincer.setPincerPosition(1700, true, 0.0);
+				if (gameData.charAt(0) == 'L') {
+					if (!gps.goToWaypoint(0, 94, 0)) {
+						gps.goToWaypoint(0, 94, 0);
+					}
+					else {
 						state = 3;
 					}
+				}
+				else {
+					if (!gps.goToWaypoint(0, 210, (Math.PI /2))) {
+						gps.goToWaypoint(0, 210, (Math.PI /2));
+					}
+					else {
+						state = 1;
+					}
+				}
+				break;
+			case 1: 
+				pincer.setPincerPosition(1700, true, 0.0);
+				if (!gps.goToWaypoint(144, 210, Math.PI)) {
+					gps.goToWaypoint(144, 210, Math.PI);
+				}
+				else {
+					state = 2;
+				}
+				break;
+			case 2:
+				pincer.setPincerPosition(1700, true, 0.0);
+				if (!gps.goToWaypoint(144, 200, Math.PI)) {
+					gps.goToWaypoint(144, 200, Math.PI);
+				}
+				else {
+					state = 3;
 				}
 				break;
 			case 3:
 				pincer.setPincerPosition(1700, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 6;
-			default:
+				state = 4;
+			default:;
 			}
 		}
 
@@ -261,16 +270,48 @@ public class Navigation extends Subsystem {
 			switch (state) {
 			case 0: 
 				pincer.setPincerPosition(1700, true, 0.0);
-			case 1: 
-				if (gameData.charAt(0) == startPosition.getSelected().charAt(0)) {
-					pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+				if (gameData.charAt(0) == 'R') {
+					if (!gps.goToWaypoint(0, 94, 0)) {
+						gps.goToWaypoint(0, 94, 0);
+					}
+					else {
+						state = 3;
+					}
 				}
-				state = 2;
+				else {
+					if (!gps.goToWaypoint(0, 210, (Math.PI /2))) {
+						gps.goToWaypoint(0, 210, (Math.PI /2));
+					}
+					else {
+						state = 1;
+					}
+				}
 				break;
-			default:
+			case 1: 
+				pincer.setPincerPosition(1700, true, 0.0);
+				if (!gps.goToWaypoint(-144, 210, Math.PI)) {
+					gps.goToWaypoint(144, 210, Math.PI);
+				}
+				else {
+					state = 2;
+				}
+				break;
+			case 2:
+				pincer.setPincerPosition(1700, true, 0.0);
+				if (!gps.goToWaypoint(144, 200, Math.PI)) {
+					gps.goToWaypoint(144, 200, Math.PI);
+				}
+				else {
+					state = 3;
+				}
+				break;
+			case 3:
+				pincer.setPincerPosition(1700, true, 0.0);
+				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+				state = 4;
+			default:;
 			}
 		}
-		
 		SmartDashboard.putNumber("State", state);
 	}
 
