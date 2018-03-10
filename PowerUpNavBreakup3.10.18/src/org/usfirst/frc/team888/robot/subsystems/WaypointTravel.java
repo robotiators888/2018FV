@@ -98,7 +98,8 @@ public class WaypointTravel extends Subsystem {
 					leftSideAdjustment = targetData[1];
 					rightSideAdjustment = 0.0;
 
-				} else {
+				}
+				else {
 					rightSideAdjustment = -targetData[1];
 					leftSideAdjustment = 0.0;
 				}
