@@ -214,16 +214,16 @@ public class Navigation extends Subsystem {
 			case 1:
 				pincer.setPincerPosition(2115, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (!gps.goToWaypoint(-72, 52, 0)) {
-						gps.goToWaypoint(-72, 52, 0);
+					if (!gps.goToWaypoint(-60, 52, 0)) {
+						gps.goToWaypoint(-60, 52, 0);
 					}
 					else {
 						state = 2;
 					}
 				}
 				else {
-					if (!gps.goToWaypoint(72, 52, 0)) {
-						gps.goToWaypoint(72, 52, 0);
+					if (!gps.goToWaypoint(60, 52, 0)) {
+						gps.goToWaypoint(60, 52, 0);
 					}
 					else {
 						state = 2;
@@ -233,16 +233,16 @@ public class Navigation extends Subsystem {
 			case 2:
 				pincer.setPincerPosition(2115, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (!gps.goToWaypoint(-72, 104, 0)) {
-						gps.goToWaypoint(-72, 104, 0);
+					if (!gps.goToWaypoint(-60, 104, 0)) {
+						gps.goToWaypoint(-60, 104, 0);
 					}
 					else {
 						state = 3;
 					}
 				}
 				else {
-					if (!gps.goToWaypoint(72, 104, 0)) {
-						gps.goToWaypoint(72, 104, 0);
+					if (!gps.goToWaypoint(60, 104, 0)) {
+						gps.goToWaypoint(60, 104, 0);
 					}
 					else {
 						state = 3;

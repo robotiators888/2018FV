@@ -91,8 +91,8 @@ public class RobotMap {
 	public static final int RESTING_POSITION = 0;
 	
 	//Sets the speed for autonomous and the adjustments to add for driving straight
-	public static final double LEFT_AUTO_SPEED = 0.5;
-	public static final double RIGHT_AUTO_SPEED = 0.5;
+	public static final double LEFT_AUTO_SPEED = 0.3;
+	public static final double RIGHT_AUTO_SPEED = 0.3;
 	
 	//PI-RIO communication
 	public static final int RIO_UDP_PORT = 5810;

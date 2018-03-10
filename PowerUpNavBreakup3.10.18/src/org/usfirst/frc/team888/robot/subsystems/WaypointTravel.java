@@ -27,6 +27,7 @@ public class WaypointTravel extends Subsystem {
 		double[] pos = location.getPos();
 		double heading = location.getHeading();
 		boolean arrived = false;
+		double headingDifference = DeadReckon.modAngle(desiredHeading - heading);
 
 		switch (state) {
 		case 0:
@@ -41,8 +42,12 @@ public class WaypointTravel extends Subsystem {
 			}
 			break;
 		case 1:
-			if (Math.abs(heading - desiredHeading) > (Math.PI / 24)) {
-				moveToOrientation(desiredX, desiredY, desiredHeading);
+			if (headingDifference > Math.PI) {
+				headingDifference = Math.PI - headingDifference;
+			}
+			if (Math.abs(headingDifference) > (Math.PI / 24)) {
+				double[] rotationSpeed = moveToOrientation(desiredX, desiredY, desiredHeading);
+				drive.move(rotationSpeed[0], rotationSpeed[1]);
 			}
 			else {
 				drive.move(0.0, 0.0);
@@ -79,7 +84,7 @@ public class WaypointTravel extends Subsystem {
 			 * If the left side is moving slower than right...
 			 */
 
-			if (DeadReckon.modAngle(heading - targetData[0]) <
+			if (DeadReckon.modAngle(heading - targetData[0]) >
 					DeadReckon.modAngle(targetData[0] - heading)) {
 
 				/**
@@ -102,7 +107,7 @@ public class WaypointTravel extends Subsystem {
 				 * If the right side is moving slower than left...
 				 */		
 
-			} else if (DeadReckon.modAngle(heading - targetData[0]) >
+			} else if (DeadReckon.modAngle(heading - targetData[0]) <
 			DeadReckon.modAngle(targetData[0] - heading)) {
 
 				/**
@@ -193,6 +198,9 @@ public class WaypointTravel extends Subsystem {
 				rightSideAdjustment
 		};
 
+		SmartDashboard.putNumber("left adjustment", leftSideAdjustment);
+		SmartDashboard.putNumber("right adjustment", rightSideAdjustment);
+		
 		return adjustments;		
 
 	}
@@ -203,7 +211,7 @@ public class WaypointTravel extends Subsystem {
 		double leftTurnSpeed = 0;
 		double rightTurnSpeed = 0;
 
-		if (DeadReckon.modAngle(heading - targetData[0]) <
+		if (DeadReckon.modAngle(heading - desiredHeading) <
 				DeadReckon.modAngle(targetData[0] - heading)) {
 
 			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED;
@@ -211,8 +219,8 @@ public class WaypointTravel extends Subsystem {
 
 
 
-		} else if (DeadReckon.modAngle(heading - targetData[0]) >
-		DeadReckon.modAngle(targetData[0] - heading)) {
+		} else if (DeadReckon.modAngle(heading - desiredHeading) >
+		DeadReckon.modAngle(desiredHeading - heading)) {
 
 
 			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED;
@@ -224,6 +232,9 @@ public class WaypointTravel extends Subsystem {
 				rightTurnSpeed
 		};
 
+		SmartDashboard.putNumber("left adjustment", leftTurnSpeed);
+		SmartDashboard.putNumber("right adjustment", rightTurnSpeed);
+		
 		return turnSpeeds;	
 	}
 	
