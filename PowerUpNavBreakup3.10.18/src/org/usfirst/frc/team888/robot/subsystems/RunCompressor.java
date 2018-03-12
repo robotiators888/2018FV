@@ -15,7 +15,9 @@ public class RunCompressor extends Subsystem {
     	mainCompressor = new Compressor(RobotMap.COMPRESSOR);
     }
     
-    //Starts the compressor
+    /**
+     * Starts the compressor
+     */
     public void compressorInit() {
     	mainCompressor.start();
     }

@@ -47,7 +47,7 @@ public class DeadReckon extends Subsystem {
 	protected double timePassed;
 	protected boolean calibrated;
 
-	
+
 	/*
 	//Instantiates objects for logging
 	private BufferedWriter bw;
@@ -60,7 +60,7 @@ public class DeadReckon extends Subsystem {
 	//Instantiates logging values
 	protected double[][] deadReckonData = new double[1500][10];
 	protected int sampleCount = 0;
-*/
+	 */
 
 	public DeadReckon(DriveTrain p_drive) {// throws FileNotFoundException {
 		//Declares the drive object to be equal to the object passed in by Robot
@@ -129,25 +129,27 @@ public class DeadReckon extends Subsystem {
 		 */
 		timePassed = time - lastTime;
 
-		//If the left side is going forward and the right side is going forward...
+		//Algorithm for when the robot is going forward
 		if (changeInEncoderLeft >= 0  && changeInEncoderRight >= 0) {
 
 			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
 			changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
-			
+
 			direction = "forward";
 		} 
 
+		//Algorithm for when the robot is going backward
 		else if (changeInEncoderLeft <= 0  && changeInEncoderRight <= 0) {
 
 			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
 			changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
-			
+
 			direction = "backward";
 		}
 
+
+		//Algorithm for when the robot is spinning clockwise
 		else if (changeInEncoderLeft >= 0  && changeInEncoderRight <= 0) {
-			//...the robot is turning clockwise.
 			//Use a system of equation to find where inside the wheel base the point of rotation is.
 			PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
 					(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
@@ -177,12 +179,12 @@ public class DeadReckon extends Subsystem {
 				changeInDistance = Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
 						Math.sin((Math.PI - changeInHeading) / 2);
 			}
-			
+
 			direction = "SCW";
 		}
 
+		//Algorithm for when the robot is spinning counterclockwise
 		else if (changeInEncoderLeft <= 0  && changeInEncoderRight >= 0) {
-			//...the robot is turning counterclockwise.
 			//Use a system of equation to find where inside the wheel base the point of rotation is.
 			PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
 					(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
@@ -213,7 +215,7 @@ public class DeadReckon extends Subsystem {
 				changeInDistance = -Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
 						Math.sin((Math.PI - changeInHeading) / 2);
 			}
-			
+
 			direction = "SCCW";
 		}
 

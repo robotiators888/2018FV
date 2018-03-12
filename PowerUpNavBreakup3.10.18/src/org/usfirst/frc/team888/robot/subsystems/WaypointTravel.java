@@ -3,8 +3,6 @@ package org.usfirst.frc.team888.robot.subsystems;
 import org.usfirst.frc.team888.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 public class WaypointTravel extends Subsystem {
 
@@ -22,7 +20,13 @@ public class WaypointTravel extends Subsystem {
 		state = 0;
 	}
 	
-	
+	/**
+	 * Moves the robot to a waypoint
+	 * @param desiredX The X position of the waypoint
+	 * @param desiredY The Y position of the waypoint
+	 * @param desiredHeading The heading of the waypoint
+	 * @return Whether or not the robot has arrived at the waypoint
+	 */
 	public boolean goToWaypoint(double desiredX, double desiredY, double desiredHeading) {
 		double[] pos = location.getPos();
 		double heading = location.getHeading();
@@ -61,34 +65,32 @@ public class WaypointTravel extends Subsystem {
 		default:;
 		}
 
-		SmartDashboard.putNumber("waypoint state", state);
-		SmartDashboard.putBoolean("arrived", arrived);
+		//SmartDashboard.putNumber("waypoint state", state);
+		//SmartDashboard.putBoolean("arrived", arrived);
 		
 		return arrived;
 	}
 	
+	/**
+	 * @param desiredX The X position of the waypoint
+	 * @param desiredY
+	 * @return The left and right adjustments to add to get the robot to the waypoint
+	 */
 	public double[] moveToWaypoint(double desiredX, double desiredY) {
 		String direction = location.getDirection();
 		double heading = location.getHeading();
 		double rightSideAdjustment = 0;
 		double leftSideAdjustment = 0;
 		double[] targetData = calculateTurn(desiredX, desiredY);
-
-
-		/**
-		 * If the robot is moving in a positive direction...
-		 */
-
+		
+		//If the robot is going forward...
 		if (direction.equals("forward")) {
 
-			/**
-			 * If the left side is moving slower than right...
-			 */
-
+			//If the heading is to the right of the robot's current heading...
 			if (DeadReckon.modAngle(heading - targetData[0]) >
 					DeadReckon.modAngle(targetData[0] - heading)) {
 
-				/**
+				/*
 				 * If the speed plus the adjustment for the left side would be slower
 				 * than the max speed add the adjustments to the left side.
 				 * Otherwise, subtract the adjustments from the right side.
@@ -103,16 +105,13 @@ public class WaypointTravel extends Subsystem {
 				else {
 					rightSideAdjustment = -targetData[1];
 					leftSideAdjustment = 0.0;
-				}
-
-				/**
-				 * If the right side is moving slower than left...
-				 */		
-
-			} else if (DeadReckon.modAngle(heading - targetData[0]) <
+				}	
+			}
+			//If the heading is to the left of the robot's current heading...
+			else if (DeadReckon.modAngle(heading - targetData[0]) <
 			DeadReckon.modAngle(targetData[0] - heading)) {
 
-				/**
+				/*
 				 * If the speed plus the adjustment for the right side would be slower
 				 * than the max speed add the adjustments to the right side.
 				 * Otherwise, subtract the adjustments from the left side.
@@ -126,21 +125,16 @@ public class WaypointTravel extends Subsystem {
 					rightSideAdjustment = 0.0;
 				}
 			}
+		}
+		
+		//If the robot is going backward...
+		else if(direction.equals("backward")) {
 
-			/**
-			 * If the robot is moving in a negative direction...
-			 */
-
-		} else if(direction.equals("backward")) {
-
-			/**
-			 * If the left side is moving slower than right...
-			 */
-
-			if (DeadReckon.modAngle(heading - targetData[0]) >
+			//If the heading is to the right of the robot's current heading...
+			if (DeadReckon.modAngle(heading - targetData[0]) <
 			DeadReckon.modAngle(targetData[0] - heading)) {
 
-				/**
+				/*
 				 * If the speed plus the adjustment for the left side would be slower
 				 * than the max speed add the adjustments to the left side.
 				 * Otherwise, subtract the adjustments from the right side.
@@ -153,15 +147,13 @@ public class WaypointTravel extends Subsystem {
 					rightSideAdjustment = targetData[1];
 					leftSideAdjustment = 0.0;
 				}
-
-				/**
- 			/* If the right side is moving slower than left...
-				 */		
-
-			} else if (DeadReckon.modAngle(heading - targetData[0]) <
+			}
+			
+			//If the heading is to the right of the robot's current heading...
+			else if (DeadReckon.modAngle(heading - targetData[0]) >
 					DeadReckon.modAngle(targetData[0] - heading)) {
 
-				/**
+				/*
 				 * If the speed plus the adjustment for the right side would be slower
 				 * than the max speed add the adjustments to the right side.
 				 * Otherwise, subtract the adjustments from the left side.
@@ -174,39 +166,32 @@ public class WaypointTravel extends Subsystem {
 					leftSideAdjustment = targetData[1];
 					rightSideAdjustment = 0.0;
 				}
-
-				/**
- 			/* If the robot is already moving straight add no adjustments
-				 */	
-
-			} else {
-				leftSideAdjustment = 0.0;
-				rightSideAdjustment = 0.0;
-			}	
-
-			/**
-			 * If the robot is not moving or turning, add no adjustments.
-			 */
-
+			}
 		}
 
+		//Otherwise make no adjustments
 		else {
 			leftSideAdjustment = 0.0;
 			rightSideAdjustment = 0.0;
 		}
-
+		
+		//Creates an array with the adjustments
 		double[] adjustments = {
 				leftSideAdjustment,
 				rightSideAdjustment
 		};
 
-		SmartDashboard.putNumber("left adjustment", leftSideAdjustment);
-		SmartDashboard.putNumber("right adjustment", rightSideAdjustment);
+		//SmartDashboard.putNumber("left adjustment", leftSideAdjustment);
+		//SmartDashboard.putNumber("right adjustment", rightSideAdjustment);
 		
 		return adjustments;		
 
 	}
 
+	/**
+	 * @param desiredHeading The heading of the waypoint
+	 * @return The speeds to turn the robot in place to get it to the correct heading
+	 */
 	public double[] moveToOrientation(double desiredHeading) {
 		double heading = location.getHeading();
 		double leftTurnSpeed = 0;
@@ -231,19 +216,22 @@ public class WaypointTravel extends Subsystem {
 				rightTurnSpeed
 		};
 
-		SmartDashboard.putNumber("left adjustment", leftTurnSpeed);
-		SmartDashboard.putNumber("right adjustment", rightTurnSpeed);
+		//SmartDashboard.putNumber("left adjustment", leftTurnSpeed);
+		//SmartDashboard.putNumber("right adjustment", rightTurnSpeed);
 		
 		return turnSpeeds;	
 	}
 	
-	/**Finds the heading and adjustments to add for waypoint movement
+	/**
+	 * Finds the heading and adjustments to add for waypoint movement
+	 * @param desiredX The X position of the waypoint
+	 * @param desiredY The Y position of the waypoint
 	 * @return An array with the heading the robot should travel and the adjustment to add to the motor output
 	 */
 	public double[] calculateTurn(double desiredX, double desiredY) {
 		double heading = location.getHeading();
 		
-		//Calculates the direction the robot should travel in to get to the next waypoint.
+		//Calculates the direction the robot should travel in to get to the waypoint
 		double[] pos = location.getPos();
 
 		double desiredHeading = DeadReckon.modAngle(Math.atan2(desiredX - pos[0],
@@ -262,14 +250,14 @@ public class WaypointTravel extends Subsystem {
 				driveAdjustment
 		};
 
-		SmartDashboard.putNumber("desired x", desiredX);
-		SmartDashboard.putNumber("desired y", desiredY);
-		SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
-		SmartDashboard.putNumber("ajustment proportion", driveAdjustment);
+		//SmartDashboard.putNumber("desired x", desiredX);
+		//SmartDashboard.putNumber("desired y", desiredY);
+		//SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
+		//SmartDashboard.putNumber("ajustment proportion", driveAdjustment);
 		
 		return i;
 	}
-
+	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());

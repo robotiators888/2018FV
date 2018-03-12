@@ -16,7 +16,8 @@ public class SubsystemScheduler extends Command {
 	protected Pincer pincer;
 
 	public SubsystemScheduler(Navigation p_nav, RunCompressor p_compressor, Climber p_climber, Pincer p_pincer) {
-		/*Sets it so only this scheduler can use the objects 
+		/*
+		 * Sets it so only this scheduler can use the objects 
 		 * and declares them as the objects passed into the scheduler by Robot
 		 */
 		requires(p_nav);

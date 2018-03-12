@@ -56,7 +56,7 @@ public class Navigation extends Subsystem {
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, Pincer p_pince, Vision p_vision, 
 			WaypointTravel p_gps, OI p_oi) {
-		//Sets objects of drive, location, pincer, and OI to be the objects passed in by Robot
+		//Sets objects of necessary classes to be the objects passed in by Robot
 		drive = p_drive;
 		location = p_location;
 		pincer = p_pince;
@@ -72,7 +72,9 @@ public class Navigation extends Subsystem {
 
 	}
 
-	//Initializes objects in or called by navigation 
+	/**
+	 * Initializes objects in or called by navigation 
+	 */
 	public void navigationInit() {
 		//If it is time to initialize...
 		if (init) {
@@ -86,13 +88,14 @@ public class Navigation extends Subsystem {
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
-	//Calls the methods that need to be run periodically
+	/**
+	 * Calls the methods that need to be run periodically
+	 */
 	public void navigationExecute() {
 		//Methods run at 50Hz
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
-		location.updateDashboard();
 
 		//If the camera switch button was pressed and the the wrong camera is displaying...
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
@@ -108,28 +111,28 @@ public class Navigation extends Subsystem {
 		//Send the nav data to the dashboard once per second on the second 
 		if (schedulerOffset == 0) {
 			updateDashboard();
+			location.updateDashboard();
 		}
 
 		//Send the location data to the dashboard once per second on the half second
 		if (schedulerOffset == 25) {
+			location.updateDashboard();
 		}
 
 		//Increment the offset by one. If it has reached 50 (one second), set it back to zero.
 		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
 
-	//Gets the desired location
+	/**
+	 * Gets the desired location
+	 */
 	public void updateGuidenceControl() {
 		//desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
-
-
+	
 	/**
-	 * Gets the encoder values and finds what adjustments need to be done
-	 * @return An array containing the adjustments for the left and right sides in that order
+	 * Moves the drive train
 	 */
-
-	//Moves the drive train
 	public void updateMotion() {
 		//If the game mode is auto, manual controls are off
 		manualControl = !DriverStation.getInstance().isAutonomous();
@@ -188,7 +191,9 @@ public class Navigation extends Subsystem {
 		}
 	}
 
-	//Tells the robot what to go in auto
+	/**
+	 * Tells the robot what to do in auto
+	 */
 	public void autoRun() {
 		if (startPosition.getSelected().equals("Middle")) {
 			switch (state) {
@@ -316,7 +321,9 @@ public class Navigation extends Subsystem {
 	}
 
 
-	//Sends navigation data to the dashboard
+	/**
+	 * Sends navigation data to the dashboard
+	 */
 	public void updateDashboard() {
 		SmartDashboard.putString("Game Pattern", gameData);
 		SmartDashboard.putNumber("leftOutput", leftDriveOutput);

@@ -35,7 +35,9 @@ public class Vision extends Subsystem {
 		} catch (Exception e) {}
 	}
 
-	//Switches which camera is being sent to the display
+	/**
+	 * Switches which camera is being sent to the display
+	 */
 	public void switchCamera() {
 		if(cameraMessage.equals("frontCamera")) {
 			cameraMessage = "backCamera";
@@ -59,4 +61,3 @@ public class Vision extends Subsystem {
 		//setDefaultCommand(new MySpecialCommand());
 	}
 }
-

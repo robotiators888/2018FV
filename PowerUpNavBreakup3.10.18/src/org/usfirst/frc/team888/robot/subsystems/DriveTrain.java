@@ -28,13 +28,19 @@ public class DriveTrain extends Subsystem {
     	rearRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     }
     
-    //Resets the encoder positions to zero 
+    /**
+     * Resets the encoder positions to zero 
+     */
     public void resetEncoderPositions() {
     	rearLeft.setSelectedSensorPosition(0, 0, 0);
     	rearRight.setSelectedSensorPosition(0, 0, 0);
     }
     
-    //Sends an output value to the motors
+    /**
+     * Sends an output value to the motors
+     * @param leftSpeed Percent output for the two left motors
+     * @param rightSpeed Percent output for the two right motors
+     */
     public void move(double leftSpeed, double rightSpeed) {
     	rearLeft.set(ControlMode.PercentOutput, leftSpeed);
     	frontLeft.set(ControlMode.PercentOutput, leftSpeed);
@@ -43,7 +49,10 @@ public class DriveTrain extends Subsystem {
     	frontRight.set(ControlMode.PercentOutput, -rightSpeed);
     }
     
-    //Gets the position from the encoders and returns them as an array of left and right clicks
+    /**
+     * Gets the position from the encoders
+     * @return An array of left and right clicks
+     */
     public int[] getEncoderVals() {
     	int leftClicks = -rearLeft.getSelectedSensorPosition(0);
     	int rightClicks = rearRight.getSelectedSensorPosition(0);

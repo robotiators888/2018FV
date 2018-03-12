@@ -166,7 +166,7 @@ public class Pincer extends Subsystem {
 					pincerPower = -withoutCubeReflex*(batteryVoltage/maxBatteryVoltage);
 				}
 			}
-			else{
+			else {
 				pincerPower = 0;
 			}
 			//stuff to maintain position, want to do a thing where it puts slight 
