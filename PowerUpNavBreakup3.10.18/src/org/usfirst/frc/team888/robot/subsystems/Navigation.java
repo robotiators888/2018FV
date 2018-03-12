@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Navigation extends Subsystem {
 
-	//Instantiates the objects of the other classes controlled by navigation
+	// Instantiates the objects of the other classes controlled by navigation
 	protected DriveTrain drive;
 	protected DeadReckon location;
 	protected Pincer pincer;
@@ -19,44 +19,44 @@ public class Navigation extends Subsystem {
 	protected WaypointTravel gps;
 	protected OI oi;
 
-	//Instantiates a chooser for the dashboard to select where the robot is at the start of the match
+	// Instantiates a chooser for the dashboard to select where the robot is at the start of the match
 	public SendableChooser<String> startPosition;
 
-	//Instantiates a string to store the randomizer pattern from the FMS
+	// Instantiates a string to store the randomizer pattern from the FMS
 	protected String gameData;
 
-	//Instantiates time variable
+	// Instantiates time variable
 	protected double time;
 
-	//Instantiates adjustments variables  
+	// Instantiates adjustments variables  
 	protected double leftBaseDriveOutput = 0.0;
 	protected double rightBaseDriveOutput = 0.0;	
 	protected double leftDriveOutput = 0.0;
 	protected double rightDriveOutput = 0.0;
 
-	//Instantiates boolean for if manual controls are enabled. Defaults to disables (auto).
+	// Instantiates boolean for if manual controls are enabled. Defaults to disables (auto).
 	protected boolean manualControl = false;
 
-	//Instantiates offset for how often some methods are called in navExecute
+	// Instantiates offset for how often some methods are called in navExecute
 	protected int schedulerOffset = 0;
 
-	//Instantiates state for auto
+	// Instantiates state for auto
 	protected int state = 0;
 
-	//Instantiates toggle booleans for drive direction
+	// Instantiates toggle booleans for drive direction
 	protected boolean input = false;
 	protected boolean lastInput = false;
 	protected boolean output = false;
 	protected boolean press = false;
 
-	//Instantiates initialized boolean
+	// Instantiates initialized boolean
 	protected boolean init = true;
 
 	protected boolean previousCameraButtonState = false;
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, Pincer p_pince, Vision p_vision, 
 			WaypointTravel p_gps, OI p_oi) {
-		//Sets objects of necessary classes to be the objects passed in by Robot
+		// Sets objects of necessary classes to be the objects passed in by Robot
 		drive = p_drive;
 		location = p_location;
 		pincer = p_pince;
@@ -64,7 +64,7 @@ public class Navigation extends Subsystem {
 		gps = p_gps;
 		oi = p_oi;
 
-		//Declares the start position and the start location options
+		// Declares the start position and the start location options
 		startPosition = new SendableChooser<String>();
 		startPosition.addDefault("Middle Start Position", "Middle");
 		startPosition.addObject("Left Start Position", "Left");
@@ -76,7 +76,7 @@ public class Navigation extends Subsystem {
 	 * Initializes objects in or called by navigation 
 	 */
 	public void navigationInit() {
-		//If it is time to initialize...
+		// If it is time to initialize...
 		if (init) {
 			//...then initialize.
 			schedulerOffset = 0;
@@ -84,7 +84,7 @@ public class Navigation extends Subsystem {
 			init = false;
 		}
 
-		//Stores the randomizer data from the FMS as a string
+		// Stores the randomizer data from the FMS as a string
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
@@ -92,34 +92,34 @@ public class Navigation extends Subsystem {
 	 * Calls the methods that need to be run periodically
 	 */
 	public void navigationExecute() {
-		//Methods run at 50Hz
+		// Methods run at 50Hz
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
 
-		//If the camera switch button was pressed and the the wrong camera is displaying...
+		// If the camera switch button was pressed and the the wrong camera is displaying...
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
 			//...switch the cameras
 			vision.switchCamera();
 			previousCameraButtonState = true;
 		}
-		//Otherwise the camera state is correct. 
+		// Otherwise the camera state is correct. 
 		else if (!oi.getRightStickButton(5)) {
 			previousCameraButtonState = false;
 		}
 
-		//Send the nav data to the dashboard once per second on the second 
+		// Send the nav data to the dashboard once per second on the second 
 		if (schedulerOffset == 0) {
 			updateDashboard();
 			location.updateDashboard();
 		}
 
-		//Send the location data to the dashboard once per second on the half second
+		// Send the location data to the dashboard once per second on the half second
 		if (schedulerOffset == 25) {
 			location.updateDashboard();
 		}
 
-		//Increment the offset by one. If it has reached 50 (one second), set it back to zero.
+		// Increment the offset by one. If it has reached 50 (one second), set it back to zero.
 		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
 
@@ -129,25 +129,25 @@ public class Navigation extends Subsystem {
 	public void updateGuidenceControl() {
 		//desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
-	
+
 	/**
 	 * Moves the drive train
 	 */
 	public void updateMotion() {
-		//If the game mode is auto, manual controls are off
+		// If the game mode is auto, manual controls are off.
 		manualControl = !DriverStation.getInstance().isAutonomous();
 
-		//If manual controls are off...
+		// If manual controls are off...
 		if (!manualControl) {
 			//...run auto.
 			autoRun();
 		}
 
-		//Otherwise run teleop controls.	
+		// Otherwise run teleop controls.	
 		else {
-			//If both triggers are pressed...
+			// If both triggers are pressed...
 			if(oi.getTriggers()) {
-				//...the motors go at full speed
+				// ...the motors go at full speed
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
 				rightBaseDriveOutput = oi.getRightStickAxis(RobotMap.R_Y_AXIS);
 			}
@@ -156,15 +156,14 @@ public class Navigation extends Subsystem {
 				leftBaseDriveOutput = 0.7 * oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
 				rightBaseDriveOutput = 0.7 * oi.getRightStickAxis(RobotMap.R_Y_AXIS);
 			}
-
-			//If the joystick is less then 20% in either direction then ignore it
+			// If the joystick is less then 20% in either direction then ignore it
 			if(Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.2 &&
 					Math.abs(oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.2){
 				leftBaseDriveOutput = 0.0;
 				rightBaseDriveOutput = 0.0;
 			}
 
-			//Toggles what the front of the robot will be to the driver
+			// Toggles what the front of the robot will be to the driver
 			if (input == true && lastInput == false) {
 				press = true;
 			} else {
@@ -186,7 +185,7 @@ public class Navigation extends Subsystem {
 				leftDriveOutput = -leftBaseDriveOutput;
 			} 
 
-			//Sends the movement command to the drive train to execute
+			// Sends the movement command to the drive train to execute
 			drive.move(leftDriveOutput, rightDriveOutput);
 		}
 	}
@@ -195,36 +194,55 @@ public class Navigation extends Subsystem {
 	 * Tells the robot what to do in auto
 	 */
 	public void autoRun() {
-		if (startPosition.getSelected().equals("Middle")) {
+		// Switch statement that takes the start position of the robot
+		switch (startPosition.getSelected()) {
+
+		case "Middle":	
+			// The case that robot starts in the middle position
 			switch (state) {
 			case 0:
+				// Lower the pincer
 				pincer.setPincerPosition(1700, true, 0.0);
+
+				// If the our alliance has the left side of the switch
 				if (gameData.charAt(0) == 'L') {
+					// If the robot has not arrived at the switch...
 					if (!gps.goToWaypoint(-72, 94, 0)) {
+						// ...go there.
 						gps.goToWaypoint(-72, 94, 0);
 					}
+					// Otherwise...
 					else {
+						// Otherwise...
 						state = 1;
 					}
 				}
+
+				// If the our alliance has the right side of the switch
 				else {
+					// If the robot has not arrived at the switch...
 					if (!gps.goToWaypoint(72, 94, 0)) {
+						// ...go there.
 						gps.goToWaypoint(72, 94, 0);
 					}
+					// Otherwise...
 					else {
+						// Otherwise...
 						state = 1;
 					}
 				}
 				break;
 			case 1:
+				//Open the pincer and go to the next step
 				pincer.setPincerPosition(1700, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
 				state = 2;
 			default:
 			}
-		}
+			break;
 
-		else if (startPosition.getSelected().equals("Left")){
+		case "Left":
+			// The case that robot starts in the left position
 			switch (state) {
 			case 0: 
 				pincer.setPincerPosition(1700, true, 0.0);
@@ -267,11 +285,12 @@ public class Navigation extends Subsystem {
 				pincer.setPincerPosition(1700, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
 				state = 4;
-			default:;
+			default:
 			}
-		}
+			break;
 
-		else {
+		case "Right":
+			// The case that robot starts in the right position
 			switch (state) {
 			case 0: 
 				pincer.setPincerPosition(1700, true, 0.0);
@@ -314,9 +333,12 @@ public class Navigation extends Subsystem {
 				pincer.setPincerPosition(1700, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
 				state = 4;
-			default:;
+			default:
 			}
+			break;
+		default:
 		}
+
 		SmartDashboard.putNumber("State", state);
 	}
 
