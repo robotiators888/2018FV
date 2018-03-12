@@ -151,7 +151,7 @@ public class Navigation extends Subsystem {
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
 				rightBaseDriveOutput = oi.getRightStickAxis(RobotMap.R_Y_AXIS);
 			}
-			//Otherwise go at 70% speed
+			// Otherwise go at 70% speed
 			else {
 				leftBaseDriveOutput = 0.7 * oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
 				rightBaseDriveOutput = 0.7 * oi.getRightStickAxis(RobotMap.R_Y_AXIS);
@@ -233,7 +233,7 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 1:
-				//Open the pincer and go to the next step
+				// Open the pincer and go to the next step
 				pincer.setPincerPosition(1700, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
 				state = 2;
