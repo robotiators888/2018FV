@@ -247,11 +247,11 @@ public class Navigation extends Subsystem {
 			case 0: 
 				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (!gps.goToWaypoint(0, 94, 0)) {
-						gps.goToWaypoint(0, 94, 0);
+					if (!gps.goToWaypoint(0, 148, (Math.PI / 2))) {
+						gps.goToWaypoint(0, 148, (Math.PI / 2));
 					}
 					else {
-						state = 3;
+						state = 1;
 					}
 				}
 				else {
@@ -265,11 +265,21 @@ public class Navigation extends Subsystem {
 				break;
 			case 1: 
 				pincer.setPincerPosition(1700, true, 0.0);
-				if (!gps.goToWaypoint(144, 210, Math.PI)) {
-					gps.goToWaypoint(144, 210, Math.PI);
+				if (gameData.charAt(0) == 'L') {
+					if (!gps.goToWaypoint(12, 148, (Math.PI / 2))) {
+						gps.goToWaypoint(12, 148, (Math.PI / 2));
+					}
+					else {
+						state = 3;
+					}
 				}
 				else {
-					state = 2;
+					if (!gps.goToWaypoint(144, 210, Math.PI)) {
+						gps.goToWaypoint(144, 210, Math.PI);
+					}
+					else {
+						state = 2;
+					}
 				}
 				break;
 			case 2:
@@ -295,16 +305,16 @@ public class Navigation extends Subsystem {
 			case 0: 
 				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'R') {
-					if (!gps.goToWaypoint(0, 94, 0)) {
-						gps.goToWaypoint(0, 94, 0);
+					if (!gps.goToWaypoint(0, 148, ((Math.PI * 3) /2))) {
+						gps.goToWaypoint(0, 148, ((Math.PI * 3) /2));
 					}
 					else {
-						state = 3;
+						state = 1;
 					}
 				}
 				else {
-					if (!gps.goToWaypoint(0, 210, (Math.PI /2))) {
-						gps.goToWaypoint(0, 210, (Math.PI /2));
+					if (!gps.goToWaypoint(0, 210, ((Math.PI * 3) /2))) {
+						gps.goToWaypoint(0, 210, ((Math.PI * 3) /2));
 					}
 					else {
 						state = 1;
@@ -313,11 +323,21 @@ public class Navigation extends Subsystem {
 				break;
 			case 1: 
 				pincer.setPincerPosition(1700, true, 0.0);
-				if (!gps.goToWaypoint(-144, 210, Math.PI)) {
-					gps.goToWaypoint(144, 210, Math.PI);
+				if (gameData.charAt(0) == 'R') {
+					if (!gps.goToWaypoint(-12, 148, ((Math.PI * 3) /2))) {
+						gps.goToWaypoint(-12, 148, ((Math.PI * 3) /2));
+					}
+					else {
+						state = 3;
+					}
 				}
 				else {
-					state = 2;
+					if (!gps.goToWaypoint(-144, 210, Math.PI)) {
+						gps.goToWaypoint(144, 210, Math.PI);
+					}
+					else {
+						state = 2;
+					}
 				}
 				break;
 			case 2:
