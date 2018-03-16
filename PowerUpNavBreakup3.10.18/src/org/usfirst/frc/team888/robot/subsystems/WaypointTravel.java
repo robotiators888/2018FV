@@ -28,38 +28,53 @@ public class WaypointTravel extends Subsystem {
 	 * @return Whether or not the robot has arrived at the waypoint
 	 */
 	public boolean goToWaypoint(double desiredX, double desiredY, double desiredHeading) {
+		// Finds where the robot is on the field
 		double[] pos = location.getPos();
 		double heading = location.getHeading();
+		// Initializes the arrived boolean to false
 		boolean arrived = false;
+		// Finds the difference between the current and desired headings
 		double headingDifference = DeadReckon.modAngle(desiredHeading - heading);
 
 		switch (state) {
 		case 0:
+			// If the robot is within 6 inches of the target waypoint...
 			if ((Math.abs(desiredX - pos[0]) < 6) && 
 					(Math.abs(desiredY - pos[1]) < 6)) {
+				// ...stop moving and go to the next step.
 				drive.move(0.0, 0.0);
 				state = 1;
 			}
+			// Otherwise...
 			else {
+				// ...go to that waypoint.
 				double[] adjustments = moveToWaypoint(desiredX, desiredY);
 				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
 						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
 			}
 			break;
 		case 1:
+			// If the difference in the actual and desired headings is greater than pi radians...
 			if (headingDifference > Math.PI) {
+				// ...go the other way around the circle.
 				headingDifference = Math.PI - headingDifference;
 			}
+			
+			// If the robot is not within pi/48 radians of its target heading...
 			if (Math.abs(headingDifference) > (Math.PI / 48)) {
+				// ...go to that heading.
 				double[] rotationSpeed = moveToOrientation(desiredHeading);
 				drive.move(rotationSpeed[0], rotationSpeed[1]);
 			}
+			// Otherwise...
 			else {
+				// ...stop moving and go to the next step.
 				drive.move(0.0, 0.0);
 				state = 2;
 			}
 			break;
 		case 2:
+			// Set the arrived boolean to true and reset the state to zero
 			arrived = true;
 			state = 0;
 		default:;
@@ -68,6 +83,7 @@ public class WaypointTravel extends Subsystem {
 		//SmartDashboard.putNumber("waypoint state", state);
 		//SmartDashboard.putBoolean("arrived", arrived);
 		
+		// Return whether or not the robot has arrived
 		return arrived;
 	}
 	
@@ -193,20 +209,24 @@ public class WaypointTravel extends Subsystem {
 	 * @return The speeds to turn the robot in place to get it to the correct heading
 	 */
 	public double[] moveToOrientation(double desiredHeading) {
+		// Gets the current heading of the robot
 		double heading = location.getHeading();
+		// Initializes the turn speeds to zero
 		double leftTurnSpeed = 0;
 		double rightTurnSpeed = 0;
 
+		// If the desired heading is to the right of the robot...
 		if (DeadReckon.modAngle(heading - desiredHeading) >=
 				DeadReckon.modAngle(desiredHeading - heading)) {
-
+			// ...turn clockwise.
 			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED * 1.5;
 			rightTurnSpeed = -RobotMap.RIGHT_AUTO_SPEED * 1.5;
 
 		}
 		
+		// If the desired heading is to the left of the robot...
 		else {
-
+			// ...turn counterclockwise.
 			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED * 1.5;
 			rightTurnSpeed = RobotMap.RIGHT_AUTO_SPEED * 1.5;		
 		}
