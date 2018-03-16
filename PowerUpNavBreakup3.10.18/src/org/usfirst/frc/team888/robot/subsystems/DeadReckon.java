@@ -109,7 +109,7 @@ public class DeadReckon extends Subsystem {
 		 * the previous change is used instead.
 		 */
 		changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
-		if (changeInEncoderLeft > 3000) {
+		if (changeInEncoderLeft > 3000 || changeInEncoderLeft < -3000) {
 			changeInEncoderLeft = lastChangeInEncoderLeft;
 		}
 		else {
@@ -117,7 +117,7 @@ public class DeadReckon extends Subsystem {
 		}
 
 		changeInEncoderRight = encoderRightValue - lastEncoderRight;
-		if (changeInEncoderRight > 3000) {
+		if (changeInEncoderRight > 3000  || changeInEncoderRight < -3000) {
 			changeInEncoderRight = lastChangeInEncoderRight;
 		}
 		else {
