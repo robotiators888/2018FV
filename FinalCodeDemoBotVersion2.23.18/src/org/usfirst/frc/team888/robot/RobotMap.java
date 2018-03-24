@@ -61,13 +61,12 @@ public class RobotMap {
 	public static final int MOTOR_REAR_LEFT = 7;
 	public static final int MOTOR_FRONT_LEFT = 9;
 	
-	//The width between the two wheels the encoders measure off of.
+	//The width between the two wheels the encoders measure off of.	
 	public static final double WHEEL_BASE = 2996;
 	
 	//Conversion factor for clicks to inches
 	public static final double CLICKS_PER_INCH = 107;
 	
 	//Sets the speed for autonomous and the adjustments to add for driving straight.
-	public static final double LEFT_AUTO_SPEED = 0.6;
-	public static final double RIGHT_AUTO_SPEED = 0.6;
+	public static final double DEFAULT_AUTO_SPEED = 0.5;
 }

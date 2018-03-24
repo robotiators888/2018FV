@@ -11,11 +11,13 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team888.robot.commands.NavigationScheduler;
 import org.usfirst.frc.team888.robot.subsystems.DeadReckon;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team888.robot.subsystems.Navigation;
+import org.usfirst.frc.team888.robot.subsystems.WaypointTravel;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,6 +33,7 @@ public class Robot extends TimedRobot {
 	protected static DriveTrain drive;
 	protected static DeadReckon location;
 	protected static Navigation navigation;
+	protected static WaypointTravel gps;
 
 	protected static Command navScheduler;
 
@@ -47,7 +50,9 @@ public class Robot extends TimedRobot {
 
 		drive = new DriveTrain();
 		location = new DeadReckon(drive);
-		navigation =  new Navigation(drive, location, oi);
+		gps = new WaypointTravel(drive, location);
+		
+		navigation =  new Navigation(drive, location, gps, oi);
 
 		navScheduler = new NavigationScheduler(navigation);	
 	}
@@ -63,6 +68,8 @@ public class Robot extends TimedRobot {
 			navScheduler.cancel();
 		}
 
+		SmartDashboard.putData(navigation.startPosition);
+		
 	}
 
 	@Override
