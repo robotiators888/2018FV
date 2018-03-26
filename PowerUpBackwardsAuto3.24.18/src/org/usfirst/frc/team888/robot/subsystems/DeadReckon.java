@@ -16,10 +16,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DeadReckon extends Subsystem {
 
-	//Instantiates drive train object
+	// Instantiates drive train object
 	protected DriveTrain drive;
 
-	//Instantiates values for calculating location and speed
+	// Instantiates values for calculating location and speed
 	protected double angle;
 	protected double changeInDistance;
 	protected double changeInEncoderLeft;
@@ -49,24 +49,24 @@ public class DeadReckon extends Subsystem {
 
 
 	/*
-	//Instantiates objects for logging
+	// Instantiates objects for logging
 	private BufferedWriter bw;
 	File encoderData;
 	FileOutputStream fos;
 
-	//Instantiates boolean to tell whether or not the log file has been opened
+	// Instantiates boolean to tell whether or not the log file has been opened
 	protected boolean fileOpened = false;
 
-	//Instantiates logging values
+	// Instantiates logging values
 	protected double[][] deadReckonData = new double[1500][10];
 	protected int sampleCount = 0;
 	 */
 
 	public DeadReckon(DriveTrain p_drive) {// throws FileNotFoundException {
-		//Declares the drive object to be equal to the object passed in by Robot
+		// Declares the drive object to be equal to the object passed in by Robot
 		drive = p_drive;
 
-		//Sets certain location calculating values back to zero
+		// Sets certain location calculating values back to zero
 		clickPosX = 0;
 		clickPosY = 0;
 		direction = "forward";
@@ -78,11 +78,11 @@ public class DeadReckon extends Subsystem {
 		posX = 0;
 		posY = 0;
 
-		//Resets the encoder values
+		// Resets the encoder values
 		reset();
 	}
 
-	//Initializes logger
+	// Initializes logger
 	/*public void deadReckonInit() {		
 		if (!fileOpened) {
 			encoderData = new File("/tmp/encoderData");
@@ -99,9 +99,9 @@ public class DeadReckon extends Subsystem {
 		}
 	}*/
 
-	//Calculates the location of the robot
+	// Calculates the location of the robot
 	public void updateTracker() {
-		//Calls the method to get the most recent encoder data
+		// Calls the method to get the most recent encoder data
 		updateEncoderVals();
 
 		/* Calculates the change in the encoders since the last time the method was called.
@@ -129,7 +129,7 @@ public class DeadReckon extends Subsystem {
 		 */
 		timePassed = time - lastTime;
 
-		//Algorithm for when the robot is going forward
+		// Algorithm for when the robot is going forward
 		if (changeInEncoderLeft >= 0  && changeInEncoderRight >= 0) {
 
 			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
@@ -138,7 +138,7 @@ public class DeadReckon extends Subsystem {
 			direction = "forward";
 		} 
 
-		//Algorithm for when the robot is going backward
+		// Algorithm for when the robot is going backward
 		else if (changeInEncoderLeft <= 0  && changeInEncoderRight <= 0) {
 
 			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
@@ -148,34 +148,34 @@ public class DeadReckon extends Subsystem {
 		}
 
 
-		//Algorithm for when the robot is spinning clockwise
+		// Algorithm for when the robot is spinning clockwise
 		else if (changeInEncoderLeft >= 0  && changeInEncoderRight <= 0) {
-			//Use a system of equation to find where inside the wheel base the point of rotation is.
+			// Use a system of equation to find where inside the wheel base the point of rotation is.
 			PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
 					(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
 			PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
 
-			//If the point of rotation is farther from the left side...
+			// If the point of rotation is farther from the left side...
 			if (PORtoLeft >= PORtoRight) {
 				/* ...use the left changes in the left encoder to calculate your
 				 * change in distance and heading.
 				 */
-				//Find the change in heading using the law of cosines and negate it.
+				// Find the change in heading using the law of cosines and negate it.
 				changeInHeading = Math.acos((Math.pow(changeInEncoderLeft, 2) 
 						- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
-				//Find the change in distance based on the law of sines  and negate it.
+				// Find the change in distance based on the law of sines  and negate it.
 				changeInDistance = Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
 						Math.sin((Math.PI - changeInHeading) / 2);
 			}
-			//If the point of rotation is farther from the right side...
+			// If the point of rotation is farther from the right side...
 			else {
 				/* ...use the left changes in the left encoder to calculate your
 				 * change in distance and heading.
 				 */
-				//Find the change in heading using the law of cosines and negate it.
+				// Find the change in heading using the law of cosines and negate it.
 				changeInHeading = Math.acos((Math.pow(changeInEncoderRight, 2) 
 						- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
-				//Find the change in distance based on the law of sines  and negate it.
+				// Find the change in distance based on the law of sines  and negate it.
 				changeInDistance = Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
 						Math.sin((Math.PI - changeInHeading) / 2);
 			}
@@ -183,35 +183,35 @@ public class DeadReckon extends Subsystem {
 			direction = "SCW";
 		}
 
-		//Algorithm for when the robot is spinning counterclockwise
+		// Algorithm for when the robot is spinning counterclockwise
 		else if (changeInEncoderLeft <= 0  && changeInEncoderRight >= 0) {
-			//Use a system of equation to find where inside the wheel base the point of rotation is.
+			// Use a system of equation to find where inside the wheel base the point of rotation is.
 			PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
 					(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
 			PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
 
-			//If the point of rotation is farther from the left side...
+			// If the point of rotation is farther from the left side...
 			if (PORtoLeft >= PORtoRight) {
 				/* ...use the left changes in the left encoder to calculate your
 				 * change in distance and heading.
 				 */
-				//Find the change in heading using the law of cosines.
+				// Find the change in heading using the law of cosines.
 				changeInHeading = -Math.acos((Math.pow(changeInEncoderLeft, 2) 
 						- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
-				//Find the change in heading using the law of sines/
+				// Find the change in heading using the law of sines/
 				changeInDistance = -Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
 						Math.sin((Math.PI - changeInHeading) / 2);
 			} 
 
-			//If the point of rotation is farther from the right side...
+			// If the point of rotation is farther from the right side...
 			else {
 				/* ...use the right changes in the left encoder to calculate your
 				 * change in distance and heading.
 				 */
-				//Find the change in heading using the law of cosines.
+				// Find the change in heading using the law of cosines.
 				changeInHeading = -Math.acos((Math.pow(changeInEncoderRight, 2) 
 						- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
-				//Find the change in heading using the law of sines/
+				// Find the change in heading using the law of sines/
 				changeInDistance = -Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
 						Math.sin((Math.PI - changeInHeading) / 2);
 			}
@@ -220,26 +220,26 @@ public class DeadReckon extends Subsystem {
 		}
 
 
-		//Calculate the angle of change for the bot and the change in heading.
+		// Calculate the angle of change for the bot and the change in heading.
 		angle = (heading + (changeInHeading / 2));
 		heading = modAngle(heading + changeInHeading);
 
-		//Calculates the change in the X and Y directions
+		// Calculates the change in the X and Y directions
 		changeInX = changeInDistance * Math.sin(angle);
 		changeInY = changeInDistance * Math.cos(angle);
 
-		//Calculates the new position of the robot in inches.
+		// Calculates the new position of the robot in inches.
 		clickPosX += changeInX;
 		clickPosY += changeInY;
 		posX = clickPosX / RobotMap.CLICKS_PER_INCH;
 		posY = clickPosY / RobotMap.CLICKS_PER_INCH;
 
-		//Calculates the speed of the robot in feet per second
+		// Calculates the speed of the robot in feet per second
 		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
 				/ (timePassed);
 	}
 
-	//Refreshes dashboard values and logs values
+	// Refreshes dashboard values and logs values
 	public void updateDashboard() {//throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
 		SmartDashboard.putNumber("Y Position", posY);
@@ -250,7 +250,7 @@ public class DeadReckon extends Subsystem {
 		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
 		SmartDashboard.putString("Direction", direction);
 
-		//Sends the values to an array for logging
+		// Sends the values to an array for logging
 		/*
 		if (sampleCount < 1500) {
 			deadReckonData[sampleCount][0] = encoderLeftValue;
@@ -268,7 +268,7 @@ public class DeadReckon extends Subsystem {
 
 		}
 
-		//Writes the logged values to file
+		// Writes the logged values to file
 		else if (sampleCount == 1500) {
 			for (int i = 0; i < 1500; i++) {
 				bw.append(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
@@ -291,28 +291,28 @@ public class DeadReckon extends Subsystem {
 
 	// Updates n and n-1 encoder value variables.
 	private void updateEncoderVals() {
-		//Saves the change in time
+		// Saves the change in time
 		lastTime = time;
 		time = DriverStation.getInstance().getMatchTime();
 
-		//Gets the encoder values from the drive train.
+		// Gets the encoder values from the drive train.
 		int[] vals = drive.getEncoderVals();
 
-		//If the tracker has been calibrated...
+		// If the tracker has been calibrated...
 		if (calibrated) {
-			//...set the current values to be the last values...
+			// ...set the current values to be the last values...
 			lastEncoderLeft = encoderLeftValue;
 			lastEncoderRight = encoderRightValue;
 		}
-		//Otherwise the tracker has not been calibrated...
+		// Otherwise the tracker has not been calibrated...
 		else {
-			//...so set the last value to be equal to the current value...
+			// ...so set the last value to be equal to the current value...
 			lastEncoderLeft = vals[0];
 			lastEncoderRight = vals[1];
 			calibrated = true;
 		}
 
-		//...and set the new encoder values.
+		// ...and set the new encoder values.
 		encoderLeftValue = vals[0];
 		encoderRightValue = vals[1];
 	}
@@ -331,7 +331,6 @@ public class DeadReckon extends Subsystem {
 
 	/**
 	 * Accessor to get the position logged by the encoders in an array.
-	 * 
 	 * @return Returns a double array in format {x, y}
 	 */
 	public double[] getPos() {
