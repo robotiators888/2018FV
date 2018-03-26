@@ -184,91 +184,52 @@ public class Navigation extends Subsystem {
 		case "Middle":	
 			// The case that robot starts in the middle position
 			switch (state) {
-			case 1:
-				if (gameData.charAt(0) == 'L') {
-					// If the robot has not arrived at the switch...
-					if (gps.goToWaypoint(0, 36, ((Math.PI * 7) / 4), RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 1;
-					}
-				} else {
-					// If the robot has not arrived at the switch...
-					if (gps.goToWaypoint(0, 36, ((Math.PI) / 4), RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 1;
-					}
-				}
-				break;
 			case 0:
-				// If the our alliance has the left side of the switch
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
-					if (gps.goToWaypoint(-75, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 2;
+					if (gps.goToWaypoint(-72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 1;
 					}
 				}
-
-				// If the our alliance has the right side of the switch
 				else {
-					// If the robot has not arrived at the switch...
 					if (gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 2;
-					}
-				}
-				break;
-			case 2:
-				// If the our alliance has the left side of the switch
-				if (gameData.charAt(0) == 'L') {
-					// If the robot has not arrived at the switch...
-					if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 3;
-					}
-				}
-
-				// If the our alliance has the right side of the switch
-				else {
-					// If the robot has not arrived at the switch...
-					if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 3;
-					}
-				}
-				break;
-			default:
-			}
-			break;
-
-		case "Left":
-			// The case that robot starts in the left position
-			switch (state) {
-			case 0: 
-				if (gameData.charAt(0) == 'L') {
-					if (gps.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 1;
-					}
-				}
-				else {
-					if (gps.goToWaypoint(0, 210, (Math.PI /2), RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
 						state = 1;
 					}
 				}
 				break;
-			case 1: 
-				if (gameData.charAt(0) == 'L') {
-					if (gps.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 3;
-					}
-				}
-				else {
-					if (gps.goToWaypoint(154, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
-						state = 2;
-					}
-				}
+			case 1:
+				state = 2;
 				break;
 			case 2:
-				if (gps.goToWaypoint(154, 185, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
+				// Lower the pincer
+				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
-				state = 4;
+				if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 4;
+				}
+			case 4:
+				state = 5;
+				break;
+			case 5:
+				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 6;
+				}
+				break;
+			case 6:
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(-72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 7;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 7;
+					}
+				}
+				break;
 			default:
 			}
 			break;

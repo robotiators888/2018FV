@@ -1,7 +1,7 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WaypointTravel extends Subsystem {
 
