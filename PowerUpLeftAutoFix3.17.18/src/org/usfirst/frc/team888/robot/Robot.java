@@ -40,7 +40,6 @@ public class Robot extends TimedRobot {
 	protected static DeadReckon location;
 	protected static Navigation navigation;
 	protected static WaypointTravel gps;
-	
 	protected static Vision vision;
 	
 	//Instantiates compressor, climber, and pincer objects
