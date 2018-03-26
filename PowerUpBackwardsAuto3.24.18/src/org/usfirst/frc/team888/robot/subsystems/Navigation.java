@@ -235,11 +235,11 @@ public class Navigation extends Subsystem {
 				break;
 			case 3:
 				pincer.setPincerPosition(700, true, 0.0);
-				if (gps.goToWaypoint(-12, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 			case 4:
-				// Open the pincer and go to the next step
+				// Close the pincer and go to the next step
 				pincer.setPincerPosition(700, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kReverse);
 				state = 5;
