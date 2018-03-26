@@ -77,7 +77,7 @@ public class WaypointTravel extends Subsystem {
 		default:;
 		}
 
-		SmartDashboard.putNumber("waypoint heading", Math.toDegrees(desiredHeading));
+		//SmartDashboard.putNumber("waypoint heading", Math.toDegrees(desiredHeading));
 		//SmartDashboard.putBoolean("arrived", arrived);
 		
 		// Return whether or not the robot has arrived
