@@ -71,6 +71,7 @@ public class Navigation extends Subsystem {
 		startPosition.addDefault("Middle Start Position", "Middle");
 		startPosition.addObject("Left Start Position", "Left");
 		startPosition.addObject("Right Start Position", "Right");
+		startPosition.addObject("Only go straight", "Straight");
 
 		strategy = new SendableChooser<String>();
 		strategy.addDefault("Cube on Switch", "Switch");
@@ -152,7 +153,7 @@ public class Navigation extends Subsystem {
 		// Otherwise run teleop controls.	
 		else {
 			// If both triggers are pressed...
-			if(oi.getTriggers()) {
+			if (oi.getTriggers()) {
 				// ...the motors go at full speed
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
 				rightBaseDriveOutput = oi.getRightStickAxis(RobotMap.R_Y_AXIS);
@@ -163,7 +164,7 @@ public class Navigation extends Subsystem {
 				rightBaseDriveOutput = 0.7 * oi.getRightStickAxis(RobotMap.R_Y_AXIS);
 			}
 			// If the joystick is less then 20% in either direction then ignore it
-			if(Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.2 &&
+			if (Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.2 &&
 					Math.abs(oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.2){
 				leftBaseDriveOutput = 0.0;
 				rightBaseDriveOutput = 0.0;
@@ -183,7 +184,7 @@ public class Navigation extends Subsystem {
 			lastInput = input;
 			input = oi.getLeftStickButton(2) || oi.getRightStickButton(2);
 
-			if(output) {
+			if (output) {
 				rightDriveOutput = leftBaseDriveOutput;
 				leftDriveOutput = rightBaseDriveOutput;
 			} else {
@@ -374,6 +375,17 @@ public class Navigation extends Subsystem {
 			default:
 			}
 			break;
+
+		case "Straight":
+			switch (state) {
+			case 0:
+				if (gps.goToWaypoint(0, 100, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 1;
+				}
+				break;
+			default:
+			}
+
 		default:
 		}
 	}

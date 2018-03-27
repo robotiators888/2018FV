@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,8 +23,6 @@ public class Pincer extends Subsystem {
 
 	protected TalonSRX pincerMotor;
 	protected DoubleSolenoid pincerPiston;
-	
-	protected Spark lights;
 
 	protected AnalogInput pincerEncoder;
 

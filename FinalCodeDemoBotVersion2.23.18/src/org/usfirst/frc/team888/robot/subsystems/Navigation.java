@@ -207,9 +207,10 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 3:
-				if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (gps.goToWaypoint(-5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
+				break;
 			case 4:
 				state = 5;
 				break;
@@ -234,6 +235,50 @@ public class Navigation extends Subsystem {
 			}
 			break;
 
+		case "Left":
+			// The case that robot starts in the right position
+			switch (state) {
+			case 0: 
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 1;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(0, 210, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 1;
+					}
+				}
+				break;
+			case 1: 
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 4;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(154, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 2;
+					}
+				}
+				break;
+			case 2:
+				if (gps.goToWaypoint(154, 148, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 3;
+				}
+				break;
+			case 3:
+				if (gps.goToWaypoint(134, 148, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 4;
+				}
+				break;
+			case 4:
+				state = 5;
+				break;
+			default:
+			}
+			break;
+			
 		case "Right":
 			// The case that robot starts in the right position
 			switch (state) {
@@ -291,6 +336,7 @@ public class Navigation extends Subsystem {
 		}
 
 		SmartDashboard.putNumber("State", state);
+		SmartDashboard.putString("Position", startPosition.getSelected());
 	}
 
 
