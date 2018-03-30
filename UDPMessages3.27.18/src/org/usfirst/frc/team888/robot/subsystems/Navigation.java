@@ -59,9 +59,10 @@ public class Navigation extends Subsystem {
 	protected boolean init = true;
 
 	// Camera stuff
-    DatagramSocket serverSocket;
-    DatagramPacket receivePacket;
-    byte[] receiveData = new byte[8];
+	DatagramSocket serverSocket;
+	DatagramPacket receivePacket;
+	byte[] receiveData = new byte[8];
+	byte[] byteRelativeLocation = null;
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, Pincer p_pince, Vision p_vision, 
 			WaypointTravel p_gps, Climber p_climber, OI p_oi) {
@@ -85,14 +86,14 @@ public class Navigation extends Subsystem {
 		strategy.addDefault("Cube on Switch", "Switch");
 		strategy.addObject("Cube on Scale", "Scale");
 		strategy.addObject("Don't Drop Cube", "Straight");
-		
+
 		try {
- 			serverSocket = new DatagramSocket(RobotMap.RIO_UDP_PORT);
- 			receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			serverSocket = new DatagramSocket(RobotMap.RIO_UDP_PORT);
+			receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			serverSocket.setSoTimeout(0);
+		} catch (Exception e) {
 
- 		} catch (Exception e) {
-
- 		} 
+		} 
 	}
 
 	/**
@@ -141,11 +142,14 @@ public class Navigation extends Subsystem {
 	 * Gets the desired location
 	 */
 	public void updateGuidenceControl() {
-		try {
-			serverSocket.receive(receivePacket);
-			//byte[] byteRelativeLocation = receivePacket.getData();
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		if (serverSocket != null && receivePacket != null) {
+			try {
+				serverSocket.receive(receivePacket);
+				byteRelativeLocation = receivePacket.getData();
+			} catch (IOException e) {
+				byteRelativeLocation = null;
+			}
 		}
 	}
 

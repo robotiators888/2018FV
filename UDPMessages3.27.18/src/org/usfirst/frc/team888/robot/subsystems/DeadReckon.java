@@ -1,5 +1,7 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import java.util.ArrayList;
+
 //import java.io.BufferedWriter;
 //import java.io.File;
 //import java.io.FileNotFoundException;
@@ -47,8 +49,9 @@ public class DeadReckon extends Subsystem {
 	protected double time;
 	protected double timePassed;
 	protected boolean calibrated;
-	
-	protected double[][] locationLog;
+
+	// Note: DualDouble is a nested class that stores two Double values.
+	protected ArrayList<DualDouble> locationLog;
 
 	/*
 	// Instantiates objects for logging
@@ -80,7 +83,8 @@ public class DeadReckon extends Subsystem {
 		heading = 0;
 		posX = 0;
 		posY = 0;
-		
+
+		locationLog = new ArrayList<DualDouble>(0);
 		// Resets the encoder values
 		reset();
 	}
@@ -240,34 +244,22 @@ public class DeadReckon extends Subsystem {
 		// Calculates the speed of the robot in feet per second
 		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
 				/ (timePassed);
-		
-		locationLog[cycle][0] = posX;
-		locationLog[cycle][1] = posY;
-		
+
+		locationLog.add(new DualDouble(posX, posY));
+
 		cycle++;
 	}
 
 	public double[] cubeLocation(int cycle, double[] relativeCubeLocation) {
-		double[] pastBotLocation = {
-				locationLog[cycle][0],
-				locationLog[cycle][1] 
+		double[] pastBotLocation = locationLog.get(cycle).getAsPrimitiveArray();
+
+		return new double[] {
+				relativeCubeLocation[0]	+ pastBotLocation[0],
+				relativeCubeLocation[1] + pastBotLocation[1]
 		};
-		
-		double[] currentBotLocation = getPos();
-		
-		double[] translation = {
-				currentBotLocation[0] - pastBotLocation[0],
-				currentBotLocation[1] - pastBotLocation[1]
-		};
-		
-		double[] cubeLocation = {
-			relativeCubeLocation[0]	- translation[0],
-			relativeCubeLocation[1] - translation[1]
-		};
-		
-		return cubeLocation;
+
 	}
-	
+
 	// Refreshes dashboard values and logs values
 	public void updateDashboard() {//throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
@@ -397,5 +389,52 @@ public class DeadReckon extends Subsystem {
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		//setDefaultCommand(new MySpecialCommand());
+	}
+
+	/**
+	 * Helper nested class for wrapping two Doubles together for 
+	 * use in an ArrayList in this class's outer class.
+	 */
+	protected class DualDouble {
+
+		protected Double a;
+		protected Double b;
+
+		/**
+		 * Creates the DualDouble with two Doubles internally stored. 
+		 * Does not null check.
+		 * @param arg0 Double to assign to value a (index 0)
+		 * @param arg1 Double to assign to value b (index 1)
+		 */
+		public DualDouble(Double arg0, Double arg1) {
+			this.a = arg0;
+			this.b = arg1;
+		}
+		
+		/**
+		 * Gets one of the stored Doubles
+		 * @param index The index of the Double. Must be 0 or 1
+		 * @return Returns value a if index is 0, value b if index is 1, 
+		 * and null if the index is out of range.
+		 */
+		public Double get(int index) {
+			if(index == 0) return a;
+			else if(index == 1) return b;
+			else return null; 
+		}
+		
+		/**
+		 * @return both the stored Doubles as an array with {a, b}
+		 */
+		public Double[] getAsArray() {
+			return new Double[]{a, b};
+		}
+		
+		/**
+		 * @return both the stored Double's values as an array with {a.doubleValue(), b.doubleValue()}
+		 */
+		public double[] getAsPrimitiveArray() {
+			return new double[]{a.doubleValue(), b.doubleValue()};
+		}
 	}
 }
