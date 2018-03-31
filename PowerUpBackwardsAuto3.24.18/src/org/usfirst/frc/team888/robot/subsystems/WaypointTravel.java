@@ -1,22 +1,25 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import org.usfirst.frc.team888.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WaypointTravel extends Subsystem {
 
 	protected DriveTrain drive;
 	protected DeadReckon location;
-	
+
 	protected int state = 0;
-	
+
 	public WaypointTravel (DriveTrain p_drive, DeadReckon p_location) {
 		drive = p_drive;
 		location = p_location;
-		
+
 		state = 0;
 	}
-	
+
 	/**
 	 * Moves the robot to a waypoint
 	 * @param desiredX The X position of the waypoint
@@ -56,7 +59,7 @@ public class WaypointTravel extends Subsystem {
 				// ...go the other way around the circle.
 				headingDifference = Math.PI - headingDifference;
 			}
-			
+
 			// If the robot is not within pi/48 radians of its target heading...
 			if (Math.abs(headingDifference) > (Math.PI / 48)) {
 				// ...go to that heading.
@@ -79,11 +82,11 @@ public class WaypointTravel extends Subsystem {
 
 		//SmartDashboard.putNumber("waypoint heading", Math.toDegrees(desiredHeading));
 		//SmartDashboard.putBoolean("arrived", arrived);
-		
+
 		// Return whether or not the robot has arrived
 		return arrived;
 	}
-	
+
 	/**
 	 * @param desiredX The X position of the waypoint
 	 * @param desiredY
@@ -95,13 +98,13 @@ public class WaypointTravel extends Subsystem {
 		double rightSideAdjustment = 0;
 		double leftSideAdjustment = 0;
 		double[] targetData = calculateTurn(desiredX, desiredY, speed);
-		
+
 		//If the robot is going forward...
 		if (direction.equals("forward")) {
 
 			//If the heading is to the right of the robot's current heading...
 			if (DeadReckon.modAngle(heading - targetData[0]) >
-					DeadReckon.modAngle(targetData[0] - heading)) {
+			DeadReckon.modAngle(targetData[0] - heading)) {
 
 				/*
 				 * If the speed plus the adjustment for the left side would be slower
@@ -121,7 +124,7 @@ public class WaypointTravel extends Subsystem {
 			}
 			//If the heading is to the left of the robot's current heading...
 			else if (DeadReckon.modAngle(heading - targetData[0]) <
-			DeadReckon.modAngle(targetData[0] - heading)) {
+					DeadReckon.modAngle(targetData[0] - heading)) {
 
 				/*
 				 * If the speed plus the adjustment for the right side would be slower
@@ -138,14 +141,14 @@ public class WaypointTravel extends Subsystem {
 				}
 			}
 		}
-		
+
 		//If the robot is going backward...
 		else if(direction.equals("backward")) {
 			double course = heading + Math.PI;
-			
+
 			//If the heading is to the right of the robot's current heading...
 			if (DeadReckon.modAngle(course - targetData[0]) <
-			DeadReckon.modAngle(targetData[0] - course)) {
+					DeadReckon.modAngle(targetData[0] - course)) {
 
 				/*
 				 * If the speed plus the adjustment for the left side would be slower
@@ -161,10 +164,10 @@ public class WaypointTravel extends Subsystem {
 					rightSideAdjustment = -((speed - targetData[1]) + 1);
 				}
 			}
-			
+
 			//If the heading is to the right of the robot's current heading...
 			else if (DeadReckon.modAngle(course - targetData[0]) >
-					DeadReckon.modAngle(targetData[0] - course)) {
+			DeadReckon.modAngle(targetData[0] - course)) {
 
 				/*
 				 * If the speed plus the adjustment for the right side would be slower
@@ -187,7 +190,7 @@ public class WaypointTravel extends Subsystem {
 			leftSideAdjustment = 0.0;
 			rightSideAdjustment = 0.0;
 		}
-		
+
 		//Creates an array with the adjustments
 		double[] adjustments = {
 				leftSideAdjustment,
@@ -196,7 +199,7 @@ public class WaypointTravel extends Subsystem {
 
 		//SmartDashboard.putNumber("left adjustment", leftSideAdjustment);
 		//SmartDashboard.putNumber("right adjustment", rightSideAdjustment);
-		
+
 		return adjustments;		
 
 	}
@@ -220,7 +223,7 @@ public class WaypointTravel extends Subsystem {
 			rightTurnSpeed = -Math.abs(speed) * 1.25;
 
 		}
-		
+
 		// If the desired heading is to the left of the robot...
 		else {
 			// ...turn counterclockwise.
@@ -228,17 +231,15 @@ public class WaypointTravel extends Subsystem {
 			rightTurnSpeed = Math.abs(speed) * 1.25;		
 		}
 
-		double[] turnSpeeds = {
+		return new double[] {
 				leftTurnSpeed,
 				rightTurnSpeed
 		};
 
 		//SmartDashboard.putNumber("left adjustment", leftTurnSpeed);
 		//SmartDashboard.putNumber("right adjustment", rightTurnSpeed);
-		
-		return turnSpeeds;	
 	}
-	
+
 	/**
 	 * Finds the heading and adjustments to add for waypoint movement
 	 * @param desiredX The X position of the waypoint
@@ -247,36 +248,34 @@ public class WaypointTravel extends Subsystem {
 	 */
 	public double[] calculateTurn(double desiredX, double desiredY, double speed) {
 		double heading = location.getHeading();
-		
+
 		//Calculates the direction the robot should travel in to get to the waypoint
 		double[] pos = location.getPos();
 
 		double desiredHeading = DeadReckon.modAngle(Math.atan2(desiredX - pos[0],
 				desiredY - pos[1]));
-		
+
 		double headingDifference = DeadReckon.modAngle(desiredHeading - heading);
 		if (headingDifference > Math.PI) {
 			headingDifference = Math.PI - headingDifference;
 		}
-		
-		//Calculates the adjustment based on how much the robot needs to turn
-		double driveAdjustment = Math.max(0, Math.min(1, (Math.abs(headingDifference) / Math.PI)));
 
-		double[] i = {
-				desiredHeading,
-				driveAdjustment
-		};
+		//Calculates the adjustment based on how much the robot needs to turn
+		double driveAdjustment = speed * RobotMap.AUTO_TURN_PROPORTION;
 
 		//SmartDashboard.putNumber("desired x", desiredX);
 		//SmartDashboard.putNumber("desired y", desiredY);
-		//SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
-		//SmartDashboard.putNumber("ajustment proportion", driveAdjustment);
-		
-		return i;
+		SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
+		SmartDashboard.putNumber("ajustment proportion", driveAdjustment);
+
+		return new double[] {
+				desiredHeading,
+				driveAdjustment
+		};
 	}
-	
-    public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
-    }
+
+	public void initDefaultCommand() {
+		// Set the default command for a subsystem here.
+		//setDefaultCommand(new MySpecialCommand());
+	}
 }

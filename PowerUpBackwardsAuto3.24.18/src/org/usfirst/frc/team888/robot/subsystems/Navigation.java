@@ -235,42 +235,45 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 3:
+				state = 4;
+				break;
+			case 4:
 				pincer.setPincerPosition(700, true, 0.0);
 				if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-					state = 4;
+					state = 5;
 				}
-			case 4:
+			case 5:
 				// Close the pincer and go to the next step
 				pincer.setPincerPosition(700, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kReverse);
-				state = 5;
-				break;
-			case 5:
-				// Lower the pincer
-				pincer.setPincerPosition(1700, true, 0.0);
-				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
-					state = 6;
-				}
+				state = 6;
 				break;
 			case 6:
 				// Lower the pincer
 				pincer.setPincerPosition(1700, true, 0.0);
+				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 7;
+				}
+				break;
+			case 7:
+				// Lower the pincer
+				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					if (gps.goToWaypoint(-72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 7;
+						state = 8;
 					}
 				}
 				else {
 					if (gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 7;
+						state = 8;
 					}
 				}
 				break;
-			case 7:
+			case 8:
 				// Open the pincer and go to the next step
 				pincer.setPincerPosition(1700, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 8;
+				state = 9;
 				break;
 			default:
 			}

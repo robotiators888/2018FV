@@ -59,9 +59,10 @@ public class Navigation extends Subsystem {
 	protected boolean init = true;
 
 	// Camera stuff
-    DatagramSocket serverSocket;
-    DatagramPacket receivePacket;
-    byte[] receiveData = new byte[8];
+	DatagramSocket serverSocket;
+	DatagramPacket receivePacket;
+	byte[] receiveData = new byte[8];
+	byte[] byteRelativeLocation = null;
 
 	public Navigation(DriveTrain p_drive, DeadReckon p_location, Pincer p_pince, Vision p_vision, 
 			WaypointTravel p_gps, Climber p_climber, OI p_oi) {
@@ -85,14 +86,14 @@ public class Navigation extends Subsystem {
 		strategy.addDefault("Cube on Switch", "Switch");
 		strategy.addObject("Cube on Scale", "Scale");
 		strategy.addObject("Don't Drop Cube", "Straight");
-		
+
 		try {
- 			serverSocket = new DatagramSocket(RobotMap.RIO_UDP_PORT);
- 			receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			serverSocket = new DatagramSocket(RobotMap.RIO_UDP_PORT);
+			receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			serverSocket.setSoTimeout(1);
+		} catch (Exception e) {
 
- 		} catch (Exception e) {
-
- 		} 
+		} 
 	}
 
 	/**
@@ -141,11 +142,14 @@ public class Navigation extends Subsystem {
 	 * Gets the desired location
 	 */
 	public void updateGuidenceControl() {
-		try {
-			serverSocket.receive(receivePacket);
-			//byte[] byteRelativeLocation = receivePacket.getData();
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		if (serverSocket != null && receivePacket != null) {
+			try {
+				serverSocket.receive(receivePacket);
+				byteRelativeLocation = receivePacket.getData();
+			} catch (IOException e) {
+				byteRelativeLocation = null;
+			}
 		}
 	}
 
@@ -223,7 +227,7 @@ public class Navigation extends Subsystem {
 				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
-					if (gps.goToWaypoint(-72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(-75, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				}
@@ -297,7 +301,7 @@ public class Navigation extends Subsystem {
 			switch (state) {
 			case 0: 
 				pincer.setPincerPosition(1800, true, 0.0);
-				if (gameData.charAt(0) == 'R') {
+				if (gameData.charAt(0) == 'L') {
 					if (gps.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
@@ -310,26 +314,26 @@ public class Navigation extends Subsystem {
 				break;
 			case 1: 
 				pincer.setPincerPosition(1800, true, 0.0);
-				if (gameData.charAt(0) == 'R') {
+				if (gameData.charAt(0) == 'L') {
 					if (gps.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 4;
 					}
 				}
 				else {
-					if (gps.goToWaypoint(154, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(226, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
 				break;
 			case 2:
 				pincer.setPincerPosition(1800, true, 0.0);
-				if (gps.goToWaypoint(154, 148, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (gps.goToWaypoint(226, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
 				pincer.setPincerPosition(1800, true, 0.0);
-				if (gps.goToWaypoint(134, 148, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (gps.goToWaypoint(206, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
@@ -366,20 +370,20 @@ public class Navigation extends Subsystem {
 					}
 				}
 				else {
-					if (gps.goToWaypoint(-154, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(-226, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
 				break;
 			case 2:
 				pincer.setPincerPosition(1800, true, 0.0);
-				if (gps.goToWaypoint(-154, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (gps.goToWaypoint(-226, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
 				pincer.setPincerPosition(1800, true, 0.0);
-				if (gps.goToWaypoint(-134, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (gps.goToWaypoint(-206, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
@@ -391,19 +395,10 @@ public class Navigation extends Subsystem {
 			default:
 			}
 			break;
-
-		case "Straight":
-			switch (state) {
-			case 0:
-				if (gps.goToWaypoint(0, 100, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-					state = 1;
-				}
-				break;
-			default:
-			}
-
 		default:
 		}
+
+		SmartDashboard.putNumber("State", state);
 	}
 
 

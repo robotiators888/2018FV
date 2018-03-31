@@ -71,24 +71,20 @@ public class Navigation extends Subsystem {
 		startPosition.addDefault("Middle Start Position", "Middle");
 		startPosition.addObject("Left Start Position", "Left");
 		startPosition.addObject("Right Start Position", "Right");
+		startPosition.addObject("Drive Straight Only", "Straight");
 
 		strategy = new SendableChooser<String>();
-		strategy.addDefault("Cube on Switch", "Switch");
-		strategy.addObject("Cube on Scale", "Scale");
-		strategy.addObject("Don't Drop Cube", "Straight");
+		strategy.addDefault("Cube on Switch", "Drop");
+		strategy.addObject("No cube on far side", "Cancel");
 	}
 
 	/**
 	 * Initializes objects in or called by navigation 
 	 */
 	public void navigationInit() {
-		// If it is time to initialize...
-		if (init) {
-			//...then initialize.
-			schedulerOffset = 0;
-			location.reset();
-			init = false;
-		}
+		schedulerOffset = 0;
+		location.reset();
+
 
 		// Stores the randomizer data from the FMS as a string
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
@@ -102,6 +98,7 @@ public class Navigation extends Subsystem {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
+		location.updateDashboard();
 
 		// If the camera switch button was pressed and the the wrong camera is displaying...
 		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
@@ -117,12 +114,12 @@ public class Navigation extends Subsystem {
 		// Send the nav data to the dashboard once per second on the second 
 		if (schedulerOffset == 0) {
 			updateDashboard();
-			location.updateDashboard();
+			//location.updateDashboard();
 		}
 
 		// Send the location data to the dashboard once per second on the half second
 		if (schedulerOffset == 25) {
-			location.updateDashboard();
+			//location.updateDashboard();
 		}
 
 		// Increment the offset by one. If it has reached 50 (one second), set it back to zero.
@@ -210,42 +207,24 @@ public class Navigation extends Subsystem {
 				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
-					if (!gps.goToWaypoint(0, 36, ((Math.PI * 7) / 4), RobotMap.DEFAULT_AUTO_SPEED)) {
-						// ...go there.
-						gps.goToWaypoint(0, 36, ((Math.PI * 7) / 4), RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					// Otherwise...
-					else {
-						// Otherwise...
+					if (gps.goToWaypoint(0, 36, ((Math.PI * 7) / 4), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				} else {
 					// If the robot has not arrived at the switch...
-					if (!gps.goToWaypoint(0, 36, ((Math.PI) / 4), RobotMap.DEFAULT_AUTO_SPEED)) {
-						// ...go there.
-						gps.goToWaypoint(0, 36, ((Math.PI) / 4), RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					// Otherwise...
-					else {
-						// Otherwise...
+					if (gps.goToWaypoint(0, 36, ((Math.PI) / 4), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				}
 				break;
 			case 1:
 				// Lower the pincer
-				pincer.setPincerPosition(1700, true, 0.0);
+				pincer.setPincerPosition(1500, true, 0.0);
 
 				// If the our alliance has the left side of the switch
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
-					if (!gps.goToWaypoint(-75, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-						// ...go there.
-						gps.goToWaypoint(-75, 89, 0, RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					// Otherwise...
-					else {
-						// Otherwise...
+					if (gps.goToWaypoint(-75, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
@@ -253,80 +232,80 @@ public class Navigation extends Subsystem {
 				// If the our alliance has the right side of the switch
 				else {
 					// If the robot has not arrived at the switch...
-					if (!gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-						// ...go there.
-						gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					// Otherwise...
-					else {
-						// Otherwise...
+					if (gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
 				break;
 			case 2:
 				// Open the pincer and go to the next step
-				pincer.setPincerPosition(1700, true, 0.0);
+				if (pincer.setPincerPosition(1500, true, 0.0)) {
+					pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+					state = 3;
+				}
+			case 3:
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 3;
+				pincer.setPincerPosition(1500, false, 0.0);
+				state = 4;
 			default:
 			}
 			break;
 
 		case "Left":
-			// The case that robot starts in the left position
+			// The case that robot starts in the right position
 			switch (state) {
 			case 0: 
 				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (!gps.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
-						gps.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					else {
+					if (gps.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				}
 				else {
-					if (!gps.goToWaypoint(0, 210, (Math.PI /2), RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
-						gps.goToWaypoint(0, 210, (Math.PI /2), RobotMap.DEFAULT_AUTO_SPEED * 1.5);
-					}
-					else {
-						state = 1;
+					if (gps.goToWaypoint(0, 210, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						if (strategy.getSelected().equals("Cancel")) {
+							state = 6;
+						}
+						else {
+							state = 1;
+						}
 					}
 				}
 				break;
 			case 1: 
 				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (!gps.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
-						gps.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					else {
-						state = 3;
+					if (gps.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 4;
 					}
 				}
 				else {
-					if (!gps.goToWaypoint(154, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
-						gps.goToWaypoint(154, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5);
-					}
-					else {
+					if (gps.goToWaypoint(226, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
 				break;
 			case 2:
-				pincer.setPincerPosition(1800, true, 0.0);
-				if (!gps.goToWaypoint(154, 185, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
-					gps.goToWaypoint(154, 185, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5);
-				}
-				else {
+				pincer.setPincerPosition(1500, true, 0.0);
+				if (gps.goToWaypoint(226, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
-				pincer.setPincerPosition(1800, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 4;
+				pincer.setPincerPosition(1500, true, 0.0);
+				if (gps.goToWaypoint(206, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 4;
+				}
+				break;
+			case 4:
+				if (pincer.setPincerPosition(1500, true, 0.0)) {
+					pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+					state = 5;
+				}
+				break;
+			case 5:
+				pincer.setPincerPosition(1500, false, 0.0);
+				state = 6;
 			default:
 			}
 			break;
@@ -337,79 +316,62 @@ public class Navigation extends Subsystem {
 			case 0: 
 				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'R') {
-					if (!gps.goToWaypoint(0, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
-						gps.goToWaypoint(0, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					else {
+					if (gps.goToWaypoint(0, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				}
 				else {
-					if (!gps.goToWaypoint(0, 210, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
-						gps.goToWaypoint(0, 210, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED * 1.5);
-					}
-					else {
-						state = 1;
+					if (gps.goToWaypoint(0, 210, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						if (strategy.getSelected().equals("Cancel")) {
+							state = 6;
+						}
+						else {
+							state = 1;
+						}
 					}
 				}
 				break;
 			case 1: 
 				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'R') {
-					if (!gps.goToWaypoint(-16, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
-						gps.goToWaypoint(-16, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					else {
+					if (gps.goToWaypoint(-20, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 4;
 					}
 				}
 				else {
-					if (!gps.goToWaypoint(-220, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
-						gps.goToWaypoint(-220, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5);
-					}
-					else {
+					if (gps.goToWaypoint(-226, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
 				break;
 			case 2:
-				pincer.setPincerPosition(1800, true, 0.0);
-				if (gameData.charAt(0) == 'L') {
-					if (!gps.goToWaypoint(-220, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
-						gps.goToWaypoint(-220, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED * 1.5);
-					}
-					else {
-						state = 3;
-					}
+				pincer.setPincerPosition(1500, true, 0.0);
+				if (gps.goToWaypoint(-226, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 3;
 				}
 				break;
 			case 3:
-				pincer.setPincerPosition(1800, true, 0.0);
-				if (!gps.goToWaypoint(-200, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
-					gps.goToWaypoint(-200, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED * 1.5);
-				}
-				else {
+				pincer.setPincerPosition(1500, true, 0.0);
+				if (gps.goToWaypoint(-206, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
 			case 4:
-				pincer.setPincerPosition(1800, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 5;
-			/*case 5:
-				if (gameData.charAt(0) == 'R') {
-					if (!gps.goToWaypoint(0, 148, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
-						gps.goToWaypoint(0, 148, 0, -RobotMap.DEFAULT_AUTO_SPEED);
-					}
-					else {
-						state = 6;
-					}
-				} else {
-					state = 6;
+				if (pincer.setPincerPosition(1500, true, 0.0)) {
+					pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+					state = 5;
 				}
-				break; */
+				break;
+			case 5:
+				pincer.setPincerPosition(1500, false, 0.0);
+				state = 6;
 			default:
 			}
+			break;
+
+		case "Straight":
+			gps.goToWaypoint(0, 100, 0, RobotMap.DEFAULT_AUTO_SPEED);
+			pincer.setPincerPosition(2115, true, 0.0);
 			break;
 		default:
 		}

@@ -241,9 +241,9 @@ public class DeadReckon extends Subsystem {
 
 	//Refreshes dashboard values and logs values
 	public void updateDashboard() {//throws IOException {
-		SmartDashboard.putNumber("X Position", posX);
-		SmartDashboard.putNumber("Y Position", posY);
-		SmartDashboard.putNumber("Heading", Math.toDegrees(heading));
+		SmartDashboard.putNumber("X Position", (int) (posX + 0.5));
+		SmartDashboard.putNumber("Y Position", (int) (posY + 0.5));
+		SmartDashboard.putNumber("Heading", (int) (Math.toDegrees(heading) + 0.5));
 		SmartDashboard.putNumber("Speed", speed);
 		SmartDashboard.putNumber("DeltaTime", timePassed);
 		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
@@ -323,6 +323,16 @@ public class DeadReckon extends Subsystem {
 	public void reset() {
 		drive.resetEncoderPositions();
 
+		clickPosX = 0;
+		clickPosY = 0;
+		direction = "forward";
+		lastChangeInEncoderLeft = 0;
+		lastChangeInEncoderRight = 0;
+		lastEncoderLeft = 0;
+		lastEncoderRight = 0;
+		heading = 0;
+		posX = 0;
+		posY = 0;
 		encoderLeftValue = 0;
 		encoderRightValue = 0;
 
