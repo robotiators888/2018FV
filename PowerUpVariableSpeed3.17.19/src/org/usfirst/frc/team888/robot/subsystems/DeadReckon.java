@@ -323,6 +323,16 @@ public class DeadReckon extends Subsystem {
 	public void reset() {
 		drive.resetEncoderPositions();
 
+		clickPosX = 0;
+		clickPosY = 0;
+		direction = "forward";
+		lastChangeInEncoderLeft = 0;
+		lastChangeInEncoderRight = 0;
+		lastEncoderLeft = 0;
+		lastEncoderRight = 0;
+		heading = 0;
+		posX = 0;
+		posY = 0;
 		encoderLeftValue = 0;
 		encoderRightValue = 0;
 
@@ -344,6 +354,14 @@ public class DeadReckon extends Subsystem {
 	 */
 	public double getHeading() {
 		return heading;
+	}
+	
+	public double getPosX() {
+		return posX;
+	}
+	
+	public double getPosY() {
+		return posY;
 	}
 
 	/**

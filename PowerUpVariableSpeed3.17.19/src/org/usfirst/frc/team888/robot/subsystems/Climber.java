@@ -5,20 +5,28 @@ import org.usfirst.frc.team888.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.CounterBase;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Climber extends Subsystem {
 
 	protected OI oi;
-	
+
 	protected Spark lights;
 
 	protected Spark climberMotorLeft;
 	protected Spark climberMotorRight;
 
+	protected Encoder climberEncoder;
+
 	protected Solenoid climberPistonLeft;
 	protected Solenoid climberPistonRight;
+
+	protected boolean climberRaised = false;
 
 	protected boolean lock;
 
@@ -32,20 +40,34 @@ public class Climber extends Subsystem {
 		climberPistonLeft = new Solenoid(5, 0); //module number, channel
 		climberPistonRight = new Solenoid(5, 1); //module number, channel
 
+		climberEncoder = new Encoder(4, 5, true, CounterBase.EncodingType.k4X);
+
 		time = 0;
 		lights = new Spark(RobotMap.LIGHTS);
+	}
+
+	public void climberInit() {
+		climberEncoder.reset();
 	}
 
 	public void climberExecute() {
 
 		if (oi.getGamepadAxis(RobotMap.GP_L_TRIGGER) > 0.2) {
 			climberMoves(oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
-			lights.set(-0.07);
+			if (DriverStation.getInstance().getAlliance() == Alliance.Blue) lights.set(-0.09);
+			else lights.set(-0.11);
 		} else if (oi.getGamepadAxis(RobotMap.GP_R_TRIGGER) > 0.2) {
 			climberMoves(-oi.getGamepadAxis(RobotMap.GP_R_TRIGGER));
-			lights.set(-0.07);
+			if (DriverStation.getInstance().getAlliance() == Alliance.Blue) lights.set(-0.09);
+			else lights.set(-0.11);
 		} else {
 			climberMoves(0);
+			if (climberEncoder.get() >= 1500) climberRaised = true;
+			if (climberRaised && (climberEncoder.get() < 10)) lights.set(-0.57);
+			else {
+				if (DriverStation.getInstance().getAlliance() == Alliance.Blue) lights.set(0.87);
+				else lights.set(0.61);
+			}
 		}
 
 		if (oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
@@ -79,6 +101,8 @@ public class Climber extends Subsystem {
 				SmartDashboard.putString("Climber Status:", "Unlocked");
 			}
 		}
+
+		SmartDashboard.putNumber("ClimberEncoder", climberEncoder.get());
 	}
 
 	public void climberMoves(double speed) {

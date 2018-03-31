@@ -39,6 +39,7 @@ public class SubsystemScheduler extends Command {
 		navigation.navigationInit();
 		compressor.compressorInit();
 		pincer.pincerInit();
+		climber.climberInit();
 	}
 
 	// Called repeatedly when this Command is scheduled to run

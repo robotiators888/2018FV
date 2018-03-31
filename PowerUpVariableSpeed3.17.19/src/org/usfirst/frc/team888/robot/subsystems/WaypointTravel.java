@@ -227,8 +227,8 @@ public class WaypointTravel extends Subsystem {
 		// If the desired heading is to the left of the robot...
 		else {
 			// ...turn counterclockwise.
-			leftTurnSpeed = -Math.abs(speed) * 1.5;
-			rightTurnSpeed = Math.abs(speed) * 1.5;		
+			leftTurnSpeed = -Math.abs(speed);
+			rightTurnSpeed = Math.abs(speed);		
 		}
 
 		double[] turnSpeeds = {
