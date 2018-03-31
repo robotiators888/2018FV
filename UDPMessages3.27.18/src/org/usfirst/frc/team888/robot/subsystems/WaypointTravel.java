@@ -163,6 +163,7 @@ public class WaypointTravel extends Subsystem {
 				}
 			}
 
+			
 			//If the heading is to the right of the robot's current heading...
 			else if (DeadReckon.modAngle(course - targetData[0]) >
 			DeadReckon.modAngle(targetData[0] - course)) {
