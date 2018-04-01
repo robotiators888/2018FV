@@ -159,7 +159,7 @@ public class WaypointTravel extends Subsystem {
 					rightSideAdjustment = 0.0;
 				} else {
 					leftSideAdjustment = -1 - speed;
-					rightSideAdjustment = -((speed - targetData[1]) + 1);
+					rightSideAdjustment = (targetData[1] + (-1 - speed));
 				}
 			}
 
@@ -178,7 +178,7 @@ public class WaypointTravel extends Subsystem {
 					leftSideAdjustment = 0.0;
 				} else {
 					rightSideAdjustment = -1 - speed;
-					leftSideAdjustment = -((speed - targetData[1]) - 1);
+					leftSideAdjustment = (targetData[1] + (-1 - speed));
 				}
 			}
 		}
