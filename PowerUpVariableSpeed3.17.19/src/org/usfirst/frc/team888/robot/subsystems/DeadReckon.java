@@ -355,6 +355,14 @@ public class DeadReckon extends Subsystem {
 	public double getHeading() {
 		return heading;
 	}
+	
+	public double getPosX() {
+		return posX;
+	}
+	
+	public double getPosY() {
+		return posY;
+	}
 
 	/**
 	 * @return Returns the data for the navigation class

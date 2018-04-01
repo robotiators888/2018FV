@@ -163,7 +163,6 @@ public class WaypointTravel extends Subsystem {
 				}
 			}
 
-			
 			//If the heading is to the right of the robot's current heading...
 			else if (DeadReckon.modAngle(course - targetData[0]) >
 			DeadReckon.modAngle(targetData[0] - course)) {
@@ -267,7 +266,6 @@ public class WaypointTravel extends Subsystem {
 		SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
 		SmartDashboard.putNumber("ajustment proportion", driveAdjustment);
 		SmartDashboard.putNumber("headingDifference", Math.toDegrees(headingDifference));
-		
 
 		return new double[] {
 				desiredHeading,
