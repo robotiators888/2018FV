@@ -1,144 +1,153 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-
-//import java.io.IOException;
-//import java.net.DatagramPacket;
-//import java.net.DatagramSocket;
-//import java.net.InetAddress;
-
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Navigation extends Subsystem {
 
-	protected String gameData;
-
+	// Instantiates the objects of the other classes controlled by navigation
 	protected DriveTrain drive;
 	protected DeadReckon location;
+	protected WaypointTravel gps;
 	protected OI oi;
 
-	protected double maxOutput = 1.0;
-	protected double desiredHeading;
+	// Instantiates a chooser for the dashboard to select where the robot is at the start of the match
+	public SendableChooser<String> startPosition;
+
+	// Instantiates a string to store the randomizer pattern from the FMS
+	protected String gameData;
+
+	// Instantiates time variable
+	protected double time;
+
+	// Instantiates adjustments variables  
 	protected double leftBaseDriveOutput = 0.0;
 	protected double rightBaseDriveOutput = 0.0;	
 	protected double leftDriveOutput = 0.0;
 	protected double rightDriveOutput = 0.0;
 
-	protected int state;
+	// Instantiates boolean for if manual controls are enabled. Defaults to disables (auto).
+	protected boolean manualControl = false;
 
-	protected double[] desiredLocation = new double[2];
-
-	protected boolean manualControl = true;
-
+	// Instantiates offset for how often some methods are called in navExecute
 	protected int schedulerOffset = 0;
 
+	// Instantiates state for auto
+	protected int state = 0;
+
+	// Instantiates toggle booleans for drive direction
 	protected boolean input = false;
 	protected boolean lastInput = false;
 	protected boolean output = false;
 	protected boolean press = false;
+
+	// Instantiates initialized boolean
 	protected boolean init = true;
 
 	protected boolean previousCameraButtonState = false;
-	protected byte[] ip = {10, 88, 88, 14};
-	protected InetAddress cameraAddress;
 
-	protected DatagramSocket sock;
-	protected DatagramPacket message;
-
-	protected String cameraMessage = "frontCamera";
-	protected byte[] byteCameraMessage = cameraMessage.getBytes();
-
-	public Navigation(DriveTrain p_drive, DeadReckon p_location, OI p_oi) {
+	public Navigation(DriveTrain p_drive, DeadReckon p_location, WaypointTravel p_gps, OI p_oi) {
+		// Sets objects of necessary classes to be the objects passed in by Robot
 		drive = p_drive;
 		location = p_location;
+		gps = p_gps;
 		oi = p_oi;
 
-		try {
-			cameraAddress = InetAddress.getByAddress(ip);
-			sock = new DatagramSocket(7777);
-			message = new DatagramPacket(byteCameraMessage, byteCameraMessage.length, cameraAddress, 8888);
+		// Declares the start position and the start location options
+		startPosition = new SendableChooser<String>();
+		startPosition.addDefault("Middle Start Position", "Middle");
+		startPosition.addObject("Left Start Position", "Left");
+		startPosition.addObject("Right Start Position", "Right");
 
-		} catch (Exception e) {
-
-		} 
-
-		state = 0;
 	}
 
+	/**
+	 * Initializes objects in or called by navigation 
+	 */
 	public void navigationInit() {
+		// If it is time to initialize...
 		if (init) {
+			//...then initialize.
 			schedulerOffset = 0;
 			location.reset();
 			init = false;
 		}
 
+		// Stores the randomizer data from the FMS as a string
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
 
-	//send first message to pi to start camera feed
+	/**
+	 * Calls the methods that need to be run periodically
+	 */
 	public void navigationExecute() {
-		updateCamera();
-
+		// Methods run at 50Hz
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
 		location.updateDashboard();
 
-
-
-		if(oi.getRightStickButton(5) && !previousCameraButtonState) {
-			if (schedulerOffset == 0) {
-				updateCamera();
-			}
-			previousCameraButtonState = true;
-		} else if (!oi.getRightStickButton(5)) {
-			previousCameraButtonState = false;
+		// Send the nav data to the dashboard once per second on the second 
+		if (schedulerOffset == 0) {
+			updateDashboard();
+			//location.updateDashboard();
 		}
 
-		updateDashboard();
+		// Send the location data to the dashboard once per second on the half second
+		if (schedulerOffset == 25) {
+			//location.updateDashboard();
+		}
 
+		// Increment the offset by one. If it has reached 50 (one second), set it back to zero.
 		schedulerOffset = (schedulerOffset + 1) % 50;
 	}
 
+	/**
+	 * Gets the desired location
+	 */
 	public void updateGuidenceControl() {
+		//desiredLocation = RobotMap.DESIRED_LOCATION;
 	}
 
-
-
 	/**
-	 * Gets the encoder values and finds what adjustments need to be done
-	 * @return An array containing the adjustments for the left and right sides in that order
+	 * Moves the drive train
 	 */
-
 	public void updateMotion() {
+		// If the game mode is auto, manual controls are off.
 		manualControl = !DriverStation.getInstance().isAutonomous();
 
+		// If manual controls are off...
 		if (!manualControl) {
-			runAuto();
+			//...run auto.
+			autoRun();
+		}
 
-		} else {
+		// Otherwise run teleop controls.	
+		else {
+			// If both triggers are pressed...
 			if(oi.getTriggers()) {
+				// ...the motors go at full speed
 				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
 				rightBaseDriveOutput = oi.getRightStickAxis(RobotMap.R_Y_AXIS);
-			} else {
+			}
+			// Otherwise go at 70% speed
+			else {
 				leftBaseDriveOutput = 0.7 * oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
 				rightBaseDriveOutput = 0.7 * oi.getRightStickAxis(RobotMap.R_Y_AXIS);
 			}
-
-			if(Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.3 &&
-					Math.abs(oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.3){
+			// If the joystick is less then 20% in either direction then ignore it
+			if(Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.2 &&
+					Math.abs(oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.2){
 				leftBaseDriveOutput = 0.0;
 				rightBaseDriveOutput = 0.0;
 			}
 
+			// Toggles what the front of the robot will be to the driver
 			if (input == true && lastInput == false) {
 				press = true;
 			} else {
@@ -153,397 +162,201 @@ public class Navigation extends Subsystem {
 			input = oi.getLeftStickButton(2) || oi.getRightStickButton(2);
 
 			if(output) {
-				leftDriveOutput = leftBaseDriveOutput;
-				rightDriveOutput = rightBaseDriveOutput;
+				rightDriveOutput = leftBaseDriveOutput;
+				leftDriveOutput = rightBaseDriveOutput;
 			} else {
-				leftDriveOutput = -rightBaseDriveOutput;
-				rightDriveOutput = -leftBaseDriveOutput;
-			}
+				rightDriveOutput = -rightBaseDriveOutput;
+				leftDriveOutput = -leftBaseDriveOutput;
+			} 
 
-			SmartDashboard.putNumber("leftOutput", leftDriveOutput);
-			SmartDashboard.putNumber("rightOutput", rightDriveOutput); 
-
-			drive.move(-leftDriveOutput, -rightDriveOutput);
+			// Sends the movement command to the drive train to execute
+			drive.move(leftDriveOutput, rightDriveOutput);
 		}
 	}
 
+	/**
+	 * Tells the robot what to do in auto
+	 */
+	public void autoRun() {
+		// Switch statement that takes the start position of the robot
+		switch (startPosition.getSelected()) {
 
-	public void runAuto() {
-		double[] pos = location.getPos();
-		switch (state) {
-		case 0:
-			desiredLocation[0] = 0;
-			desiredLocation[1] = 72;
-			if ((Math.abs(desiredLocation[0] - pos[0]) < 3) && 
-					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
-				drive.move(0.0, 0.0);
-				state = 1;
-			} else {
-				double[] adjustments = getToWaypoint();
-				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
-						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
-			}
-			break;
-		case 1:
-			if (gameData.charAt(0) == 'L') {
-				if (location.getHeading() > ((Math.PI * 14) / 9)) {
-					drive.move(0.2, -0.2);
-				}
-				else if (location.getHeading() < ((Math.PI * 13) / 9)){
-					drive.move(-0.2, 0.2);
+		case "Middle":	
+			// The case that robot starts in the middle position
+			switch (state) {
+			case 0:
+				if (gameData.charAt(0) == 'L') {
+					// If the robot has not arrived at the switch...
+					if (gps.goToWaypoint(-72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 1;
+					}
 				}
 				else {
-					drive.move(0, 0);
-					state = 2;
+					if (gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 1;
+					}
 				}
-			}
-			else {
-				if (location.getHeading() < ((Math.PI * 4) / 9)) {
-					drive.move(-0.4, 0.4);
-					SmartDashboard.putString("boi", "CW");
+				break;
+			case 1:
+				state = 2;
+				break;
+			case 2:
+				// Lower the pincer
+				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 3;
 				}
-				else if (location.getHeading() > ((Math.PI * 5) / 9)){
-					drive.move(0.6, -0.6);
-					SmartDashboard.putString("boi", "CCW");
+				break;
+			case 3:
+				if (gps.goToWaypoint(-5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 4;
 				}
-				else {
-					drive.move(0, 0);
-					state = 2;
-				}
-			}
-			break;
-		case 2:
-			if (gameData.charAt(0) == 'L') {
-				desiredLocation[0] = -72;
-				desiredLocation[1] = 72;		
-			}
-			else {
-				desiredLocation[0] = 72;
-				desiredLocation[1] = 72;
-			}
-
-			if ((Math.abs(desiredLocation[0] - pos[0]) < 3) && 
-					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
-				drive.move(0.0, 0.0);
-				state = 3;
-			} else {
-				double[] adjustments = getToWaypoint();
-				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
-						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
-			}
-			break;
-		case 3:
-			if (gameData.charAt(0) == 'L' && (location.getHeading() > (Math.PI / 12))) {
-				drive.move(-0.2, 0.2);
-			}
-			else if (gameData.charAt(0) == 'R' && (location.getHeading() < ((Math.PI * 23)/ 12))) {
-				drive.move(-0.6, 0.6);
-			}
-			else {
-				drive.move(0.0, 0.0);
-				state = 4;
-			}
-			break;
-		case 4:
-			if (gameData.charAt(0) == 'L') {
-				desiredLocation = new double[] {72, 140};
-			}
-			else {
-				desiredLocation[0] = 72;
-				desiredLocation[1] = 144;
-			}
-			if ((Math.abs(desiredLocation[0] - pos[0]) < 3) && 
-					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
-				drive.move(0.0, 0.0);
+				break;
+			case 4:
 				state = 5;
-			} else {
-				double[] adjustments = getToWaypoint();
-				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
-						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
+				break;
+			case 5:
+				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 6;
+				}
+				break;
+			case 6:
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(-72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 7;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 7;
+					}
+				}
+				break;
+			default:
 			}
 			break;
-		case 5:
-			if (location.getHeading() < ((Math.PI * 23)/ 12) && location.getHeading() > (Math.PI / 12)) {
-				drive.move(-0.6, 0.6);
+
+		case "Left":
+			// The case that robot starts in the right position
+			switch (state) {
+			case 0: 
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 1;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(0, 210, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 1;
+					}
+				}
+				break;
+			case 1: 
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 4;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(154, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 2;
+					}
+				}
+				break;
+			case 2:
+				if (gps.goToWaypoint(154, 148, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 3;
+				}
+				break;
+			case 3:
+				if (gps.goToWaypoint(134, 148, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 4;
+				}
+				break;
+			case 4:
+				state = 5;
+				break;
+			default:
 			}
-			else {
-				drive.move(0.0, 0.0);
-				state = 6;
+			break;
+			
+		case "Right":
+			// The case that robot starts in the right position
+			switch (state) {
+			case 0: 
+				if (gameData.charAt(0) == 'R') {
+					if (gps.goToWaypoint(0, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 1;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(0, 210, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
+						state = 1;
+					}
+				}
+				break;
+			case 1: 
+				if (gameData.charAt(0) == 'R') {
+					if (gps.goToWaypoint(-16, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 4;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(-220, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
+						state = 2;
+					}
+				}
+				break;
+			case 2:
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(-220, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
+						state = 3;
+					}
+				}
+				break;
+			case 3:
+				if (gps.goToWaypoint(-200, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED * 1.5)) {
+					state = 4;
+				}
+				break;
+			case 4:
+				state = 5;
+			/*case 5:
+				if (gameData.charAt(0) == 'R') {
+					if (gps.goToWaypoint(0, 148, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 6;
+					}
+				} else {
+					state = 6;
+				}
+				break; */
+			default:
 			}
 			break;
 		default:
-			drive.move(0.0, 0.0);
 		}
 
-		SmartDashboard.putNumber("state", state);
+		SmartDashboard.putNumber("State", state);
+		SmartDashboard.putString("Position", startPosition.getSelected());
 	}
 
-	public double[] getToWaypoint() {
-		String direction = location.getDirection();
-		double heading = location.getHeading();
-		double rightSideAdjustment = 0;
-		double leftSideAdjustment = 0;
-		double[] targetData = calculateTurn();
 
-
-		/**
-		 * If the robot is moving in a positive direction...
-		 */
-
-		if (direction.equals("forward")) {
-
-			/**
-			 * If the left side is moving slower than right...
-			 */
-
-			if (DeadReckon.modAngle(heading - targetData[0]) <
-					DeadReckon.modAngle(targetData[0] - heading)) {
-
-				/**
-				 * If the speed plus the adjustment for the left side would be slower
-				 * than the max speed add the adjustments to the left side.
-				 * Otherwise, subtract the adjustments from the right side.
-				 */
-
-				if 	((RobotMap.LEFT_AUTO_SPEED + targetData[1])
-						<= maxOutput) {
-					leftSideAdjustment = targetData[1];
-					rightSideAdjustment = 0.0;
-
-				} else {
-					rightSideAdjustment = -targetData[1];
-					leftSideAdjustment = 0.0;
-				}
-
-				/**
-				 * If the right side is moving slower than left...
-				 */		
-
-			} else if (DeadReckon.modAngle(heading - targetData[0]) >
-			DeadReckon.modAngle(targetData[0] - heading)) {
-
-				/**
-				 * If the speed plus the adjustment for the right side would be slower
-				 * than the max speed add the adjustments to the right side.
-				 * Otherwise, subtract the adjustments from the left side.
-				 */
-
-				if 	((RobotMap.RIGHT_AUTO_SPEED + targetData[1]) <= maxOutput) {			
-					rightSideAdjustment = targetData[1];
-					leftSideAdjustment = 0.0;
-				} else {
-					leftSideAdjustment = -targetData[1];
-					rightSideAdjustment = 0.0;
-				}
-			}
-
-			/**
-			 * If the robot is moving in a negative direction...
-			 */
-
-		} else if(direction.equals("backward")) {
-
-			/**
-			 * If the left side is moving slower than right...
-			 */
-
-			if (DeadReckon.modAngle(heading - targetData[0]) >
-			DeadReckon.modAngle(targetData[0] - heading)) {
-
-				/**
-				 * If the speed plus the adjustment for the left side would be slower
-				 * than the max speed add the adjustments to the left side.
-				 * Otherwise, subtract the adjustments from the right side.
-				 */
-
-				if ((RobotMap.LEFT_AUTO_SPEED - targetData[1]) >= -maxOutput) {
-					leftSideAdjustment = -targetData[1];
-					rightSideAdjustment = 0.0;
-				} else {
-					rightSideAdjustment = targetData[1];
-					leftSideAdjustment = 0.0;
-				}
-
-				/**
- 			/* If the right side is moving slower than left...
-				 */		
-
-			} else if (DeadReckon.modAngle(heading - targetData[0]) <
-					DeadReckon.modAngle(targetData[0] - heading)) {
-
-				/**
-				 * If the speed plus the adjustment for the right side would be slower
-				 * than the max speed add the adjustments to the right side.
-				 * Otherwise, subtract the adjustments from the left side.
-				 */
-
-				if ((RobotMap.RIGHT_AUTO_SPEED - targetData[1]) >= -maxOutput) {
-					rightSideAdjustment = -targetData[1];
-					leftSideAdjustment = 0.0;
-				} else {
-					leftSideAdjustment = targetData[1];
-					rightSideAdjustment = 0.0;
-				}
-
-				/**
- 			/* If the robot is already moving straight add no adjustments
-				 */	
-
-			} else {
-				leftSideAdjustment = 0.0;
-				rightSideAdjustment = 0.0;
-			}	
-
-			/**
-			 * If the robot is not moving or turning, add no adjustments.
-			 */
-
-		}
-
-		else {
-			leftSideAdjustment = 0.0;
-			rightSideAdjustment = 0.0;
-		}
-
-		double[] adjustments = {
-				leftSideAdjustment,
-				rightSideAdjustment
-		};
-
-		return adjustments;		
-
-	}
-
-	public double[] getOriented(double desiredHeading) {
-		double[] targetData = calculateTurn();
-		double heading = location.getHeading();
-		double leftTurnSpeed = 0;
-		double rightTurnSpeed = 0;
-
-		if (DeadReckon.modAngle(heading - targetData[0]) <
-				DeadReckon.modAngle(targetData[0] - heading)) {
-
-			leftTurnSpeed = RobotMap.LEFT_AUTO_SPEED;
-			rightTurnSpeed = -RobotMap.RIGHT_AUTO_SPEED;
-
-
-
-		} else if (DeadReckon.modAngle(heading - targetData[0]) >
-		DeadReckon.modAngle(targetData[0] - heading)) {
-
-			/**
-			 * If the speed plus the adjustment for the right side would be slower
-			 * than the max speed add the adjustments to the right side.
-			 * Otherwise, subtract the adjustments from the left side.
-			 *INVERT ONE TURN SPEED*/
-
-			if 	((RobotMap.RIGHT_AUTO_SPEED + targetData[1]) <= maxOutput) {			
-				rightTurnSpeed = targetData[1];
-				leftTurnSpeed = 0.0;
-			} else {
-				leftTurnSpeed = -targetData[1];
-				rightTurnSpeed = 0.0;
-
-			}		
-
-			leftTurnSpeed = -RobotMap.LEFT_AUTO_SPEED;
-			rightTurnSpeed = RobotMap.RIGHT_AUTO_SPEED;		
-		}
-
-		double[] turnSpeeds = {
-				leftTurnSpeed,
-				rightTurnSpeed
-		};
-
-		return turnSpeeds;	
-	}
-
-	public boolean wayPointNavigation(double desiredX, double desiredY, double desiredHeading) {
-		double[] pos = location.getPos();
-		double heading = location.getHeading();
-		int state = 0;
-
-		switch (state) {
-		case 0:
-			if ((Math.abs(desiredX - pos[0]) < 3) && 
-					(Math.abs(desiredLocation[1] - pos[1]) < 3)) {
-				drive.move(0.0, 0.0);
-				state = 1;
-			} else {
-				double[] adjustments = getToWaypoint();
-				drive.move(RobotMap.LEFT_AUTO_SPEED + adjustments[0], 
-						RobotMap.RIGHT_AUTO_SPEED + adjustments[1]);
-			}
-			break;
-		case 1:
-			if (Math.abs(heading - desiredHeading) > (Math.PI / 24)) {
-
-			}
-		default:;
-		}
-
-		return true;
-	}
-
-	//Sends navigation data to the dashboard
+	/**
+	 * Sends navigation data to the dashboard
+	 */
 	public void updateDashboard() {
-		//SmartDashboard.putNumber("Left Adjustments", leftSideAdjustment);
-		//SmartDashboard.putNumber("Right Adjustments", rightSideAdjustment);
 		SmartDashboard.putString("Game Pattern", gameData);
 		SmartDashboard.putNumber("leftOutput", leftDriveOutput);
 		SmartDashboard.putNumber("rightOutput", rightDriveOutput);
 	}
 
-	/**Finds the heading and adjustments to add for waypoint movement
-	 * @return An array with the heading the robot should travel and the adjustment to add to the motor output
+	/**
+	 * @return The array with zeros for both adjustments
 	 */
-	public double[] calculateTurn() {
-
-		//Calculates the direction the robot should travel in to get to the next waypoint
-		double[] pos = location.getPos();
-
-		double desiredHeading = DeadReckon.modAngle(Math.atan2(desiredLocation[0] - pos[0],
-				desiredLocation[1] - pos[1]));
-
-		SmartDashboard.putNumber("desired x", desiredLocation[0]);
-		SmartDashboard.putNumber("desired y", desiredLocation[1]);
-		SmartDashboard.putNumber("desired heading", Math.toDegrees(desiredHeading));
-
-		//Calculates the adjustment based on how much the robot needs to turn
-		double driveAdjustment = 0.15; //(Math.abs(location.getHeading() - desiredHeading) / Math.PI) * 0.3; 
-
-		double[] i = {
-				desiredHeading,
-				driveAdjustment
-		};
-
-		return i;
+	public double[] reset() {
+		double[] j = {0,0};
+		return j;
 	}
 
-	public void updateCamera() {
-		SmartDashboard.putBoolean("button at beginning", previousCameraButtonState);
-
-		if(cameraMessage.equals("frontCamera")) {
-			cameraMessage = "backCamera";
-			byteCameraMessage = cameraMessage.getBytes();
-			SmartDashboard.putString("changed message", "back");
-		} else {
-			cameraMessage = "frontCamera";
-			byteCameraMessage = cameraMessage.getBytes();
-			SmartDashboard.putString("changed message", "front");
-		}
-
-		SmartDashboard.putString("camera message after button press", cameraMessage);
-
-		try {
-			message.setData(byteCameraMessage);
-			sock.send(message);
-			SmartDashboard.putString("sent", cameraMessage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		SmartDashboard.putBoolean("button after pressed", previousCameraButtonState);
-	}
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.

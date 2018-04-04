@@ -129,7 +129,7 @@ public class DeadReckon extends Subsystem {
 		timePassed = time - lastTime;
 
 		//If the left side is going forward and the right side is going forward...
-		if (changeInEncoderLeft <= 0  && changeInEncoderRight <= 0) {
+		if (changeInEncoderLeft >= 0  && changeInEncoderRight >= 0) {
 
 			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
 			changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
@@ -137,7 +137,7 @@ public class DeadReckon extends Subsystem {
 			direction = "forward";
 		} 
 
-		else if (changeInEncoderLeft >= 0  && changeInEncoderRight >= 0) {
+		else if (changeInEncoderLeft <= 0  && changeInEncoderRight <= 0) {
 
 			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
 			changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
@@ -245,6 +245,7 @@ public class DeadReckon extends Subsystem {
 		SmartDashboard.putNumber("DeltaTime", timePassed);
 		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
 		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
+		SmartDashboard.putString("Direction", direction);
 
 		//Sends the values to an array for logging
 		/*

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain extends Subsystem {
 
@@ -32,11 +33,14 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void move(double leftSpeed, double rightSpeed) {
-		rearLeft.set(-leftSpeed);
-		frontLeft.set(-leftSpeed);
+		rearLeft.set(leftSpeed);
+		frontLeft.set(leftSpeed);
 
-		rearRight.set(rightSpeed);
-		frontRight.set(rightSpeed);
+		rearRight.set(-rightSpeed);
+		frontRight.set(-rightSpeed);
+		
+		SmartDashboard.putNumber("Left Speed", leftSpeed);
+		SmartDashboard.putNumber("Right Speed", rightSpeed);
 	}
 
 	public int[] getEncoderVals() {

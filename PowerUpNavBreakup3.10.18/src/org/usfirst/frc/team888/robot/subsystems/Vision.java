@@ -25,6 +25,7 @@ public class Vision extends Subsystem {
 	protected String cameraMessage = "frontCamera";
 	protected byte[] byteCameraMessage = cameraMessage.getBytes();
 
+	
 	public Vision() {
 		//Declares objects for RIO-PI communication
 		try {
