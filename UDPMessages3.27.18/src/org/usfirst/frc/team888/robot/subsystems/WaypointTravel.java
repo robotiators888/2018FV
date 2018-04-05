@@ -255,7 +255,7 @@ public class WaypointTravel extends Subsystem {
 
 		double headingDifference = DeadReckon.modAngle(desiredHeading - heading);
 		if (headingDifference > Math.PI) {
-			headingDifference = Math.PI - headingDifference;
+			headingDifference -= (Math.PI * 2);
 		}
 
 		//Calculates the adjustment based on how much the robot needs to turn
