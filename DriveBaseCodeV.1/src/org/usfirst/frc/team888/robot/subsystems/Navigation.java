@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -20,10 +19,8 @@ public class Navigation extends Subsystem {
 	// Instantiates the objects of the other classes controlled by navigation
 	protected DriveTrain drive;
 	protected DeadReckon location;
-	protected Pincer pincer;
 	protected Vision vision;
 	protected WaypointTravel gps;
-	protected Climber climber;
 	protected OI oi;
 
 	// Instantiates a chooser for the dashboard to select where the robot is at the start of the match
@@ -63,15 +60,13 @@ public class Navigation extends Subsystem {
 	byte[] byteRelativeLocation = null;
 	int relativeX;
 
-	public Navigation(DriveTrain p_drive, DeadReckon p_location, Pincer p_pince, Vision p_vision, 
-			WaypointTravel p_gps, Climber p_climber, OI p_oi) {
+	public Navigation(DriveTrain p_drive, DeadReckon p_location, Vision p_vision, 
+			WaypointTravel p_gps, OI p_oi) {
 		// Sets objects of necessary classes to be the objects passed in by Robot
 		drive = p_drive;
 		location = p_location;
-		pincer = p_pince;
 		vision = p_vision;
 		gps = p_gps;
-		climber = p_climber;
 		oi = p_oi;
 
 		// Declares the start position and the start location options
@@ -122,9 +117,9 @@ public class Navigation extends Subsystem {
 
 		// Send the nav data to the dashboard once per second on the second 
 		if (schedulerOffset == 0) {
-			updateDashboard();
+			//updateDashboard();
 			location.updateDashboard();
-			vision.sendMessage(cycle);
+			vision.sendMessage(location.cycle);
 		}
 
 		// Send the location data to the dashboard once per second on the half second
@@ -224,7 +219,6 @@ public class Navigation extends Subsystem {
 			// The case that robot starts in the middle position
 			switch (state) {
 			case 0:
-				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
 					if (gps.goToWaypoint(-75, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
@@ -239,13 +233,10 @@ public class Navigation extends Subsystem {
 				break;
 			case 1:
 				// Open the pincer and go to the next step
-				pincer.setPincerPosition(1700, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
 				state = 2;
 				break;
 			case 2:
 				// Lower the pincer
-				pincer.setPincerPosition(1700, true, 0.0);
 				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
@@ -255,26 +246,21 @@ public class Navigation extends Subsystem {
 				state = 4;
 				break;
 			case 4:
-				pincer.setPincerPosition(700, true, 0.0);
 				if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 5;
 				}
 			case 5:
 				// Close the pincer and go to the next step
-				pincer.setPincerPosition(700, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kReverse);
 				state = 6;
 				break;
 			case 6:
 				// Lower the pincer
-				pincer.setPincerPosition(1700, true, 0.0);
 				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 7;
 				}
 				break;
 			case 7:
 				// Lower the pincer
-				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					if (gps.goToWaypoint(-72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 8;
@@ -288,8 +274,6 @@ public class Navigation extends Subsystem {
 				break;
 			case 8:
 				// Open the pincer and go to the next step
-				pincer.setPincerPosition(1700, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
 				state = 9;
 				break;
 			default:
@@ -300,7 +284,6 @@ public class Navigation extends Subsystem {
 			// The case that robot starts in the right position
 			switch (state) {
 			case 0: 
-				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					if (gps.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
@@ -313,7 +296,6 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 1: 
-				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					if (gps.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 4;
@@ -326,20 +308,16 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 2:
-				pincer.setPincerPosition(1800, true, 0.0);
 				if (gps.goToWaypoint(226, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
-				pincer.setPincerPosition(1800, true, 0.0);
 				if (gps.goToWaypoint(206, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
 			case 4:
-				pincer.setPincerPosition(1800, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
 				state = 5;
 				break;
 			default:
@@ -350,7 +328,6 @@ public class Navigation extends Subsystem {
 			// The case that robot starts in the right position
 			switch (state) {
 			case 0: 
-				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'R') {
 					if (gps.goToWaypoint(0, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
@@ -363,7 +340,6 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 1: 
-				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'R') {
 					if (gps.goToWaypoint(-20, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 4;
@@ -376,20 +352,16 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 2:
-				pincer.setPincerPosition(1800, true, 0.0);
 				if (gps.goToWaypoint(-226, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
-				pincer.setPincerPosition(1800, true, 0.0);
 				if (gps.goToWaypoint(-206, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
 			case 4:
-				pincer.setPincerPosition(1800, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
 				state = 5;
 				break;
 			default:
