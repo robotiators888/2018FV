@@ -246,7 +246,7 @@ public class Navigation extends Subsystem {
 				state = 4;
 				break;
 			case 4:
-				if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (gps.goToWaypoint(-5.5, 4, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 5;
 				}
 			case 5:
