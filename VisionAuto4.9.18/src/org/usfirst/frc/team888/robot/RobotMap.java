@@ -84,12 +84,6 @@ public class RobotMap {
 	
 	public static final int LIGHTS = 2;
 	
-	//Establishes the encoder position for each level of the climber
-	public static final int HIGH_DROPOFF_POSITION = 200;
-	public static final int LOW_DROPOFF_POSITION = 1000;
-	public static final int PICKUP_POSITION = 1600;
-	public static final int RESTING_POSITION = 0;
-	
 	//Sets the speed for autonomous and the adjustments to add for driving straight
 	public static final double DEFAULT_AUTO_SPEED = 0.24;
 	public static final double AUTO_TURN_PROPORTION = 0.72;

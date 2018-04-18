@@ -53,20 +53,6 @@ public class DeadReckon extends Subsystem {
 	// Note: DualDouble is a nested class that stores two Double values.
 	protected ArrayList<DualDouble> locationLog;
 
-	/*
-	// Instantiates objects for logging
-	private BufferedWriter bw;
-	File encoderData;
-	FileOutputStream fos;
-
-	// Instantiates boolean to tell whether or not the log file has been opened
-	protected boolean fileOpened = false;
-
-	// Instantiates logging values
-	protected double[][] deadReckonData = new double[1500][10];
-	protected int sampleCount = 0;
-	 */
-
 	public DeadReckon(DriveTrain p_drive) {// throws FileNotFoundException {
 		// Declares the drive object to be equal to the object passed in by Robot
 		drive = p_drive;
@@ -89,24 +75,9 @@ public class DeadReckon extends Subsystem {
 		reset();
 	}
 
-	// Initializes logger
-	/*public void deadReckonInit() {		
-		if (!fileOpened) {
-			encoderData = new File("/tmp/encoderData");
-
-			try {
-				fos = new FileOutputStream(encoderData);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			bw = new BufferedWriter(new OutputStreamWriter(fos));
-
-			fileOpened = true;
-		}
-	}*/
-
-	// Calculates the location of the robot
+	/**
+	 * Calculates the location of the robot
+	 */
 	public void updateTracker() {
 		// Calls the method to get the most recent encoder data
 		updateEncoderVals();
@@ -260,7 +231,9 @@ public class DeadReckon extends Subsystem {
 
 	}
 
-	// Refreshes dashboard values and logs values
+	/**
+	 * Refreshes dashboard values and logs values
+	 */
 	public void updateDashboard() {//throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
 		SmartDashboard.putNumber("Y Position", posY);
@@ -270,47 +243,11 @@ public class DeadReckon extends Subsystem {
 		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
 		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
 		SmartDashboard.putString("Direction", direction);
-
-		// Sends the values to an array for logging
-		/*
-		if (sampleCount < 1500) {
-			deadReckonData[sampleCount][0] = encoderLeftValue;
-			deadReckonData[sampleCount][1] = encoderRightValue;
-			deadReckonData[sampleCount][2] = time;
-			deadReckonData[sampleCount][3] = heading;
-			deadReckonData[sampleCount][4] = posX;
-			deadReckonData[sampleCount][5] = posY;
-			deadReckonData[sampleCount][6] = calibrated ? 1.0 : 0.0;
-			deadReckonData[sampleCount][7] = (double) sampleCount;
-			deadReckonData[sampleCount][8] = clickPosX;
-			deadReckonData[sampleCount][9] = clickPosY;
-
-			sampleCount++;
-
-		}
-
-		// Writes the logged values to file
-		else if (sampleCount == 1500) {
-			for (int i = 0; i < 1500; i++) {
-				bw.append(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
-						(int) deadReckonData[i][7],
-						deadReckonData[i][0],
-						deadReckonData[i][1],
-						deadReckonData[i][2],
-						deadReckonData[i][3],
-						deadReckonData[i][4],
-						deadReckonData[i][5],
-						deadReckonData[i][6],
-						deadReckonData[i][8],
-						deadReckonData[i][9]));
-				bw.flush();
-			}
-			bw.close();
-			sampleCount++;
-		} */
 	}
 
-	// Updates n and n-1 encoder value variables.
+	/**
+	 * Updates n and n-1 encoder value variables.
+	 */
 	private void updateEncoderVals() {
 		// Saves the change in time
 		lastTime = time;
