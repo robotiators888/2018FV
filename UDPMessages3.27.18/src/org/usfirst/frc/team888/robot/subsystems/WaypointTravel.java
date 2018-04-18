@@ -140,7 +140,7 @@ public class WaypointTravel extends Subsystem {
 			}
 		}
 
-		//If the robot is going backward...
+		// If the robot is going backward...
 		else if(direction.equals("backward")) {
 			double course = heading + Math.PI;
 
