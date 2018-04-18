@@ -124,7 +124,7 @@ public class Navigation extends Subsystem {
 		if (schedulerOffset == 0) {
 			updateDashboard();
 			location.updateDashboard();
-			vision.sendMessage(cycle);
+			vision.sendMessage(location.cycle);
 		}
 
 		// Send the location data to the dashboard once per second on the half second
