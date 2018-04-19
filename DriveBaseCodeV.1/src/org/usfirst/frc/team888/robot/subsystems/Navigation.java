@@ -114,6 +114,7 @@ public class Navigation extends Subsystem {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
+		location.updateDashboard();
 
 		// Send the nav data to the dashboard once per second on the second 
 		if (schedulerOffset == 0) {
