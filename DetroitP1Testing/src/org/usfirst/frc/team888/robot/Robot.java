@@ -50,6 +50,10 @@ public class Robot extends TimedRobot {
 
 	//Instantiates scheduler object
 	protected static Command subsystemScheduler;
+	
+	protected static long disabledCounter;
+	
+	private boolean systemRun = false;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -98,11 +102,16 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Start Position", navigation.startPosition);
 		SmartDashboard.putData("Stratagy", navigation.strategy);
 
+		disabledCounter = System.currentTimeMillis();
 	}
 
 	@Override
 	public void disabledPeriodic() {
-		//Asks the scheduler what to do
+		long t = System.currentTimeMillis();
+		if (!systemRun && ((t - disabledCounter) >= 5000)) {
+			location.writeToLogger();
+			systemRun = false;
+		}
 		Scheduler.getInstance().run();
 	}
 
@@ -118,7 +127,8 @@ public class Robot extends TimedRobot {
 	 * to the switch structure below with additional strings & commands.
 	 */
 	@Override
-	public void autonomousInit() {		
+	public void autonomousInit() {
+		systemRun = true;
 		//If the subsystem is not running...
 		if (!subsystemScheduler.isRunning()) {
 			//...start it.
@@ -137,8 +147,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		//Initialize the logger
-		//location.deadReckonInit();
+		systemRun = true;
 
 		//If the subsystem is not running...
 		if (!subsystemScheduler.isRunning()) {

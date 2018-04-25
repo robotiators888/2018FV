@@ -1,5 +1,11 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 //import java.io.BufferedWriter;
@@ -50,14 +56,21 @@ public class DeadReckon extends Subsystem {
 	protected double timePassed;
 	protected boolean calibrated;
 
-	// Note: DualDouble is a nested class that stores two Double values.
-	protected ArrayList<double[]> locationLog;
+	//Instantiates objects for logging
+	BufferedWriter bw;
+	File navData;
+	FileOutputStream fos;
+
+	//Instantiates boolean to tell whether or not the log file has been opened
+	protected boolean fileOpened = false;
+
+	//Instantiates logging values
+	protected ArrayList<double[]> navLog = new ArrayList<>(9000);
 
 	public DeadReckon(DriveTrain p_drive) {// throws FileNotFoundException {
 		// Declares the drive object to be equal to the object passed in by Robot
 		drive = p_drive;
 
-		locationLog = new ArrayList<double[]>(0);
 		// Resets the encoder values
 		reset();
 	}
@@ -203,17 +216,15 @@ public class DeadReckon extends Subsystem {
 		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
 				/ (timePassed);
 
-		locationLog.add(new double[] {posX, posY});
+		updateLog();
 
 		cycle++;
 	}
 
 	public double[] cubeLocation(int cycle, double[] relativeCubeLocation) {
-		double[] pastBotLocation = locationLog.get(cycle);
-
 		return new double[] {
-				relativeCubeLocation[0]	+ pastBotLocation[0],
-				relativeCubeLocation[1] + pastBotLocation[1]
+				relativeCubeLocation[0]	+ navLog.get(cycle)[5],
+				relativeCubeLocation[1] + navLog.get(cycle)[6]
 		};
 
 	}
@@ -230,6 +241,67 @@ public class DeadReckon extends Subsystem {
 		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
 		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
 		SmartDashboard.putString("Direction", direction);
+	}
+
+	public void updateLog() {
+		navLog.add(new double[] {
+				(double) cycle,
+				encoderLeftValue,
+				encoderRightValue,
+				time,
+				heading,
+				posX,
+				posY,
+				clickPosX,
+				clickPosY
+		});
+	}
+
+	public void writeToLogger() {
+		if (!fileOpened) {
+			navData = new File("/tmp/navData");
+
+			try {
+				fos = new FileOutputStream(navData);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+			fileOpened = true;
+		}
+
+		for (int i = 0; i < navLog.size(); i++) {
+			try {
+				bw.append(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
+						(int) navLog.get(i)[0],
+						navLog.get(i)[1],
+						navLog.get(i)[2],
+						navLog.get(i)[3],
+						navLog.get(i)[4],
+						navLog.get(i)[5],
+						navLog.get(i)[6],
+						navLog.get(i)[7],
+						navLog.get(i)[8]));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				bw.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -283,7 +355,7 @@ public class DeadReckon extends Subsystem {
 		heading = 0;
 		posX = 0;
 		posY = 0;
-
+		
 		calibrated = false;
 	}
 

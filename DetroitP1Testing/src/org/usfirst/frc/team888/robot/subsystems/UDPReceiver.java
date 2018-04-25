@@ -5,8 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import org.usfirst.frc.team888.robot.RobotMap;
-
 public class UDPReceiver extends Thread {
 	
 	DatagramSocket socket;
@@ -15,7 +13,7 @@ public class UDPReceiver extends Thread {
 	
 	private void init() {
 		try {
-			socket = new DatagramSocket(RobotMap.CYCLE_UDP_PORT);
+			socket = new DatagramSocket(888);
 			dat = new DatagramPacket(receiveData, receiveData.length);
 		} catch (SocketException e) {
 	
@@ -26,7 +24,7 @@ public class UDPReceiver extends Thread {
 	public void run() {
 		init();
 		
-		while (true) {
+		do {
 			try {
 				socket.receive(dat);
 				CommunicationsBuffer.addData(dat.getData());
@@ -34,6 +32,6 @@ public class UDPReceiver extends Thread {
 			} catch (IOException e) {
 				
 			}
-		}
+		} while(true);
 	}
 }
