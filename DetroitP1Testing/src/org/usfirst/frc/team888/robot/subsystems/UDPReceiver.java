@@ -18,7 +18,7 @@ public class UDPReceiver extends Thread {
 			socket = new DatagramSocket(RobotMap.CYCLE_UDP_PORT);
 			dat = new DatagramPacket(receiveData, receiveData.length);
 		} catch (SocketException e) {
-	
+
 		}
 	}
 	
@@ -30,7 +30,6 @@ public class UDPReceiver extends Thread {
 			try {
 				socket.receive(dat);
 				CommunicationsBuffer.addData(dat.getData());
-				dat.setData(null);
 			} catch (IOException e) {
 				
 			}
