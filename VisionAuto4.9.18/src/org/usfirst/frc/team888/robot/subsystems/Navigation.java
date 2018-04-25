@@ -129,13 +129,9 @@ public class Navigation extends Subsystem {
 	 * Gets the desired location
 	 */
 	public void updateGuidenceControl() {
-
 		Number[] tmp = CommunicationsBuffer.getHighestCycle();
-		if(tmp != null) {
-			cubeLocation = location.cubeLocation((int) tmp[0],
+		if (tmp != null) cubeLocation = location.cubeLocation((int) tmp[0],
 					new double[] {(double) tmp[1], (double) tmp[2]});
-		}
-
 	}
 
 	/**
@@ -272,17 +268,23 @@ public class Navigation extends Subsystem {
 				state = 6;
 				break;
 			case 6:
-				// Lower the pincer
 				pincer.setPincerPosition(1100, true, 0.0);
-				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
-					state = 7;
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(-30, 30, ((11 * Math.PI) / 6), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 8;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(30, 30, (Math.PI / 6), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 8;
+					}
 				}
 				break;
 			case 7:
 				// Lower the pincer
 				pincer.setPincerPosition(1100, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (gps.goToWaypoint(-72, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(-75, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 8;
 					}
 				}
