@@ -123,9 +123,9 @@ public class Navigation extends Subsystem {
 	 * Gets the desired location
 	 */
 	public void updateGuidenceControl() {
-		Number[] tmp = CommunicationsBuffer.getHighestCycle();
+		double[] tmp = CommunicationsBuffer.getHighestCycle();
 		if (tmp != null) cubeLocation = location.cubeLocation((int) tmp[0],
-				new double[] {(double) tmp[1], (double) tmp[2]});
+				new double[] {tmp[1], tmp[2]});
 	}
 
 	/**

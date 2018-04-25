@@ -3,6 +3,8 @@ package org.usfirst.frc.team888.robot.subsystems;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class CommunicationsBuffer {
 
 	static ArrayList<BufferData> buf = new ArrayList<>(5);
@@ -11,12 +13,12 @@ public class CommunicationsBuffer {
 		buf.add(new BufferData(data));
 	}
 
-	public static synchronized Number[] getHighestCycle() {
+	public static synchronized double[] getHighestCycle() {
 		if(buf.isEmpty()) return null;
 		BufferData b = buf.stream()
 				.max((b1, b2) -> Integer.compare(b1.cycle, b2.cycle)).orElse(null);
 		buf.clear();
-		return new Number[] {b.cycle, b.x, b.y};
+		return new double[] {b.cycle, b.x, b.y};
 	}
 
 }
@@ -29,9 +31,9 @@ class BufferData {
 
 	public BufferData(byte[] data) {
 		ByteBuffer bbuf = ByteBuffer.wrap(data);
-		cycle = bbuf.getInt(0);
-		x = bbuf.getDouble(4);
-		y = bbuf.getDouble(12);
+		cycle = bbuf.getInt();
+		x = Double.valueOf(bbuf.getFloat());
+		y = Double.valueOf(bbuf.getFloat());
 	}
 
 }

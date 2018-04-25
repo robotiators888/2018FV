@@ -91,7 +91,7 @@ public class RobotMap {
 	//PI-RIO communication
 	public static final int RIO_UDP_PORT = 5805;
 	public static final int JETSON_UDP_PORT = 5806;
-	public static final int CYCLE_UDP_PORT = 888;
+	public static final int CYCLE_UDP_PORT = 5807;
 	
 	public static final byte[] IP_ADDRESS = {10, 8, 88, 19};
 }

@@ -16,7 +16,7 @@ public class UDPReceiver extends Thread {
 			socket = new DatagramSocket(888);
 			dat = new DatagramPacket(receiveData, receiveData.length);
 		} catch (SocketException e) {
-	
+
 		}
 	}
 	
@@ -28,7 +28,6 @@ public class UDPReceiver extends Thread {
 			try {
 				socket.receive(dat);
 				CommunicationsBuffer.addData(dat.getData());
-				dat.setData(null);
 			} catch (IOException e) {
 				
 			}
