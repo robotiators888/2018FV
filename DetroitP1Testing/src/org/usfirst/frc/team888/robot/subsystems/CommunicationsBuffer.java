@@ -3,8 +3,6 @@ package org.usfirst.frc.team888.robot.subsystems;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class CommunicationsBuffer {
 
 	static ArrayList<BufferData> buf = new ArrayList<>(5);

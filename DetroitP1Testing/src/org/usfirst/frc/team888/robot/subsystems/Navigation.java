@@ -50,9 +50,6 @@ public class Navigation extends Subsystem {
 	protected boolean output = false;
 	protected boolean press = false;
 
-	// Instantiates initialized boolean
-	protected boolean init = true;
-
 	// Camera stuff
 	UDPReceiver receiver;
 	byte[] byteRelativeLocation = null;
@@ -88,10 +85,10 @@ public class Navigation extends Subsystem {
 	 * Initializes objects in or called by navigation 
 	 */
 	public void navigationInit() {
-		// If it is time to initialize...
 		//...then initialize.
 		schedulerOffset = 0;
 		location.reset();
+
 
 		// Stores the randomizer data from the FMS as a string
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
