@@ -107,11 +107,12 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		long t = System.currentTimeMillis();
-		if (!systemRun && ((t - disabledCounter) >= 5000)) {
+		/*long t = System.currentTimeMillis();
+		if (systemRun && ((t - disabledCounter) >= 5000)) {
 			location.writeToLogger();
 			systemRun = false;
-		}
+			System.out.println("Logging sucessful");
+		}*/
 		Scheduler.getInstance().run();
 	}
 

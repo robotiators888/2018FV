@@ -32,6 +32,8 @@ class BufferData {
 		cycle = bbuf.getInt();
 		x = Double.valueOf(bbuf.getFloat());
 		y = Double.valueOf(bbuf.getFloat());
+		System.out.println(x);
+		System.out.println(y);
 	}
 
 }
