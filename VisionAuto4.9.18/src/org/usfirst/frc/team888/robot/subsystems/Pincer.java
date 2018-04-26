@@ -114,9 +114,8 @@ public class Pincer extends Subsystem {
 		}
 	}
 
-	public void setPincerPosition(double desiredAngle, boolean button, double axis){
+	public boolean setPincerPosition(double desiredAngle, boolean button, double axis){
 		batteryVoltage = pincerMotor.getBusVoltage();
-
 		if (proximity.get()){
 			maxSpeed = withoutCubePercent*(batteryVoltage/maxBatteryVoltage);
 		} else {
@@ -181,6 +180,7 @@ public class Pincer extends Subsystem {
 				manualPower = 0;
 			}
 		}
+		SmartDashboard.putNumber("pincer encoder", currentAngle);
 		if(bottomLimit.get() || bottomBanner.get()){
 			if(pincerPower > 0.16){
 				pincerPower = 0;
@@ -195,8 +195,14 @@ public class Pincer extends Subsystem {
 		else{
 			pincerMotor.set(ControlMode.PercentOutput, manualPower);
 		}
-	}
+		if(!(currentAngle > (desiredAngle + angleThreshold)) && !(currentAngle < (desiredAngle - angleThreshold))){
+			return true;
+		}
+		else{
+			return false;
+		}
 
+	}
 
 	//Uses pistons to close pincer
 	public void pince(boolean button) {
@@ -229,6 +235,10 @@ public class Pincer extends Subsystem {
 		} */
 	}
 
+	public boolean getProzimity() {
+		return proximity.get();
+	}
+	
 	public void updateDashboard() {
 		SmartDashboard.putString("Pincer Position", pincerPosition);
 		SmartDashboard.putBoolean("Cube Present?", !proximity.get());

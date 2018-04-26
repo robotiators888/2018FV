@@ -1,11 +1,5 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-//import java.net.InetAddress;
-import java.nio.ByteBuffer;
-
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
@@ -26,9 +20,10 @@ public class Navigation extends Subsystem {
 	protected Climber climber;
 	protected OI oi;
 
-	// Instantiates a chooser for the dashboard to select where the robot is at the start of the match
+	// Instantiates a chooser for the dashboard to select where the robot is at the start of the match.
 	public SendableChooser<String> startPosition;
 	public SendableChooser<String> strategy;
+
 	// Instantiates a string to store the randomizer pattern from the FMS
 	protected String gameData;
 
@@ -37,6 +32,8 @@ public class Navigation extends Subsystem {
 	protected double rightBaseDriveOutput = 0.0;	
 	protected double leftDriveOutput = 0.0;
 	protected double rightDriveOutput = 0.0;
+
+	protected double[] cubeLocation = new double[2];
 
 	// Instantiates boolean for if manual controls are enabled. Defaults to disables (auto).
 	protected boolean manualControl = false;
@@ -57,9 +54,7 @@ public class Navigation extends Subsystem {
 	protected boolean init = true;
 
 	// Camera stuff
-	DatagramSocket serverSocket;
-	DatagramPacket receivePacket;
-	byte[] receiveData = new byte[8];
+	UDPReceiver receiver;
 	byte[] byteRelativeLocation = null;
 	int relativeX;
 
@@ -82,17 +77,11 @@ public class Navigation extends Subsystem {
 		startPosition.addObject("Only go straight", "Straight");
 
 		strategy = new SendableChooser<String>();
-		strategy.addDefault("Cube on Switch", "Switch");
-		strategy.addObject("Cube on Scale", "Scale");
-		strategy.addObject("Don't Drop Cube", "Straight");
+		strategy.addDefault("Cube on Switch", "Drop");
+		strategy.addObject("No cube on far side", "Cancel");
 
-		try {
-			serverSocket = new DatagramSocket(RobotMap.RIO_UDP_PORT);
-			receivePacket = new DatagramPacket(receiveData, receiveData.length);
-			serverSocket.setSoTimeout(1);
-		} catch (Exception e) {
-
-		} 
+		receiver = new UDPReceiver();
+		receiver.start();
 	}
 
 	/**
@@ -140,17 +129,9 @@ public class Navigation extends Subsystem {
 	 * Gets the desired location
 	 */
 	public void updateGuidenceControl() {
-
-		if (serverSocket != null && receivePacket != null) {
-			try {
-				serverSocket.receive(receivePacket);
-				byteRelativeLocation = receivePacket.getData();
-				relativeX = ByteBuffer.wrap(byteRelativeLocation).getInt();
-			} catch (IOException e) {
-				byteRelativeLocation = null;
-				relativeX = 0;
-			}
-		}
+		Number[] tmp = CommunicationsBuffer.getHighestCycle();
+		if (tmp != null) cubeLocation = location.cubeLocation((int) tmp[0],
+					new double[] {(double) tmp[1], (double) tmp[2]});
 	}
 
 	/**
@@ -227,38 +208,59 @@ public class Navigation extends Subsystem {
 				pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
-					if (gps.goToWaypoint(-75, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(-75, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				}
 				else {
-					if (gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(72, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				}
 				break;
 			case 1:
-				// Open the pincer and go to the next step
-				pincer.setPincerPosition(1700, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 2;
+				pincer.setPincerPosition(1100, true, 0.0);
+				if (gameData.charAt(0) == 'L') {
+					// If the robot has not arrived at the switch...
+					if (gps.goToWaypoint(-75, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 2;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(72, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 2;
+					}
+				}
 				break;
 			case 2:
-				// Lower the pincer
-				pincer.setPincerPosition(1700, true, 0.0);
-				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
-					state = 3;
-				}
+				// Open the pincer and go to the next step
+				pincer.setPincerPosition(1100, true, 0.0);
+				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+				state = 3;
 				break;
 			case 3:
-				vision.sendMessage(location.cycle);
-				state = 4;
+				// Lower the pincer
+				pincer.setPincerPosition(700, true, 0.0);
+				if (gps.goToWaypoint(-5.5, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 4;
+				}
 				break;
 			case 4:
+				vision.sendMessage(location.getCycle());
 				pincer.setPincerPosition(700, true, 0.0);
-				if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
-					state = 5;
+				if (cubeLocation == null) {
+					if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) state = 5;
 				}
+				else {
+					if (pincer.getProzimity()) {
+						gps.goToWaypoint(cubeLocation[0], cubeLocation[1], 
+								0, RobotMap.DEFAULT_AUTO_SPEED);
+					}
+					else {
+						state = 5;
+					}
+				}
+				break;
 			case 5:
 				// Close the pincer and go to the next step
 				pincer.setPincerPosition(700, true, 0.0);
@@ -266,31 +268,51 @@ public class Navigation extends Subsystem {
 				state = 6;
 				break;
 			case 6:
-				// Lower the pincer
-				pincer.setPincerPosition(1700, true, 0.0);
-				if (gps.goToWaypoint(0, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
-					state = 7;
-				}
-				break;
-			case 7:
-				// Lower the pincer
-				pincer.setPincerPosition(1700, true, 0.0);
+				pincer.setPincerPosition(1100, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (gps.goToWaypoint(-72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(-30, 30, ((11 * Math.PI) / 6), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 8;
 					}
 				}
 				else {
-					if (gps.goToWaypoint(72, 89, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(30, 30, (Math.PI / 6), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 8;
+					}
+				}
+				break;
+			case 7:
+				// Lower the pincer
+				pincer.setPincerPosition(1100, true, 0.0);
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(-75, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 8;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(72, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 8;
 					}
 				}
 				break;
 			case 8:
+				pincer.setPincerPosition(1100, true, 0.0);
+				if (gameData.charAt(0) == 'L') {
+					// If the robot has not arrived at the switch...
+					if (gps.goToWaypoint(-75, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 9;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(72, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 9;
+					}
+				}
+				break;
+			case 9:
 				// Open the pincer and go to the next step
-				pincer.setPincerPosition(1700, true, 0.0);
+				pincer.setPincerPosition(1100, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 9;
+				state = 10;
 				break;
 			default:
 			}
@@ -308,7 +330,12 @@ public class Navigation extends Subsystem {
 				}
 				else {
 					if (gps.goToWaypoint(0, 210, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 1;
+						if (strategy.getSelected().equals("Cancel")) {
+							state = 6;
+						}
+						else {
+							state = 1;
+						}
 					}
 				}
 				break;
@@ -326,22 +353,26 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 2:
-				pincer.setPincerPosition(1800, true, 0.0);
+				pincer.setPincerPosition(1500, true, 0.0);
 				if (gps.goToWaypoint(226, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
-				pincer.setPincerPosition(1800, true, 0.0);
+				pincer.setPincerPosition(1500, true, 0.0);
 				if (gps.goToWaypoint(206, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
 			case 4:
-				pincer.setPincerPosition(1800, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 5;
+				if (pincer.setPincerPosition(1500, true, 0.0)) {
+					pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+					state = 5;
+				}
 				break;
+			case 5:
+				pincer.setPincerPosition(1500, false, 0.0);
+				state = 6;
 			default:
 			}
 			break;
@@ -358,7 +389,12 @@ public class Navigation extends Subsystem {
 				}
 				else {
 					if (gps.goToWaypoint(0, 210, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
-						state = 1;
+						if (strategy.getSelected().equals("Cancel")) {
+							state = 6;
+						}
+						else {
+							state = 1;
+						}
 					}
 				}
 				break;
@@ -376,28 +412,37 @@ public class Navigation extends Subsystem {
 				}
 				break;
 			case 2:
-				pincer.setPincerPosition(1800, true, 0.0);
+				pincer.setPincerPosition(1500, true, 0.0);
 				if (gps.goToWaypoint(-226, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
-				pincer.setPincerPosition(1800, true, 0.0);
+				pincer.setPincerPosition(1500, true, 0.0);
 				if (gps.goToWaypoint(-206, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
 			case 4:
-				pincer.setPincerPosition(1800, true, 0.0);
-				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 5;
+				if (pincer.setPincerPosition(1500, true, 0.0)) {
+					pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+					state = 5;
+				}
 				break;
+			case 5:
+				pincer.setPincerPosition(1500, false, 0.0);
+				state = 6;
 			default:
 			}
 			break;
+
+		case "Straight":
+			gps.goToWaypoint(0, 100, 0, RobotMap.DEFAULT_AUTO_SPEED);
+			pincer.setPincerPosition(2115, true, 0.0);
+			break;
 		default:
 		}
-
+		
 		SmartDashboard.putNumber("State", state);
 	}
 
