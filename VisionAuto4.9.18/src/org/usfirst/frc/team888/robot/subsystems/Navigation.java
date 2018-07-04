@@ -105,7 +105,9 @@ public class Navigation extends Subsystem {
 	 */
 	public void navigationExecute() {
 		// Methods run at 50Hz
+		location.updateTracker();
 		updateGuidenceControl();
+		updateMotion();
 
 		// Send the nav data to the dashboard once per second on the second 
 		if (schedulerOffset == 0) {
@@ -126,29 +128,75 @@ public class Navigation extends Subsystem {
 	/**
 	 * Gets the desired location
 	 */
-<<<<<<< HEAD
-	public int updateGuidenceControl() {
-
-		if (serverSocket != null && receivePacket != null) {
-			try {
-				serverSocket.receive(receivePacket);
-				byteRelativeLocation = receivePacket.getData();
-				relativeX = ByteBuffer.wrap(byteRelativeLocation).getInt();
-			} catch (IOException e) {
-				byteRelativeLocation = null;
-				relativeX = 0;
-			}
-		}
-		return relativeX;
-=======
 	public void updateGuidenceControl() {
 		Number[] tmp = CommunicationsBuffer.getHighestCycle();
 		if (tmp != null) cubeLocation = location.cubeLocation((int) tmp[0],
 					new double[] {(double) tmp[1], (double) tmp[2]});
->>>>>>> branch 'Charlie' of https://github.com/robotiators888/2018FV.git
 	}
 
+	/**
+	 * Moves the drive train
+	 */
+	public void updateMotion() {
+		// If the game mode is auto, manual controls are off.
+		manualControl = !DriverStation.getInstance().isAutonomous();
 
+		// If manual controls are off...
+		if (!manualControl) {
+			//...run auto.
+			autoRun();
+		}
+
+		// Otherwise run teleop controls.	
+		else {
+			// If both triggers are pressed...
+			if (oi.getTriggers()) {
+				// ...the motors go at full speed
+				leftBaseDriveOutput = oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
+				rightBaseDriveOutput = oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+			}
+			// Otherwise go at 70% speed
+			else {
+				leftBaseDriveOutput = 0.7 * oi.getLeftStickAxis(RobotMap.L_Y_AXIS);
+				rightBaseDriveOutput = 0.7 * oi.getRightStickAxis(RobotMap.R_Y_AXIS);
+			}
+			// If the joystick is less then 20% in either direction then ignore it
+			if (Math.abs(oi.getLeftStickAxis(RobotMap.L_Y_AXIS)) < 0.2 &&
+					Math.abs(oi.getRightStickAxis(RobotMap.R_Y_AXIS)) < 0.2){
+				leftBaseDriveOutput = 0.0;
+				rightBaseDriveOutput = 0.0;
+			}
+
+			// Toggles what the front of the robot will be to the driver
+			if (input == true && lastInput == false) {
+				press = true;
+			} else {
+				press = false;
+			}
+
+			if (press) {
+				output = !output;
+			}
+
+			lastInput = input;
+			input = oi.getLeftStickButton(2) || oi.getRightStickButton(2);
+
+			if (output) {
+				rightDriveOutput = leftBaseDriveOutput;
+				leftDriveOutput = rightBaseDriveOutput;
+			} else {
+				rightDriveOutput = -rightBaseDriveOutput;
+				leftDriveOutput = -leftBaseDriveOutput;
+			} 
+
+			// Sends the movement command to the drive train to execute
+			drive.move(leftDriveOutput, rightDriveOutput);
+		}
+	}
+
+	/**
+	 * Tells the robot what to do in auto
+	 */
 	public void autoRun() {
 		// Switch statement that takes the start position of the robot
 		switch (startPosition.getSelected()) {
@@ -200,13 +248,8 @@ public class Navigation extends Subsystem {
 			case 4:
 				vision.sendMessage(location.getCycle());
 				pincer.setPincerPosition(700, true, 0.0);
-<<<<<<< HEAD
-				if (gps.goToWaypoint(updateGuidenceControl(), 54, 0, RobotMap.DEFAULT_AUTO_SPEED) || !pincer.proximity.get()) {
-					state = 5;
-=======
 				if (cubeLocation == null) {
 					if (gps.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) state = 5;
->>>>>>> branch 'Charlie' of https://github.com/robotiators888/2018FV.git
 				}
 				else {
 					if (pincer.getProzimity()) {
@@ -418,4 +461,104 @@ public class Navigation extends Subsystem {
 		// Set the default command for a subsystem here.
 		//setDefaultCommand(new MySpecialCommand());
 	}
-}
+}	// Instantiates a chooser for the dashboard to select where the robot is at the start of the match.
+
+	protected double[] cubeLocation = new double[2];
+
+	UDPReceiver receiver;
+		strategy.addDefault("Cube on Switch", "Drop");
+		strategy.addObject("No cube on far side", "Cancel");
+		receiver = new UDPReceiver();
+		receiver.start();
+		Number[] tmp = CommunicationsBuffer.getHighestCycle();
+		if (tmp != null) cubeLocation = location.cubeLocation((int) tmp[0],
+					new double[] {(double) tmp[1], (double) tmp[2]});
+					if (gps.goToWaypoint(-75, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(72, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+				pincer.setPincerPosition(1100, true, 0.0);
+				if (gameData.charAt(0) == 'L') {
+					// If the robot has not arrived at the switch...
+					if (gps.goToWaypoint(-75, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 2;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(72, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 2;
+					}
+				}
+				break;
+			case 2:
+				pincer.setPincerPosition(1100, true, 0.0);
+				state = 3;
+			case 3:
+				pincer.setPincerPosition(700, true, 0.0);
+				if (gps.goToWaypoint(-5.5, 0, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
+					state = 4;
+				vision.sendMessage(location.getCycle());
+				break;
+				pincer.setPincerPosition(1100, true, 0.0);
+				if (gameData.charAt(0) == 'L') {
+					if (gps.goToWaypoint(-30, 30, ((11 * Math.PI) / 6), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 8;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(30, 30, (Math.PI / 6), RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 8;
+					}
+				pincer.setPincerPosition(1100, true, 0.0);
+					if (gps.goToWaypoint(-75, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (gps.goToWaypoint(72, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+				pincer.setPincerPosition(1100, true, 0.0);
+				if (gameData.charAt(0) == 'L') {
+					// If the robot has not arrived at the switch...
+					if (gps.goToWaypoint(-75, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 9;
+					}
+				}
+				else {
+					if (gps.goToWaypoint(72, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+						state = 9;
+					}
+				}
+				break;
+			case 9:
+				pincer.setPincerPosition(1100, true, 0.0);
+				state = 10;
+						if (strategy.getSelected().equals("Cancel")) {
+							state = 6;
+						}
+						else {
+							state = 1;
+						}
+				pincer.setPincerPosition(1500, true, 0.0);
+				pincer.setPincerPosition(1500, true, 0.0);
+				if (pincer.setPincerPosition(1500, true, 0.0)) {
+					pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+					state = 5;
+				}
+			case 5:
+				pincer.setPincerPosition(1500, false, 0.0);
+				state = 6;
+						if (strategy.getSelected().equals("Cancel")) {
+							state = 6;
+						}
+						else {
+							state = 1;
+						}
+				pincer.setPincerPosition(1500, true, 0.0);
+				pincer.setPincerPosition(1500, true, 0.0);
+				if (pincer.setPincerPosition(1500, true, 0.0)) {
+					pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
+					state = 5;
+				}
+			case 5:
+				pincer.setPincerPosition(1500, false, 0.0);
+				state = 6;
+
+		case "Straight":
+			gps.goToWaypoint(0, 100, 0, RobotMap.DEFAULT_AUTO_SPEED);
+			pincer.setPincerPosition(2115, true, 0.0);
+			break;
+		
