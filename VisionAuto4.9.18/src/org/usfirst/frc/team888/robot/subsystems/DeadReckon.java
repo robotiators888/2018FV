@@ -31,7 +31,7 @@ public class DeadReckon extends Subsystem {
 	protected double changeInY;
 	protected double clickPosX;
 	protected double clickPosY;
-	public int cycle;
+	protected int cycle;
 	protected String direction;
 	protected double encoderLeftValue;
 	protected double encoderRightValue;
@@ -51,21 +51,7 @@ public class DeadReckon extends Subsystem {
 	protected boolean calibrated;
 
 	// Note: DualDouble is a nested class that stores two Double values.
-	protected ArrayList<DualDouble> locationLog;
-
-	/*
-	// Instantiates objects for logging
-	private BufferedWriter bw;
-	File encoderData;
-	FileOutputStream fos;
-
-	// Instantiates boolean to tell whether or not the log file has been opened
-	protected boolean fileOpened = false;
-
-	// Instantiates logging values
-	protected double[][] deadReckonData = new double[1500][10];
-	protected int sampleCount = 0;
-	 */
+	protected ArrayList<double[]> locationLog;
 
 	public DeadReckon(DriveTrain p_drive) {// throws FileNotFoundException {
 		// Declares the drive object to be equal to the object passed in by Robot
@@ -84,29 +70,14 @@ public class DeadReckon extends Subsystem {
 		posX = 0;
 		posY = 0;
 
-		locationLog = new ArrayList<DualDouble>(0);
+		locationLog = new ArrayList<double[]>(0);
 		// Resets the encoder values
 		reset();
 	}
 
-	// Initializes logger
-	/*public void deadReckonInit() {		
-		if (!fileOpened) {
-			encoderData = new File("/tmp/encoderData");
-
-			try {
-				fos = new FileOutputStream(encoderData);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			bw = new BufferedWriter(new OutputStreamWriter(fos));
-
-			fileOpened = true;
-		}
-	}*/
-
-	// Calculates the location of the robot
+	/**
+	 * Calculates the location of the robot
+	 */
 	public void updateTracker() {
 		// Calls the method to get the most recent encoder data
 		updateEncoderVals();
@@ -245,13 +216,13 @@ public class DeadReckon extends Subsystem {
 		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
 				/ (timePassed);
 
-		locationLog.add(new DualDouble(posX, posY));
+		locationLog.add(new double[] {posX, posY});
 
 		cycle++;
 	}
 
 	public double[] cubeLocation(int cycle, double[] relativeCubeLocation) {
-		double[] pastBotLocation = locationLog.get(cycle).getAsPrimitiveArray();
+		double[] pastBotLocation = locationLog.get(cycle);
 
 		return new double[] {
 				relativeCubeLocation[0]	+ pastBotLocation[0],
@@ -260,7 +231,9 @@ public class DeadReckon extends Subsystem {
 
 	}
 
-	// Refreshes dashboard values and logs values
+	/**
+	 * Refreshes dashboard values and logs values
+	 */
 	public void updateDashboard() {//throws IOException {
 		SmartDashboard.putNumber("X Position", posX);
 		SmartDashboard.putNumber("Y Position", posY);
@@ -270,47 +243,11 @@ public class DeadReckon extends Subsystem {
 		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
 		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
 		SmartDashboard.putString("Direction", direction);
-
-		// Sends the values to an array for logging
-		/*
-		if (sampleCount < 1500) {
-			deadReckonData[sampleCount][0] = encoderLeftValue;
-			deadReckonData[sampleCount][1] = encoderRightValue;
-			deadReckonData[sampleCount][2] = time;
-			deadReckonData[sampleCount][3] = heading;
-			deadReckonData[sampleCount][4] = posX;
-			deadReckonData[sampleCount][5] = posY;
-			deadReckonData[sampleCount][6] = calibrated ? 1.0 : 0.0;
-			deadReckonData[sampleCount][7] = (double) sampleCount;
-			deadReckonData[sampleCount][8] = clickPosX;
-			deadReckonData[sampleCount][9] = clickPosY;
-
-			sampleCount++;
-
-		}
-
-		// Writes the logged values to file
-		else if (sampleCount == 1500) {
-			for (int i = 0; i < 1500; i++) {
-				bw.append(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
-						(int) deadReckonData[i][7],
-						deadReckonData[i][0],
-						deadReckonData[i][1],
-						deadReckonData[i][2],
-						deadReckonData[i][3],
-						deadReckonData[i][4],
-						deadReckonData[i][5],
-						deadReckonData[i][6],
-						deadReckonData[i][8],
-						deadReckonData[i][9]));
-				bw.flush();
-			}
-			bw.close();
-			sampleCount++;
-		} */
 	}
 
-	// Updates n and n-1 encoder value variables.
+	/**
+	 * Updates n and n-1 encoder value variables.
+	 */
 	private void updateEncoderVals() {
 		// Saves the change in time
 		lastTime = time;
@@ -355,8 +292,7 @@ public class DeadReckon extends Subsystem {
 	 * @return Returns a double array in format {x, y}
 	 */
 	public double[] getPos() {
-		double[] toReturn = {posX, posY};
-		return toReturn;
+		return new double[] {posX, posY};
 	}
 
 	/**
@@ -371,6 +307,10 @@ public class DeadReckon extends Subsystem {
 	 */
 	public String getDirection() {
 		return direction;
+	}
+	
+	public int getCycle() {
+		return cycle;
 	}
 
 	/**
@@ -389,52 +329,5 @@ public class DeadReckon extends Subsystem {
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		//setDefaultCommand(new MySpecialCommand());
-	}
-
-	/**
-	 * Helper nested class for wrapping two Doubles together for 
-	 * use in an ArrayList in this class's outer class.
-	 */
-	protected class DualDouble {
-
-		protected Double a;
-		protected Double b;
-
-		/**
-		 * Creates the DualDouble with two Doubles internally stored. 
-		 * Does not null check.
-		 * @param arg0 Double to assign to value a (index 0)
-		 * @param arg1 Double to assign to value b (index 1)
-		 */
-		public DualDouble(Double arg0, Double arg1) {
-			this.a = arg0;
-			this.b = arg1;
-		}
-		
-		/**
-		 * Gets one of the stored Doubles
-		 * @param index The index of the Double. Must be 0 or 1
-		 * @return Returns value a if index is 0, value b if index is 1, 
-		 * and null if the index is out of range.
-		 */
-		public Double get(int index) {
-			if(index == 0) return a;
-			else if(index == 1) return b;
-			else return null; 
-		}
-		
-		/**
-		 * @return both the stored Doubles as an array with {a, b}
-		 */
-		public Double[] getAsArray() {
-			return new Double[]{a, b};
-		}
-		
-		/**
-		 * @return both the stored Double's values as an array with {a.doubleValue(), b.doubleValue()}
-		 */
-		public double[] getAsPrimitiveArray() {
-			return new double[]{a.doubleValue(), b.doubleValue()};
-		}
 	}
 }

@@ -96,6 +96,8 @@ public class Robot extends TimedRobot {
 		}
 		
 		SmartDashboard.putData("Start Position", navigation.startPosition);
+		SmartDashboard.putData("Stratagy", navigation.strategy);
+
 	}
 
 	@Override
