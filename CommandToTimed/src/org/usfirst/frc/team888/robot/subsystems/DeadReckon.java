@@ -66,7 +66,7 @@ public class DeadReckon extends Subsystem {
 	//Instantiates logging values
 	protected ArrayList<double[]> navLog = new ArrayList<>(9000);
 
-	public DeadReckon(DriveTrain p_drive) {// throws FileNotFoundException {
+	public DeadReckon(DriveTrain p_drive) {
 		// Declares the drive object to be equal to the object passed in by Robot
 		drive = p_drive;
 
