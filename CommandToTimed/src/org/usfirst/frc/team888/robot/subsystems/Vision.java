@@ -33,7 +33,10 @@ public class Vision extends Subsystem {
 		} catch (Exception e) {}
 	}
 	
-	//should cycle be passed? need to make sure names do not conflict
+	/**
+	 * Sends a request to the Jetson for a cube location
+	 * @param cycle The cycle the message was sent
+	 */
 	public void sendMessage(int cycle) {
 		byteCameraMessage = ByteBuffer.allocate(4).putInt(cycle).array();
 		

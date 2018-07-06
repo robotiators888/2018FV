@@ -218,6 +218,13 @@ public class DeadReckon extends Subsystem {
 		cycle++;
 	}
 
+	/**
+	 * Translates the location of a cube from being relative to the robot
+	 * to being an absolute field location.
+	 * @param cycle The time when the message asking for a cube location was sent
+	 * @param relativeCubeLocation The cube location relative to the robot.
+	 * @return The absolute cube location.
+	 */
 	public double[] cubeLocation(int cycle, double[] relativeCubeLocation) {
 		return new double[] {
 				relativeCubeLocation[0]	+ navLog.get(cycle)[5],
@@ -255,6 +262,9 @@ public class DeadReckon extends Subsystem {
 		});
 	}
 
+	/**
+	 * Writes the logged data to a file on the RoboRIO
+	 */
 	public void writeToLogger() {
 		if (!fileOpened) {
 			fileOpened = true;

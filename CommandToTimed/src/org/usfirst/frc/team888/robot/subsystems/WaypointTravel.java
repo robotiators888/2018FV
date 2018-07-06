@@ -214,7 +214,7 @@ public class WaypointTravel extends Subsystem {
 		}
 
 		//Calculates the adjustment based on how much the robot needs to turn
-		double driveAdjustment = Math.max(0, Math.min(1, (Math.abs(headingDifference) / Math.PI)));
+		double driveAdjustment = Math.max(0, Math.min(1, (Math.abs(headingDifference))));
 
 		//SmartDashboard.putNumber("desired x", desiredX);
 		//SmartDashboard.putNumber("desired y", desiredY);

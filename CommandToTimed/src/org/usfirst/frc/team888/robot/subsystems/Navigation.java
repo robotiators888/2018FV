@@ -201,7 +201,8 @@ public class Navigation extends Subsystem {
 			// The case that robot starts in the middle position
 			switch (state) {
 			case 0:
-				pincer.setPincerPosition(1700, true, 0.0);
+				if (gps.goToWaypoint(79, 79, 0, RobotMap.DEFAULT_AUTO_SPEED)) state = 10;
+				/*pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
 					if (gps.goToWaypoint(-75, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
@@ -212,7 +213,7 @@ public class Navigation extends Subsystem {
 					if (gps.goToWaypoint(72, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
-				}
+				}*/
 				break;
 			case 1:
 				pincer.setPincerPosition(1100, true, 0.0);
@@ -232,7 +233,7 @@ public class Navigation extends Subsystem {
 				// Open the pincer and go to the next step
 				pincer.setPincerPosition(1100, true, 0.0);
 				pincer.pincerPiston.set(DoubleSolenoid.Value.kForward);
-				state = 10;
+				state = 10; //3;
 				break;
 			case 3:
 				// Lower the pincer

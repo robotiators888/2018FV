@@ -89,10 +89,16 @@ public class Pincer extends Subsystem {
 		//lights = new Spark(RobotMap.LIGHTS);
 	}
 	
+	/**
+	 * Run at the begining of auto and teleop
+	 */
 	public void pincerInit() {
 		pincerMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 
+	/**
+	 * Run periodically in auto and teleop
+	 */
 	public void pincerExecute() {
 
 		if (!DriverStation.getInstance().isAutonomous()) {
@@ -114,20 +120,27 @@ public class Pincer extends Subsystem {
 		}
 	}
 
-	public boolean setPincerPosition(double desiredAngle, boolean button, double axis){
+	/**
+	 * Moves the pincer up and down
+	 * @param desiredPosition The position the magnetic encoder should go to
+	 * @param button Manual control on or off
+	 * @param axis The value of the joystick axis
+	 * @return Whether or not the pincer has reached its desired position
+	 */
+	public boolean setPincerPosition(double desiredPosition, boolean button, double axis){
 		batteryVoltage = pincerMotor.getBusVoltage();
-		if (proximity.get()){
-			maxSpeed = withoutCubePercent*(batteryVoltage/maxBatteryVoltage);
+		if (proximity.get()) {
+			maxSpeed = withoutCubePercent * (batteryVoltage / maxBatteryVoltage);
 		} else {
-			maxSpeed = withCubePercent*(batteryVoltage/maxBatteryVoltage);
+			maxSpeed = withCubePercent * (batteryVoltage / maxBatteryVoltage);
 		}
 
-		if(currentAngle > (desiredAngle + angleThreshold)){
+		if(currentAngle > (desiredPosition + angleThreshold)){
 			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
 
-			pincerPower = maintainerConstant*Math.abs(currentAngle - desiredAngle);
+			pincerPower = maintainerConstant * Math.abs(currentAngle - desiredPosition);
 
 			if(pincerPower > (maxSpeed-0.05)){
 				pincerPower = maxSpeed-0.05;
@@ -135,11 +148,11 @@ public class Pincer extends Subsystem {
 			reflexStart = reflexTimer;
 			//stuff to bring down to angle
 		}
-		else if(currentAngle < (desiredAngle - angleThreshold)){
+		else if(currentAngle < (desiredPosition - angleThreshold)){
 			if(Math.abs(currentAngle - lastAngle) < movementThreshold){
 				maintainerConstant = maintainerConstant + maintainerConstantIterator;
 			}
-			pincerPower = maintainerConstant*Math.abs(currentAngle - desiredAngle);
+			pincerPower = maintainerConstant * Math.abs(currentAngle - desiredPosition);
 			if(pincerPower > maxSpeed){
 				pincerPower = maxSpeed;
 			}
@@ -149,17 +162,18 @@ public class Pincer extends Subsystem {
 
 		}
 		else {
-			pincerPower = (-pincerPower*Math.abs(currentAngle - desiredAngle)*(reflexHigh)*0.0025)/Math.abs(pincerPower);
+			pincerPower = (-pincerPower * Math.abs(currentAngle - desiredPosition) * 
+					(reflexHigh)*0.0025) / Math.abs(pincerPower);
 			if(reflexTimer-reflexStart > reflexLength){
 				maintainerConstant = 0;
 				pincerPower = 0;
 			}
-			if (reflexTimer-reflexStart < reflexLength) {
+			if (reflexTimer - reflexStart < reflexLength) {
 				if (!proximity.get()) {
-					pincerPower = -withCubeReflex*(batteryVoltage/maxBatteryVoltage);
+					pincerPower = -withCubeReflex * (batteryVoltage / maxBatteryVoltage);
 				}
 				if (proximity.get()) {
-					pincerPower = -withoutCubeReflex*(batteryVoltage/maxBatteryVoltage);
+					pincerPower = -withoutCubeReflex * (batteryVoltage / maxBatteryVoltage);
 				}
 			}
 			else {
@@ -168,20 +182,24 @@ public class Pincer extends Subsystem {
 			//stuff to maintain position, want to do a thing where it puts slight 
 			//power in the opposite direction to oppose movement and brake
 		}
+		
 		lastAngle = currentAngle;
 		currentAngle = pincerEncoder.getValue();
-		reflexTimer = reflexTimer+1;
-		manualPower = 0.55*axis;
+		reflexTimer++;
+		manualPower = 0.55 * axis;
+		
 		if(topLimit.get()){
-			if(pincerPower < 0){
+			if(pincerPower < 0) {
 				pincerPower = 0;
 			}
-			if(manualPower < 0){
+			if(manualPower < 0) {
 				manualPower = 0;
 			}
 		}
+		
 		SmartDashboard.putNumber("pincer encoder", currentAngle);
-		if(bottomLimit.get() || bottomBanner.get()){
+		
+		if (bottomLimit.get() || bottomBanner.get()){
 			if(pincerPower > 0.16){
 				pincerPower = 0;
 			}
@@ -189,13 +207,13 @@ public class Pincer extends Subsystem {
 				manualPower = 0;
 			}
 		}
-		if(button){
+		if (button) {
 			pincerMotor.set(ControlMode.PercentOutput, pincerPower);
 		}
 		else{
 			pincerMotor.set(ControlMode.PercentOutput, manualPower);
 		}
-		if(!(currentAngle > (desiredAngle + angleThreshold)) && !(currentAngle < (desiredAngle - angleThreshold))){
+		if(!(currentAngle > (desiredPosition + angleThreshold)) && !(currentAngle < (desiredPosition - angleThreshold))){
 			return true;
 		}
 		else{
@@ -226,13 +244,6 @@ public class Pincer extends Subsystem {
 			pincerPiston.set(DoubleSolenoid.Value.kReverse);
 			pincerPosition = "Closed";
 		}
-		/*
-		if (DriverStation.getInstance().isDisabled()){
-			lights.set(-0.17);
-		}
-		else {
-			lights.set(-0.17);
-		} */
 	}
 
 	public boolean getProzimity() {

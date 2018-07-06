@@ -12,12 +12,15 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 
+/**
+ * Manipulates parts of the climber subsystem, manipulates the lights.
+ */
 public class Climber extends Subsystem {
 
 	protected OI oi;
 
 	protected Spark lights;
-	
+
 	protected Spark climberMotorLeft;
 	protected Spark climberMotorRight;
 
@@ -32,6 +35,10 @@ public class Climber extends Subsystem {
 
 	protected double time;
 
+	/**
+	 * Constructor
+	 * @param p_oi OI Object
+	 */
 	public Climber(OI p_oi) {
 		oi = p_oi;
 
@@ -46,21 +53,33 @@ public class Climber extends Subsystem {
 		lights = new Spark(RobotMap.LIGHTS);
 	}
 
+
+	/**
+	 * Run at the begining of auto and teleop
+	 */
 	public void climberInit() {
 		climberEncoder.reset();
 	}
 
+	/**
+	 * Run periodically in auto and teleop
+	 */
 	public void climberExecute() {
 
+		// Determines the color of the lights
 		if (oi.getGamepadAxis(RobotMap.GP_L_TRIGGER) > 0.2) {
 			climberMoves(oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
 			if (DriverStation.getInstance().getAlliance() == Alliance.Blue) lights.set(-0.09);
 			else lights.set(-0.11);
-		} else if (oi.getGamepadAxis(RobotMap.GP_R_TRIGGER) > 0.2) {
+		}
+		
+		else if (oi.getGamepadAxis(RobotMap.GP_R_TRIGGER) > 0.2) {
 			climberMoves(-oi.getGamepadAxis(RobotMap.GP_R_TRIGGER));
 			if (DriverStation.getInstance().getAlliance() == Alliance.Blue) lights.set(-0.09);
 			else lights.set(-0.11);
-		} else {
+		}
+		
+		else {
 			climberMoves(0);
 			if (climberEncoder.get() >= 1500) climberRaised = true;
 			if (climberRaised && (climberEncoder.get() < 10)) lights.set(-0.57);
@@ -70,46 +89,45 @@ public class Climber extends Subsystem {
 			}
 		}
 
+		// Opens and closed the piston to lock the climber
 		if (oi.getGamepadButton(RobotMap.GP_L_BUTTON)) {
 			lock = true;
 			pneumaticLocking(lock);
+			if (!lock) SmartDashboard.putString("Climber Status:", "Locked");
+			else SmartDashboard.putString("Climber Status:", "Unlocked");
 
+		}
 
-			if(!lock){
-				SmartDashboard.putString("Climber Status:", "Locked");
-			} else {
-				SmartDashboard.putString("Climber Status:", "Unlocked");
-			}
-
-		} else if (oi.getGamepadButton(RobotMap.GP_R_BUTTON)) {
+		else if (oi.getGamepadButton(RobotMap.GP_R_BUTTON)) {
 			lock = false;
 			pneumaticLocking(lock);
-
 			SmartDashboard.putBoolean("locked?", !lock);
+			if (!lock) SmartDashboard.putString("Climber Status:", "Locked");
+			else SmartDashboard.putString("Climber Status:", "Unlocked");
+		}
 
-			if(!lock){
-				SmartDashboard.putString("Climber Status:", "Locked");
-			} else {
-				SmartDashboard.putString("Climber Status:", "Unlocked");
-			}
-
-		} else {
+		else {
 			SmartDashboard.putBoolean("Locked?", !lock);
-			if (!lock){
-				SmartDashboard.putString("Climber Status:", "Locked");
-			} else {
-				SmartDashboard.putString("Climber Status:", "Unlocked");
-			}
+			if (!lock) SmartDashboard.putString("Climber Status:", "Locked");
+			else SmartDashboard.putString("Climber Status:", "Unlocked");
 		}
 
 		SmartDashboard.putNumber("ClimberEncoder", climberEncoder.get());
 	}
 
+	/**
+	 * Moves the climber
+	 * @param speed How fast the climber will move
+	 */
 	public void climberMoves(double speed) {
 		climberMotorLeft.set(speed);
 		climberMotorRight.set(speed);
 	}
 
+    /**
+     * Locks the climber
+     * @param lock True for lock, False for unlock
+     */
 	public void pneumaticLocking(boolean lock) {
 		climberPistonLeft.set(lock);
 		climberPistonRight.set(lock);

@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveTrain extends Subsystem {
 
 	//Instantiates the Talon SRX motor objects for the drive train
@@ -57,7 +58,11 @@ public class DriveTrain extends Subsystem {
     	int leftClicks = -rearLeft.getSelectedSensorPosition(0);
     	int rightClicks = rearRight.getSelectedSensorPosition(0);
     	
+    	
     	int[] i = {leftClicks, rightClicks};
+    	
+    	SmartDashboard.putNumber("Raw Left Clicks", leftClicks);
+    	SmartDashboard.putNumber("Raw Right Clicks", rightClicks);
     	
     	return i;
     }

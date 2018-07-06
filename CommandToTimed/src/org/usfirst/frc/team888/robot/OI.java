@@ -15,47 +15,69 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class OI {
 	
-	//Instantiates and declares the joystick objects
+	// Instantiates and declares the joystick objects
 	Joystick gamepad = new Joystick(RobotMap.GAMEPAD_PORT);
 	Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK);
 	Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
 	
-	//Returns value between -1 and 1 for left joystick
+	/**
+	 * @param Axis array value
+	 * @return Axis value between -1 and 1 for left joystick
+	 */
 	public double getLeftStickAxis(int axis) {
 		return leftStick.getRawAxis(axis);
 	}
 	
-	//Returns value between -1 and 1 for right joystick
+	/**
+	 * @param Axis array value
+	 * @return Axis value between -1 and 1 for right joystick
+	 */
 	public double getRightStickAxis(int axis) {
 		return rightStick.getRawAxis(axis);
 	}
 	
-	//Returns value between -1 and 1 for gamepad joystick
+	/**
+	 * @param Axis array value
+	 * @return Axis value between -1 and 1 for gamepad joystick
+	 */
 	public double getGamepadAxis(int axis) {
 		return gamepad.getRawAxis(axis);
 	}
 	
-	//Get the D-Pad values from the secondary controllers
+	/**
+	 * @return The D-Pad values from the secondary controller
+	 */
 	public int getGamepadPOV() {
 		return gamepad.getPOV();
 	}
 	
-	//Returns true if button is pressed
+	/**
+	 * @param Button array value
+	 * @return Button value (true if pressed) from the left joystick
+	 */
 	public boolean getLeftStickButton(int button) {
 		return leftStick.getRawButton(button);
 	}
 	
-	//Returns true if button is pressed
+	/**
+	 * @param Button array value
+	 * @return Button value (true if pressed) from the right joystick
+	 */
 	public boolean getRightStickButton(int button) {
 		return rightStick.getRawButton(button);
 	}
 	
-	//Returns true if button is pressed
+	/**
+	 * @param Button array value
+	 * @return Button value (true if pressed) from the gamepad joystick
+	 */
 	public boolean getGamepadButton(int button) {
 		return gamepad.getRawButton(button);
 	}
 	
-	//Returns true if both joystick triggers are pressed.
+	/**
+	 * @return True if both the left and right joystick triggers are pressed
+	 */
 	public boolean getTriggers() {
 		return (leftStick.getRawButton(1) && rightStick.getRawButton(1));
 	}

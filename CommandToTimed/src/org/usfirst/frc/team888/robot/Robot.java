@@ -28,10 +28,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-	//Instantiates OI object
+	// Instantiates OI object
 	protected static OI oi;
 
-	//Instantiates drive train, location finding, and navigating objects
+	// Instantiates drive train, location finding, and navigating objects
 	protected static DriveTrain drive;
 	protected static DeadReckon location;
 	protected static Navigation navigation;
@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
 
 	protected static Vision vision;
 
-	//Instantiates compressor, climber, and pincer objects
+	// Instantiates compressor, climber, and pincer objects
 	protected static RunCompressor compressor;
 	protected static Climber climber;
 	protected static Pincer pincer;
@@ -47,32 +47,33 @@ public class Robot extends TimedRobot {
 	protected static long disabledCounter;
 
 	private boolean systemRun = false;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
-		//Declares OI object
+		// Declares OI object
 		oi = new OI();
 
-		//Declares drive and location finding objects
+		// Declares drive and location finding objects
 		drive = new DriveTrain();
 		location = new DeadReckon(drive);
 		gps = new WaypointTravel(drive, location);
 
 		vision = new Vision();
 
-		//Declares pneumatic-dependent objects
+		// Declares pneumatic-dependent objects
 		compressor =  new RunCompressor();
 		climber = new Climber(oi);
 		pincer = new Pincer(oi);
 
-		//Dclares navigating object and passes in classes called by navigation
+		// Declares navigating object and passes in classes called by navigation
 		navigation =  new Navigation(drive, location, pincer, vision, gps, climber, oi);
 
 
-		//Sends the start position selector to the dashboard
+		// Sends the start position selector to the dashboard
 		SmartDashboard.putData("Start Position", navigation.startPosition);
 	}
 
@@ -92,7 +93,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		navigation.navigationExecute();
-
 		pincer.pincerExecute();
 		climber.climberExecute();
 	}
@@ -135,6 +135,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledPeriodic() {
 		long t = System.currentTimeMillis();
+		// If the robot has been disabled for 5 seconds then log all data
 		if (systemRun && ((t - disabledCounter) >= 5000)) {
 			location.writeToLogger();
 			systemRun = false;

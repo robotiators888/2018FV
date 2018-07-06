@@ -5,12 +5,19 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+/**
+ * Looks for raw UDP messages
+ */
 public class UDPReceiver extends Thread {
 	
+	// Instantiates the objects for receiving data
 	DatagramSocket socket;
 	DatagramPacket dat;
 	byte[] receiveData = new byte[20];
 	
+	/**
+	 * Declares the socket and empty message
+	 */
 	private void init() {
 		try {
 			socket = new DatagramSocket(888);
@@ -20,6 +27,9 @@ public class UDPReceiver extends Thread {
 		}
 	}
 	
+	/**
+	 * Looks for messages sent from the Jetson
+	 */
 	@Override
 	public void run() {
 		init();
@@ -31,6 +41,6 @@ public class UDPReceiver extends Thread {
 			} catch (IOException e) {
 				
 			}
-		} while(true);
+		} while (true);
 	}
 }
