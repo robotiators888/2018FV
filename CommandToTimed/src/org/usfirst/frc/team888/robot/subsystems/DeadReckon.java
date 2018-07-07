@@ -73,7 +73,7 @@ public class DeadReckon extends Subsystem {
 		// Resets the encoder values
 		reset();
 	}
-
+	
 	/**
 	 * Calculates the location of the robot
 	 */
@@ -101,7 +101,7 @@ public class DeadReckon extends Subsystem {
 			lastChangeInEncoderRight = changeInEncoderRight;
 		}
 
-		/* Calculates the change in time since the last time the method was called.
+		/* Calculates the change in time since the last time the method +was called.
 		 * It should be approximately 20 milliseconds.
 		 */
 		timePassed = time - lastTime;
@@ -212,8 +212,8 @@ public class DeadReckon extends Subsystem {
 		posY = clickPosY / RobotMap.CLICKS_PER_INCH;
 
 		// Calculates the speed of the robot in feet per second
-		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) / RobotMap.CLICKS_PER_INCH) / 12)
-				/ (timePassed);
+		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) 
+				/ RobotMap.CLICKS_PER_INCH) / 12) / (timePassed);
 
 		cycle++;
 	}
@@ -242,6 +242,10 @@ public class DeadReckon extends Subsystem {
 		SmartDashboard.putNumber("Heading", Math.toDegrees(heading));
 		SmartDashboard.putNumber("Speed", speed);
 		SmartDashboard.putNumber("DeltaTime", timePassed);
+		SmartDashboard.putNumber("Delta Encoder Left", changeInEncoderLeft);
+		SmartDashboard.putNumber("Delta Encoder Right", changeInEncoderRight);
+		SmartDashboard.putNumber("Last Encoder Left", lastEncoderLeft);
+		SmartDashboard.putNumber("Last Encoder Right", lastEncoderRight);
 		SmartDashboard.putNumber("Left Encoder", encoderLeftValue);
 		SmartDashboard.putNumber("Right Encoder", encoderRightValue);
 		SmartDashboard.putString("Direction", direction);
@@ -392,6 +396,9 @@ public class DeadReckon extends Subsystem {
 		return direction;
 	}
 
+	/**
+	 * @return Returns the number of times the code has been run
+	 */
 	public int getCycle() {
 		return cycle;
 	}
