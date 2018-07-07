@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveTrain extends Subsystem {
 
-	//Instantiates the Talon SRX motor objects for the drive train
+	// Instantiates the Talon SRX motor objects for the drive train
     protected TalonSRX rearLeft;
     protected TalonSRX frontLeft;
     protected TalonSRX rearRight;
@@ -18,13 +18,13 @@ public class DriveTrain extends Subsystem {
     
 
     public DriveTrain() {
-    	//Declares the motors as objects of the TalonSRX class and passes them their CAN bus IDs
+    	// Declares the motors as objects of the TalonSRX class and passes them their CAN bus IDs
     	rearLeft = new TalonSRX(RobotMap.MOTOR_REAR_LEFT);
     	frontLeft = new TalonSRX(RobotMap.MOTOR_FRONT_LEFT);
     	rearRight = new TalonSRX(RobotMap.MOTOR_REAR_RIGHT);
     	frontRight = new TalonSRX(RobotMap.MOTOR_FRONT_RIGHT);
     	
-    	//Configures the encoders for the drive train motors
+    	// Configures the encoders for the drive train motors
     	rearLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     	rearRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     }
