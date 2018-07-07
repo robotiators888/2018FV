@@ -29,7 +29,6 @@ public class CommunicationsBuffer {
 		buf.clear();
 		return new double[] {b.cycle, b.x, b.y};
 	}
-
 }
 
 /**
@@ -53,5 +52,4 @@ class BufferData {
 		System.out.println(x);
 		System.out.println(y);
 	}
-
 }
