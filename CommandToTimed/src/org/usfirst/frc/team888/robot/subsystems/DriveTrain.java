@@ -63,6 +63,8 @@ public class DriveTrain extends Subsystem {
     	
     	SmartDashboard.putNumber("Raw Left Clicks", leftClicks);
     	SmartDashboard.putNumber("Raw Right Clicks", rightClicks);
+    	SmartDashboard.putNumber("Left Talon Current", rearLeft.getOutputCurrent());
+    	SmartDashboard.putNumber("Right Talon Current", rearRight.getOutputCurrent());
     	
     	return i;
     }
