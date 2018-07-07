@@ -8,13 +8,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-//import java.io.BufferedWriter;
-//import java.io.File;
-//import java.io.FileNotFoundException;
-//import java.io.FileOutputStream;
-//import java.io.IOException;
-//import java.io.OutputStreamWriter;
-
 import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 
