@@ -33,7 +33,6 @@ public class Vision extends Subsystem {
 		} catch (Exception e) {}
 	}
 	
-	//should cycle be passed? need to make sure names do not conflict
 	public void sendMessage(int cycle) {
 		byteCameraMessage = ByteBuffer.allocate(4).putInt(cycle).array();
 		
