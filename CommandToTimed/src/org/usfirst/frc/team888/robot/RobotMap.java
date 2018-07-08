@@ -85,7 +85,7 @@ public class RobotMap {
 	public static final double PINCER_MOTOR_SPEED = 0.2;
 	
 	// Sets the speed for autonomous
-	public static final double DEFAULT_AUTO_SPEED = 0.24;
+	public static final double DEFAULT_AUTO_SPEED = 0.08;
 	
 	// PI-RIO communication
 	public static final int RIO_UDP_PORT = 5805;

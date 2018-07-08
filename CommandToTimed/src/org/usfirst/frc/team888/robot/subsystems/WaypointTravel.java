@@ -49,6 +49,7 @@ public class WaypointTravel extends Subsystem {
 				double[] adjustments = moveToWaypoint(desiredX, desiredY, speed);
 				drive.move(speed + adjustments[0], 
 						speed + adjustments[1]);
+				//TODO Make this not break when x=0
 			}
 			break;
 		case 1:
@@ -214,7 +215,7 @@ public class WaypointTravel extends Subsystem {
 		}
 
 		//Calculates the adjustment based on how much the robot needs to turn
-		double driveAdjustment = Math.max(0, Math.min(1, (Math.abs(headingDifference))));
+		double driveAdjustment = Math.max(0, Math.min(0.5, (Math.abs(headingDifference))));
 
 		//SmartDashboard.putNumber("desired x", desiredX);
 		//SmartDashboard.putNumber("desired y", desiredY);
