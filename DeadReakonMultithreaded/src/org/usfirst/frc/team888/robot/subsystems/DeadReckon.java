@@ -65,149 +65,152 @@ public class DeadReckon extends Thread {
 		// Resets the encoder values
 		reset();
 	}
-	
+
 	/**
 	 * Calculates the location of the robot
 	 */
 	public void run() {
-		// Calls the method to get the most recent encoder data
-		updateEncoderVals();
+		while (true) {
 
-		/* Calculates the change in the encoders since the last time the method was called.
-		 * If the change in the encoders is impossibly large, the change is ignored and
-		 * the previous change is used instead.
-		 */
-		changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
-		if (changeInEncoderLeft > 3000 || changeInEncoderLeft < -3000) {
-			changeInEncoderLeft = lastChangeInEncoderLeft;
-		}
-		else {
-			lastChangeInEncoderLeft = changeInEncoderLeft;
-		}
+			// Calls the method to get the most recent encoder data
+			updateEncoderVals();
 
-		changeInEncoderRight = encoderRightValue - lastEncoderRight;
-		if (changeInEncoderRight > 3000  || changeInEncoderRight < -3000) {
-			changeInEncoderRight = lastChangeInEncoderRight;
-		}
-		else {
-			lastChangeInEncoderRight = changeInEncoderRight;
-		}
-
-		/* Calculates the change in time since the last time the method +was called.
-		 * It should be approximately 20 milliseconds.
-		 */
-		timePassed = time - lastTime;
-
-		// Algorithm for when the robot is going forward
-		if (changeInEncoderLeft >= 0  && changeInEncoderRight >= 0) {
-
-			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-			changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
-
-			direction = "forward";
-		} 
-
-		// Algorithm for when the robot is going backward
-		else if (changeInEncoderLeft <= 0  && changeInEncoderRight <= 0) {
-
-			changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
-			changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
-
-			direction = "backward";
-		}
-
-
-		// Algorithm for when the robot is spinning clockwise
-		else if (changeInEncoderLeft >= 0  && changeInEncoderRight <= 0) {
-			// Use a system of equation to find where inside the wheel base the point of rotation is.
-			PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
-					(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
-			PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
-
-			// If the point of rotation is farther from the left side...
-			if (PORtoLeft >= PORtoRight) {
-				/* ...use the left changes in the left encoder to calculate your
-				 * change in distance and heading.
-				 */
-				// Find the change in heading using the law of cosines and negate it.
-				changeInHeading = Math.acos((Math.pow(changeInEncoderLeft, 2) 
-						- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
-				// Find the change in distance based on the law of sines  and negate it.
-				changeInDistance = Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
-						Math.sin((Math.PI - changeInHeading) / 2);
+			/* Calculates the change in the encoders since the last time the method was called.
+			 * If the change in the encoders is impossibly large, the change is ignored and
+			 * the previous change is used instead.
+			 */
+			changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
+			if (changeInEncoderLeft > 3000 || changeInEncoderLeft < -3000) {
+				changeInEncoderLeft = lastChangeInEncoderLeft;
 			}
-			// If the point of rotation is farther from the right side...
 			else {
-				/* ...use the left changes in the left encoder to calculate your
-				 * change in distance and heading.
-				 */
-				// Find the change in heading using the law of cosines and negate it.
-				changeInHeading = Math.acos((Math.pow(changeInEncoderRight, 2) 
-						- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
-				// Find the change in distance based on the law of sines  and negate it.
-				changeInDistance = Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
-						Math.sin((Math.PI - changeInHeading) / 2);
+				lastChangeInEncoderLeft = changeInEncoderLeft;
 			}
 
-			direction = "SCW";
-		}
+			changeInEncoderRight = encoderRightValue - lastEncoderRight;
+			if (changeInEncoderRight > 3000  || changeInEncoderRight < -3000) {
+				changeInEncoderRight = lastChangeInEncoderRight;
+			}
+			else {
+				lastChangeInEncoderRight = changeInEncoderRight;
+			}
 
-		// Algorithm for when the robot is spinning counterclockwise
-		else if (changeInEncoderLeft <= 0  && changeInEncoderRight >= 0) {
-			// Use a system of equation to find where inside the wheel base the point of rotation is.
-			PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
-					(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
-			PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
+			/* Calculates the change in time since the last time the method +was called.
+			 * It should be approximately 20 milliseconds.
+			 */
+			timePassed = time - lastTime;
 
-			// If the point of rotation is farther from the left side...
-			if (PORtoLeft >= PORtoRight) {
-				/* ...use the left changes in the left encoder to calculate your
-				 * change in distance and heading.
-				 */
-				// Find the change in heading using the law of cosines.
-				changeInHeading = -Math.acos((Math.pow(changeInEncoderLeft, 2) 
-						- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
-				// Find the change in heading using the law of sines/
-				changeInDistance = -Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
-						Math.sin((Math.PI - changeInHeading) / 2);
+			// Algorithm for when the robot is going forward
+			if (changeInEncoderLeft >= 0  && changeInEncoderRight >= 0) {
+
+				changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
+				changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
+
+				direction = "forward";
 			} 
 
-			// If the point of rotation is farther from the right side...
-			else {
-				/* ...use the right changes in the left encoder to calculate your
-				 * change in distance and heading.
-				 */
-				// Find the change in heading using the law of cosines.
-				changeInHeading = -Math.acos((Math.pow(changeInEncoderRight, 2) 
-						- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
-				// Find the change in heading using the law of sines/
-				changeInDistance = -Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
-						Math.sin((Math.PI - changeInHeading) / 2);
+			// Algorithm for when the robot is going backward
+			else if (changeInEncoderLeft <= 0  && changeInEncoderRight <= 0) {
+
+				changeInDistance = (changeInEncoderLeft + changeInEncoderRight) / 2;
+				changeInHeading = (changeInEncoderLeft - changeInEncoderRight) / RobotMap.WHEEL_BASE;
+
+				direction = "backward";
 			}
 
-			direction = "SCCW";
+
+			// Algorithm for when the robot is spinning clockwise
+			else if (changeInEncoderLeft >= 0  && changeInEncoderRight <= 0) {
+				// Use a system of equation to find where inside the wheel base the point of rotation is.
+				PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
+						(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
+				PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
+
+				// If the point of rotation is farther from the left side...
+				if (PORtoLeft >= PORtoRight) {
+					/* ...use the left changes in the left encoder to calculate your
+					 * change in distance and heading.
+					 */
+					// Find the change in heading using the law of cosines and negate it.
+					changeInHeading = Math.acos((Math.pow(changeInEncoderLeft, 2) 
+							- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
+					// Find the change in distance based on the law of sines  and negate it.
+					changeInDistance = Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+				}
+				// If the point of rotation is farther from the right side...
+				else {
+					/* ...use the left changes in the left encoder to calculate your
+					 * change in distance and heading.
+					 */
+					// Find the change in heading using the law of cosines and negate it.
+					changeInHeading = Math.acos((Math.pow(changeInEncoderRight, 2) 
+							- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
+					// Find the change in distance based on the law of sines  and negate it.
+					changeInDistance = Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+				}
+
+				direction = "SCW";
+			}
+
+			// Algorithm for when the robot is spinning counterclockwise
+			else if (changeInEncoderLeft <= 0  && changeInEncoderRight >= 0) {
+				// Use a system of equation to find where inside the wheel base the point of rotation is.
+				PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
+						(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
+				PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
+
+				// If the point of rotation is farther from the left side...
+				if (PORtoLeft >= PORtoRight) {
+					/* ...use the left changes in the left encoder to calculate your
+					 * change in distance and heading.
+					 */
+					// Find the change in heading using the law of cosines.
+					changeInHeading = -Math.acos((Math.pow(changeInEncoderLeft, 2) 
+							- (2 * Math.pow(PORtoLeft, 2))) / (-2 * Math.pow(PORtoLeft, 2)));
+					// Find the change in heading using the law of sines/
+					changeInDistance = -Math.sin(changeInHeading) * (PORtoLeft - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+				} 
+
+				// If the point of rotation is farther from the right side...
+				else {
+					/* ...use the right changes in the left encoder to calculate your
+					 * change in distance and heading.
+					 */
+					// Find the change in heading using the law of cosines.
+					changeInHeading = -Math.acos((Math.pow(changeInEncoderRight, 2) 
+							- (2 * Math.pow(PORtoRight, 2))) / (-2 * Math.pow(PORtoRight, 2)));
+					// Find the change in heading using the law of sines/
+					changeInDistance = -Math.sin(changeInHeading) * (PORtoRight - (RobotMap.WHEEL_BASE / 2)) /
+							Math.sin((Math.PI - changeInHeading) / 2);
+				}
+
+				direction = "SCCW";
+			}
+
+
+			// Calculate the angle of change for the bot and the change in heading.
+			angle = (heading + (changeInHeading / 2));
+			heading = modAngle(heading + changeInHeading);
+
+			// Calculates the change in the X and Y directions
+			changeInX = changeInDistance * Math.sin(angle);
+			changeInY = changeInDistance * Math.cos(angle);
+
+			// Calculates the new position of the robot in inches.
+			clickPosX += changeInX;
+			clickPosY += changeInY;
+			posX = clickPosX / RobotMap.CLICKS_PER_INCH;
+			posY = clickPosY / RobotMap.CLICKS_PER_INCH;
+
+			// Calculates the speed of the robot in feet per second
+			speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) 
+					/ RobotMap.CLICKS_PER_INCH) / 12) / (timePassed);
+
+			cycle++;
 		}
-
-
-		// Calculate the angle of change for the bot and the change in heading.
-		angle = (heading + (changeInHeading / 2));
-		heading = modAngle(heading + changeInHeading);
-
-		// Calculates the change in the X and Y directions
-		changeInX = changeInDistance * Math.sin(angle);
-		changeInY = changeInDistance * Math.cos(angle);
-
-		// Calculates the new position of the robot in inches.
-		clickPosX += changeInX;
-		clickPosY += changeInY;
-		posX = clickPosX / RobotMap.CLICKS_PER_INCH;
-		posY = clickPosY / RobotMap.CLICKS_PER_INCH;
-
-		// Calculates the speed of the robot in feet per second
-		speed = ((Math.sqrt(Math.pow(changeInX, 2) + Math.pow(changeInY, 2)) 
-				/ RobotMap.CLICKS_PER_INCH) / 12) / (timePassed);
-
-		cycle++;
 	}
 
 	/**
@@ -266,7 +269,7 @@ public class DeadReckon extends Thread {
 			fileOpened = true;
 
 			int fileID = 1;
-			
+
 			do {
 				String fileName = "/tmp/navData" + fileID;
 				navData = new File(fileName);
