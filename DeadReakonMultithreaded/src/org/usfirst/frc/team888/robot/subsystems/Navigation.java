@@ -88,7 +88,6 @@ public class Navigation extends Subsystem {
 		//...then initialize.
 		schedulerOffset = 0;
 		location.reset();
-		location.run();
 
 
 		// Stores the randomizer data from the FMS as a string

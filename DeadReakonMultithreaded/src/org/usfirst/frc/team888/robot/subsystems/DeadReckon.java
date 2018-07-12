@@ -11,9 +11,10 @@ import java.util.ArrayList;
 import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DeadReckon extends Thread {
+public class DeadReckon extends Subsystem {
 
 	// Instantiates drive train object
 	protected DriveTrain drive;
@@ -69,7 +70,7 @@ public class DeadReckon extends Thread {
 	/**
 	 * Calculates the location of the robot
 	 */
-	public void run() {
+	public void updateTracker() {
 		while (true) {
 
 			// Calls the method to get the most recent encoder data
