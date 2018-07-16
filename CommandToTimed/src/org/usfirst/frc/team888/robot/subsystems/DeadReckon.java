@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import org.usfirst.frc.team888.robot.RobotMap;
 import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DeadReckon extends Subsystem {
+public class DeadReckon {
 
 	// Instantiates drive train object
 	protected DriveTrain drive;

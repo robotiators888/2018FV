@@ -6,9 +6,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-public class DriveTrain extends Subsystem {
+
+public class DriveTrain {
 
 	// Instantiates the Talon SRX motor objects for the drive train
     protected TalonSRX rearLeft;
@@ -67,10 +67,5 @@ public class DriveTrain extends Subsystem {
     	SmartDashboard.putNumber("Right Talon Current", rearRight.getOutputCurrent());
     	
     	return i;
-    }
-    
-    public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
     }
 }
