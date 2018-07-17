@@ -3,7 +3,6 @@ package org.usfirst.frc.team888.robot.subsystems;
 import org.usfirst.frc.team888.robot.OI;
 import org.usfirst.frc.team888.robot.RobotMap;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,7 +14,7 @@ import edu.wpi.first.wpilibj.Spark;
 /**
  * Manipulates parts of the climber subsystem, manipulates the lights.
  */
-public class Climber extends Subsystem {
+public class Climber {
 
 	protected OI oi;
 
@@ -131,10 +130,5 @@ public class Climber extends Subsystem {
 	public void pneumaticLocking(boolean lock) {
 		climberPistonLeft.set(lock);
 		climberPistonRight.set(lock);
-	}
-
-	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		//setDefaultCommand(new MySpecialCommand());
 	}
 }
