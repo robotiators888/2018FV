@@ -65,7 +65,7 @@ public class DeadReckon {
 		// Resets the encoder values
 		reset();
 	}
-	
+
 	/**
 	 * Calculates the location of the robot
 	 */
@@ -262,53 +262,50 @@ public class DeadReckon {
 	 * Writes the logged data to a file on the RoboRIO
 	 */
 	public void writeToLogger() {
-		if (!fileOpened) {
-			fileOpened = true;
+		int fileID = 1;
 
-			int fileID = 1;
-			
-			do {
-				String fileName = "/tmp/navData" + fileID;
-				navData = new File(fileName);
-				fileID++;
-			} while (navData.exists());
+		do {
+			String fileName = "/tmp/navData" + fileID;
+			navData = new File(fileName);
+			fileID++;
+		} while (navData.exists());
 
+		try {
+			fos = new FileOutputStream(navData);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+		for (int i = 0; i < navLog.size(); i++) {
 			try {
-				fos = new FileOutputStream(navData);
-			} catch (FileNotFoundException e) {
+				bw.append(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
+						(int) navLog.get(i)[0],
+						navLog.get(i)[1],
+						navLog.get(i)[2],
+						navLog.get(i)[3],
+						navLog.get(i)[4],
+						navLog.get(i)[5],
+						navLog.get(i)[6],
+						navLog.get(i)[7],
+						navLog.get(i)[8], 
+						navLog.get(i)[9]));
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			bw = new BufferedWriter(new OutputStreamWriter(fos));
-
-			for (int i = 0; i < navLog.size(); i++) {
-				try {
-					bw.append(String.format("%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
-							(int) navLog.get(i)[0],
-							navLog.get(i)[1],
-							navLog.get(i)[2],
-							navLog.get(i)[3],
-							navLog.get(i)[4],
-							navLog.get(i)[5],
-							navLog.get(i)[6],
-							navLog.get(i)[7],
-							navLog.get(i)[8], 
-							navLog.get(i)[9]));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				try {
-					bw.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
 			try {
-				bw.close();
+				bw.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+
+		try {
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
