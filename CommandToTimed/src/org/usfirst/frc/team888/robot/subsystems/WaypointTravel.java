@@ -1,10 +1,8 @@
 package org.usfirst.frc.team888.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class WaypointTravel extends Subsystem {
+public class WaypointTravel {
 
 	protected DriveTrain drive;
 	protected DeadReckon location;
@@ -227,10 +225,5 @@ public class WaypointTravel extends Subsystem {
 				desiredHeading,
 				driveAdjustment
 		};
-	}
-
-	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		//setDefaultCommand(new MySpecialCommand());
 	}
 }

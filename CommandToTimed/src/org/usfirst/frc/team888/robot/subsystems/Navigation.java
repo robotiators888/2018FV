@@ -5,11 +5,10 @@ import org.usfirst.frc.team888.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Navigation extends Subsystem {
+public class Navigation {
 
 	// Instantiates the objects of the other classes controlled by navigation
 	protected DriveTrain drive;
@@ -454,10 +453,5 @@ public class Navigation extends Subsystem {
 		SmartDashboard.putNumber("leftOutput", leftDriveOutput);
 		SmartDashboard.putNumber("rightOutput", rightDriveOutput);
 		SmartDashboard.putNumber("State", state);
-	}
-
-	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		//setDefaultCommand(new MySpecialCommand());
 	}
 }

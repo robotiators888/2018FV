@@ -14,10 +14,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Pincer extends Subsystem {
+public class Pincer {
 
 	protected OI oi;
 
@@ -253,10 +252,5 @@ public class Pincer extends Subsystem {
 	public void updateDashboard() {
 		SmartDashboard.putString("Pincer Position", pincerPosition);
 		SmartDashboard.putBoolean("Cube Present?", !proximity.get());
-	}
-
-	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		//setDefaultCommand(new MySpecialCommand());
 	}
 }

@@ -8,13 +8,10 @@ import java.nio.ByteBuffer;
 
 import org.usfirst.frc.team888.robot.RobotMap;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /**
  *
  */
-public class Vision extends Subsystem {
+public class Vision {
 
 	protected InetAddress jetsonAddress;
 
@@ -46,10 +43,5 @@ public class Vision extends Subsystem {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		//setDefaultCommand(new MySpecialCommand());
 	}
 }

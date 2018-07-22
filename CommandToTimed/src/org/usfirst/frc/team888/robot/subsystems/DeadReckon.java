@@ -404,9 +404,4 @@ public class DeadReckon {
 		angle %= 2 * Math.PI;
 		return angle;
 	}
-
-	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		//setDefaultCommand(new MySpecialCommand());
-	}
 }
