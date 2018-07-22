@@ -72,11 +72,11 @@ public class RobotMap {
 	// PWM port for the lights
 	public static final int LIGHTS = 2;
 	
-	// The width between the two wheels the encoders measure off of.
-	public static final double WHEEL_BASE = 17060.859;
-	
 	// Conversion factor for clicks to inches
-	public static final double CLICKS_PER_INCH = 745.8299;
+	public static final double CLICKS_PER_INCH = 675;//745.8299;
+	
+	// The width between the two wheels the encoders measure off of.
+	public static final double WHEEL_BASE = 22.875 * CLICKS_PER_INCH;
 	
 	// Max climber speed
 	public static final double CLIMBER_MOTOR_SPEED = 0.4;
