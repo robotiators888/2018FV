@@ -93,11 +93,6 @@ public class DeadReckon {
 			lastChangeInEncoderRight = changeInEncoderRight;
 		}
 
-		/* Calculates the change in time since the last time the method +was called.
-		 * It should be approximately 20 milliseconds.
-		 */
-		timePassed = time - lastTime;
-
 		// Algorithm for when the robot is going forward
 		if (changeInEncoderLeft >= 0  && changeInEncoderRight >= 0) {
 
@@ -154,7 +149,7 @@ public class DeadReckon {
 
 		// Algorithm for when the robot is spinning counterclockwise
 		else if (changeInEncoderLeft <= 0  && changeInEncoderRight >= 0) {
-			// Use a system of equation to find where inside the wheel base the point of rotation is.
+			// Use a system of equations to find where inside the wheel base the point of rotation is.
 			PORtoLeft = (Math.abs(changeInEncoderLeft) * RobotMap.WHEEL_BASE) / 
 					(Math.abs(changeInEncoderLeft) + Math.abs(changeInEncoderRight));
 			PORtoRight = RobotMap.WHEEL_BASE - PORtoLeft;
@@ -315,6 +310,10 @@ public class DeadReckon {
 		// Saves the change in time
 		lastTime = time;
 		time = System.currentTimeMillis() / 1000.0;
+		/* Calculates the change in time since the last time the method +was called.
+		 * It should be approximately 20 milliseconds.
+		 */
+		timePassed = time - lastTime;
 
 		// Gets the encoder values from the drive train.
 		int[] vals = drive.getEncoderVals();
