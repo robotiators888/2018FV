@@ -228,7 +228,7 @@ public class DeadReckon {
 	/**
 	 * Refreshes dashboard values and logs values
 	 */
-	public void updateDashboard() {//throws IOException {
+	public void updateDashboard() {
 		SmartDashboard.putNumber("X Position", posX);
 		SmartDashboard.putNumber("Y Position", posY);
 		SmartDashboard.putNumber("Heading", Math.toDegrees(heading));

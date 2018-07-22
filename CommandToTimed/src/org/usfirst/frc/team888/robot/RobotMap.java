@@ -73,7 +73,7 @@ public class RobotMap {
 	public static final int LIGHTS = 2;
 	
 	// Conversion factor for clicks to inches
-	public static final double CLICKS_PER_INCH = 675;//745.8299;
+	public static final double CLICKS_PER_INCH = 825;//745.8299;
 	
 	// The width between the two wheels the encoders measure off of.
 	public static final double WHEEL_BASE = 22.875 * CLICKS_PER_INCH;
@@ -85,7 +85,7 @@ public class RobotMap {
 	public static final double PINCER_MOTOR_SPEED = 0.2;
 	
 	// Sets the speed for autonomous
-	public static final double DEFAULT_AUTO_SPEED = 0.08;
+	public static final double DEFAULT_AUTO_SPEED = 0.24;
 	
 	// PI-RIO communication
 	public static final int RIO_UDP_PORT = 5805;
