@@ -35,6 +35,8 @@ public class Climber {
 	protected boolean lock;
 
 	protected double time;
+	
+	protected boolean blueAlliance;
 
 	/**
 	 * Constructor
@@ -72,6 +74,7 @@ public class Climber {
 	 */
 	public void climberInit() {
 		climberEncoder.reset();
+		blueAlliance = DriverStation.getInstance().getAlliance() == Alliance.Blue;
 	}
 
 	/**
@@ -82,13 +85,13 @@ public class Climber {
 		// Determines the color of the lights
 		if (oi.getGamepadAxis(RobotMap.GP_L_TRIGGER) > 0.2) {
 			climberMoves(oi.getGamepadAxis(RobotMap.GP_L_TRIGGER));
-			if (DriverStation.getInstance().getAlliance() == Alliance.Blue) lights.set(-0.09);
+			if (blueAlliance) lights.set(-0.09);
 			else lights.set(-0.11);
 		}
 		
 		else if (oi.getGamepadAxis(RobotMap.GP_R_TRIGGER) > 0.2) {
 			climberMoves(-oi.getGamepadAxis(RobotMap.GP_R_TRIGGER));
-			if (DriverStation.getInstance().getAlliance() == Alliance.Blue) lights.set(-0.09);
+			if (blueAlliance) lights.set(-0.09);
 			else lights.set(-0.11);
 		}
 		
@@ -97,7 +100,7 @@ public class Climber {
 			if (climberEncoder.get() >= 1500) climberRaised = true;
 			if (climberRaised && (climberEncoder.get() < 10)) lights.set(-0.57);
 			else {
-				if (DriverStation.getInstance().getAlliance() == Alliance.Blue) lights.set(0.87);
+				if (blueAlliance) lights.set(0.87);
 				else lights.set(0.61);
 			}
 		}
