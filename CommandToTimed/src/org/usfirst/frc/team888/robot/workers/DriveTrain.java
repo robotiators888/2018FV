@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain {
 
+	private static DriveTrain drive;
+	
 	// Instantiates the Talon SRX motor objects for the drive train
     protected TalonSRX rearLeft;
     protected TalonSRX frontLeft;
@@ -17,7 +19,7 @@ public class DriveTrain {
     protected TalonSRX frontRight;
     
 
-    public DriveTrain() {
+    private DriveTrain() {
     	// Declares the motors as objects of the TalonSRX class and passes them their CAN bus IDs
     	rearLeft = new TalonSRX(RobotMap.MOTOR_REAR_LEFT);
     	frontLeft = new TalonSRX(RobotMap.MOTOR_FRONT_LEFT);
@@ -27,6 +29,18 @@ public class DriveTrain {
     	// Configures the encoders for the drive train motors
     	rearLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     	rearRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+    }
+    
+    public static DriveTrain getInstance() {
+    	if (drive != null) {
+    		synchronized(DriveTrain.class) {
+    			if (drive != null) {
+    				drive = new DriveTrain();
+    			}
+    		}
+    	}
+    	
+    	return drive;
     }
     
     /**

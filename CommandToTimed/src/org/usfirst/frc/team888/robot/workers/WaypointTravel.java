@@ -4,16 +4,30 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WaypointTravel {
 
+	private static WaypointTravel guidence;
+	
 	protected DriveTrain drive;
 	protected DeadReckon location;
 
 	protected int state = 0;
 
-	public WaypointTravel (DriveTrain p_drive, DeadReckon p_location) {
-		drive = p_drive;
-		location = p_location;
+	private WaypointTravel () {
+		drive = DriveTrain.getInstance();
+		location = DeadReckon.getInstance();
 
 		state = 0;
+	}
+	
+	public static WaypointTravel getInstance() {
+		if (guidence != null) {
+			synchronized(WaypointTravel.class) {
+				if (guidence != null) {
+					guidence = new WaypointTravel();
+				}
+			}
+		}
+		
+		return guidence;
 	}
 
 	/**

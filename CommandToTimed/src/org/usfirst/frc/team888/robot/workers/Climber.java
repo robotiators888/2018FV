@@ -42,8 +42,8 @@ public class Climber {
 	 * Constructor
 	 * @param p_oi OI Object
 	 */
-	private Climber(OI p_oi) {
-		oi = p_oi;
+	private Climber() {
+		oi = OI.getInstance();
 
 		climberMotorLeft = new Spark(RobotMap.CLIMBER_MOTOR_LEFT);
 		climberMotorRight = new Spark(RobotMap.CLIMBER_MOTOR_RIGHT);
@@ -57,11 +57,11 @@ public class Climber {
 	}
 
 
-	public static Climber getInstance(OI p_oi) {
+	public static Climber getInstance() {
 		if (climber != null) {
 			synchronized(Climber.class) {
 				if (climber != null) {
-					climber = new Climber(p_oi);
+					climber = new Climber();
 				}
 			}
 		}

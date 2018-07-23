@@ -15,11 +15,27 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class OI {
 	
+	private static OI oi;
+	
 	// Instantiates and declares the joystick objects
 	Joystick gamepad = new Joystick(RobotMap.GAMEPAD_PORT);
 	Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK);
 	Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
 	
+	private OI() { }
+	
+	public static OI getInstance() {
+		if (oi != null) {
+			synchronized(OI.class) {
+				if (oi != null) {
+					oi = new OI();
+				}
+			}
+		}
+		
+		return oi;
+	}
+
 	/**
 	 * @param Axis array value
 	 * @return Axis value between -1 and 1 for left joystick

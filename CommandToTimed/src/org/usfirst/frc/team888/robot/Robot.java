@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
 	protected static DriveTrain drive;
 	protected static DeadReckon location;
 	protected static Navigation navigation;
-	protected static WaypointTravel gps;
+	protected static WaypointTravel guidence;
 
 	protected static Vision vision;
 
@@ -55,22 +55,23 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		// Declares OI object
-		oi = new OI();
+		oi = OI.getInstance();
 
 		// Declares drive and location finding objects
-		drive = new DriveTrain();
-		location = new DeadReckon(drive);
-		gps = new WaypointTravel(drive, location);
+		drive = DriveTrain.getInstance();
+		
+		location = DeadReckon.getInstance();
+		guidence = WaypointTravel.getInstance();
 
-		vision = new Vision();
+		vision = Vision.getInstance();
 
 		// Declares pneumatic-dependent objects
-		compressor =  new RunCompressor();
-		climber = Climber.getInstance(oi);
-		pincer = new Pincer(oi);
+		compressor =  RunCompressor.getInstance();
+		climber = Climber.getInstance();
+		pincer = Pincer.getInstance();
 
 		// Declares navigating object and passes in classes called by navigation
-		navigation =  new Navigation(drive, location, pincer, vision, gps, climber, oi);
+		navigation = Navigation.getInstance();
 
 
 		// Sends the start position selector to the dashboard

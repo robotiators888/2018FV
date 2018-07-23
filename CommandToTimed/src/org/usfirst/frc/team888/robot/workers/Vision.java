@@ -13,6 +13,8 @@ import org.usfirst.frc.team888.robot.RobotMap;
  */
 public class Vision {
 
+	private static Vision vision;
+	
 	protected InetAddress jetsonAddress;
 
 	protected DatagramSocket sock;
@@ -21,13 +23,25 @@ public class Vision {
 	protected int cycle = 0;
 	protected byte[] byteCameraMessage = ByteBuffer.allocate(4).putInt(cycle).array();
 
-	public Vision() {
+	private Vision() {
 		try {
 			jetsonAddress = InetAddress.getByAddress(RobotMap.IP_ADDRESS);
 			sock = new DatagramSocket(RobotMap.RIO_UDP_PORT);
 			message = new DatagramPacket(byteCameraMessage, 
 					byteCameraMessage.length, jetsonAddress, RobotMap.JETSON_UDP_PORT);
 		} catch (Exception e) {}
+	}
+	
+	public static Vision getInstance() {
+		if (vision != null) {
+			synchronized(Vision.class) {
+				if (vision != null) {
+					vision = new Vision();
+				}
+			}
+		}
+		
+		return vision;
 	}
 	
 	/**

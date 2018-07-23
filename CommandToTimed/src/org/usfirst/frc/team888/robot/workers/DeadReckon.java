@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DeadReckon {
 
+	private static DeadReckon dr;
+	
 	// Instantiates drive train object
 	protected DriveTrain drive;
 
@@ -58,12 +60,24 @@ public class DeadReckon {
 	//Instantiates logging values
 	protected ArrayList<double[]> navLog = new ArrayList<>(9000);
 
-	public DeadReckon(DriveTrain p_drive) {
+	private DeadReckon() {
 		// Declares the drive object to be equal to the object passed in by Robot
-		drive = p_drive;
+		drive = DriveTrain.getInstance();
 
 		// Resets the encoder values
 		reset();
+	}
+	
+	public static DeadReckon getInstance() {
+		if (dr != null) {
+			synchronized(DeadReckon.class) {
+				if (dr != null) {
+					dr = new DeadReckon();
+				}
+			}
+		}
+		
+		return dr;
 	}
 
 	/**

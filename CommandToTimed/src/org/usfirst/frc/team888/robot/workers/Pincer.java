@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pincer {
 
+	private static Pincer pincer;
+	
 	protected OI oi;
 
 	protected TalonSRX pincerMotor;
@@ -66,8 +68,8 @@ public class Pincer {
 
 	protected double desiredPosition = 2115;
 
-	public Pincer(OI p_oi) {
-		oi = p_oi;
+	private Pincer() {
+		oi = OI.getInstance();
 
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 
@@ -86,6 +88,18 @@ public class Pincer {
 		bottomBanner = new DigitalInput(3);
 
 		//lights = new Spark(RobotMap.LIGHTS);
+	}
+	
+	public static Pincer getInstance() {
+		if (pincer != null) {
+			synchronized(Pincer.class) {
+				if (pincer != null) {
+					pincer = new Pincer();
+				}
+			}
+		}
+		
+		return pincer;
 	}
 	
 	/**
