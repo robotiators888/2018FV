@@ -129,7 +129,7 @@ public class Navigation {
 		}
 
 		// Send the location data to the dashboard once per second on the half second
-		if (schedulerOffset == 25) {
+		else if (schedulerOffset == 25) {
 			location.updateDashboard();
 		}
 
