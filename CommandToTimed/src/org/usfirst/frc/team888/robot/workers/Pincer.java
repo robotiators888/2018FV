@@ -74,7 +74,8 @@ public class Pincer {
 		pincerMotor = new TalonSRX(RobotMap.PINCER_MOTOR);
 
 		pincerMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-		pincerMotor.configForwardLimitSwitchSource(LimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, 0);
+		pincerMotor.configForwardLimitSwitchSource(LimitSwitchSource.RemoteTalonSRX, 
+				LimitSwitchNormal.NormallyOpen, 0);
 
 		pincerPiston = new DoubleSolenoid(5, 2, 3);
 
@@ -230,7 +231,8 @@ public class Pincer {
 		else{
 			pincerMotor.set(ControlMode.PercentOutput, manualPower);
 		}
-		if(!(currentAngle > (desiredPosition + angleThreshold)) && !(currentAngle < (desiredPosition - angleThreshold))){
+		if (!(currentAngle > (desiredPosition + angleThreshold)) 
+				&& !(currentAngle < (desiredPosition - angleThreshold))){
 			return true;
 		}
 		else{
