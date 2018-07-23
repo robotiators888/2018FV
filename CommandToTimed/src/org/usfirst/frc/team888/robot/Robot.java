@@ -7,14 +7,14 @@
 
 package org.usfirst.frc.team888.robot;
 
-import org.usfirst.frc.team888.robot.subsystems.Climber;
-import org.usfirst.frc.team888.robot.subsystems.DeadReckon;
-import org.usfirst.frc.team888.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team888.robot.subsystems.Navigation;
-import org.usfirst.frc.team888.robot.subsystems.Pincer;
-import org.usfirst.frc.team888.robot.subsystems.RunCompressor;
-import org.usfirst.frc.team888.robot.subsystems.Vision;
-import org.usfirst.frc.team888.robot.subsystems.WaypointTravel;
+import org.usfirst.frc.team888.robot.workers.Climber;
+import org.usfirst.frc.team888.robot.workers.DeadReckon;
+import org.usfirst.frc.team888.robot.workers.DriveTrain;
+import org.usfirst.frc.team888.robot.workers.Navigation;
+import org.usfirst.frc.team888.robot.workers.Pincer;
+import org.usfirst.frc.team888.robot.workers.RunCompressor;
+import org.usfirst.frc.team888.robot.workers.Vision;
+import org.usfirst.frc.team888.robot.workers.WaypointTravel;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
