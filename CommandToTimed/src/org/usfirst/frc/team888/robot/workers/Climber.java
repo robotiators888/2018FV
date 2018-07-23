@@ -55,7 +55,7 @@ public class Climber {
 	}
 
 
-	public static Climber getClimber(OI p_oi) {
+	public static Climber getInstance(OI p_oi) {
 		if (climber != null) {
 			synchronized(Climber.class) {
 				if (climber != null) {
