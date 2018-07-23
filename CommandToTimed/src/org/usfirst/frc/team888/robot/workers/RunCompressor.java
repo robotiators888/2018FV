@@ -16,6 +16,10 @@ public class RunCompressor {
     	mainCompressor = new Compressor(RobotMap.COMPRESSOR);
     }
     
+	/**
+	 * Accessor method for the RunCompressor Singleton.
+	 * @return The object of RunCompressor
+	 */
     public static RunCompressor getInstance() {
     	if (compressor != null) {
 			synchronized(RunCompressor.class) {

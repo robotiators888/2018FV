@@ -24,6 +24,10 @@ public class OI {
 	
 	private OI() { }
 	
+	/**
+	 * Accessor method for the OI Singleton.
+	 * @return The object of OI
+	 */
 	public static OI getInstance() {
 		if (oi != null) {
 			synchronized(OI.class) {

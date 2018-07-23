@@ -81,6 +81,10 @@ public class Navigation {
 		receiver.start();
 	}
 	
+	/**
+	 * Accessor method for the Navigation Singleton.
+	 * @return The object of Navigation
+	 */
 	public static Navigation getInstance() {
 		if (nav != null) {
 			synchronized(Navigation.class) {

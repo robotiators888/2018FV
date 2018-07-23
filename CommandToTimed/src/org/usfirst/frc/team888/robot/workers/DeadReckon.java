@@ -68,6 +68,10 @@ public class DeadReckon {
 		reset();
 	}
 	
+	/**
+	 * Accessor method for the DeadReckon Singleton.
+	 * @return The object of DeadReckon
+	 */
 	public static DeadReckon getInstance() {
 		if (dr != null) {
 			synchronized(DeadReckon.class) {

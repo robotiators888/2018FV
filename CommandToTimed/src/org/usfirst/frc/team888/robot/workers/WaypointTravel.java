@@ -18,6 +18,10 @@ public class WaypointTravel {
 		state = 0;
 	}
 	
+	/**
+	 * Accessor method for the WaypointTravel Singleton.
+	 * @return The object of WaypointTravel
+	 */
 	public static WaypointTravel getInstance() {
 		if (guidence != null) {
 			synchronized(WaypointTravel.class) {

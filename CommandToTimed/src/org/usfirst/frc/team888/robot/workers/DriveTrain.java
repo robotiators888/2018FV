@@ -31,6 +31,10 @@ public class DriveTrain {
     	rearRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     }
     
+	/**
+	 * Accessor method for the DriveTrain Singleton.
+	 * @return The object of DriveTrain
+	 */
     public static DriveTrain getInstance() {
     	if (drive != null) {
     		synchronized(DriveTrain.class) {

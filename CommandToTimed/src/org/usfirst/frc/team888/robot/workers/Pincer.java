@@ -90,6 +90,10 @@ public class Pincer {
 		//lights = new Spark(RobotMap.LIGHTS);
 	}
 	
+	/**
+	 * Accessor method for the Pincer Singleton.
+	 * @return The object of Pincer
+	 */
 	public static Pincer getInstance() {
 		if (pincer != null) {
 			synchronized(Pincer.class) {

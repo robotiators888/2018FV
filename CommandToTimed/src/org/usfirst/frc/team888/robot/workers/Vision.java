@@ -32,6 +32,10 @@ public class Vision {
 		} catch (Exception e) {}
 	}
 	
+	/**
+	 * Accessor method for the Vision Singleton.
+	 * @return The object of Vision
+	 */
 	public static Vision getInstance() {
 		if (vision != null) {
 			synchronized(Vision.class) {

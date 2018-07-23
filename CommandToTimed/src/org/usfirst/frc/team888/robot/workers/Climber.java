@@ -56,7 +56,10 @@ public class Climber {
 		lights = new Spark(RobotMap.LIGHTS);
 	}
 
-
+	/**
+	 * Accessor method for the Climber Singleton.
+	 * @return The object of Climber
+	 */
 	public static Climber getInstance() {
 		if (climber != null) {
 			synchronized(Climber.class) {
