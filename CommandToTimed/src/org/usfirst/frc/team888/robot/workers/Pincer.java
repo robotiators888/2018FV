@@ -243,7 +243,8 @@ public class Pincer {
 	public void pince(boolean button) {
 		if (input == true && lastInput == false) {
 			press = true;
-		} else {
+		}
+		else {
 			press = false;
 		}
 
@@ -257,10 +258,12 @@ public class Pincer {
 		if(output) {
 			pincerPiston.set(DoubleSolenoid.Value.kForward);
 			pincerPosition = "Open";
-		} else {
+		}
+		else {
 			pincerPiston.set(DoubleSolenoid.Value.kReverse);
 			pincerPosition = "Closed";
 		}
+		System.out.println("I want to die");
 	}
 
 	public boolean getProzimity() {
