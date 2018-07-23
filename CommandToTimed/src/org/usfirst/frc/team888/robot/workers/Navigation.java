@@ -19,7 +19,7 @@ public class Navigation {
 	protected OI oi;
 	protected Pincer pincer;
 	protected Vision vision;
-	protected WaypointTravel guidence;
+	protected WaypointTravel guidance;
 
 	// Instantiates a chooser for the dashboard to select where the robot is at the start of the match.
 	public SendableChooser<String> startPosition;
@@ -64,7 +64,7 @@ public class Navigation {
 		pincer = Pincer.getInstance();
 		oi = OI.getInstance();
 		vision = Vision.getInstance();
-		guidence = WaypointTravel.getInstance();
+		guidance = WaypointTravel.getInstance();
 
 		// Declares the start position and the start location options
 		startPosition = new SendableChooser<String>();
@@ -217,7 +217,7 @@ public class Navigation {
 			// The case that robot starts in the middle position
 			switch (state) {
 			case 0:
-				if (guidence.goToWaypoint(79, 52, location.getHeading(), RobotMap.DEFAULT_AUTO_SPEED)) state = 10;
+				if (guidance.goToWaypoint(79, 52, location.getHeading(), RobotMap.DEFAULT_AUTO_SPEED)) state = 10;
 				/*pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
@@ -235,12 +235,12 @@ public class Navigation {
 				pincer.setPincerPosition(1100, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
-					if (guidence.goToWaypoint(-75, 96, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(-75, 96, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
 				else {
-					if (guidence.goToWaypoint(72, 96, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(72, 96, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
@@ -254,7 +254,7 @@ public class Navigation {
 			case 3:
 				// Lower the pincer
 				pincer.setPincerPosition(1000, true, 0.0);
-				if (guidence.goToWaypoint(-5.5, 6, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (guidance.goToWaypoint(-5.5, 6, 0, -RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
@@ -262,13 +262,13 @@ public class Navigation {
 				vision.sendMessage(location.getCycle());
 				pincer.setPincerPosition(700, true, 0.0);
 				if (cubeLocation == null) {
-					if (guidence.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(-5.5, 54, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 5;
 					}
 				}
 				else {
 					if (pincer.getProzimity()) {
-						guidence.goToWaypoint(cubeLocation[0], cubeLocation[1], 
+						guidance.goToWaypoint(cubeLocation[0], cubeLocation[1], 
 								0, RobotMap.DEFAULT_AUTO_SPEED);
 					}
 					else {
@@ -285,12 +285,12 @@ public class Navigation {
 			case 6:
 				pincer.setPincerPosition(1100, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (guidence.goToWaypoint(-30, 30, ((11 * Math.PI) / 6), -RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(-30, 30, ((11 * Math.PI) / 6), -RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 7;
 					}
 				}
 				else {
-					if (guidence.goToWaypoint(30, 30, (Math.PI / 6), -RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(30, 30, (Math.PI / 6), -RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 7;
 					}
 				}
@@ -299,12 +299,12 @@ public class Navigation {
 				// Lower the pincer
 				pincer.setPincerPosition(1100, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (guidence.goToWaypoint(-75, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(-75, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 8;
 					}
 				}
 				else {
-					if (guidence.goToWaypoint(72, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(72, 80, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 8;
 					}
 				}
@@ -313,12 +313,12 @@ public class Navigation {
 				pincer.setPincerPosition(1100, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
-					if (guidence.goToWaypoint(-75, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(-75, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 9;
 					}
 				}
 				else {
-					if (guidence.goToWaypoint(72, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(72, 93, 0, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 9;
 					}
 				}
@@ -339,12 +339,12 @@ public class Navigation {
 			case 0: 
 				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (guidence.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(0, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				}
 				else {
-					if (guidence.goToWaypoint(0, 210, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(0, 210, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						if (strategy.getSelected().equals("Cancel")) {
 							state = 6;
 						}
@@ -357,25 +357,25 @@ public class Navigation {
 			case 1: 
 				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
-					if (guidence.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(20, 148, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 4;
 					}
 				}
 				else {
-					if (guidence.goToWaypoint(226, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(226, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
 				break;
 			case 2:
 				pincer.setPincerPosition(1500, true, 0.0);
-				if (guidence.goToWaypoint(226, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (guidance.goToWaypoint(226, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
 				pincer.setPincerPosition(1500, true, 0.0);
-				if (guidence.goToWaypoint(206, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (guidance.goToWaypoint(206, 160, ((Math.PI * 3) / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
@@ -398,12 +398,12 @@ public class Navigation {
 			case 0: 
 				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'R') {
-					if (guidence.goToWaypoint(0, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(0, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 1;
 					}
 				}
 				else {
-					if (guidence.goToWaypoint(0, 210, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(0, 210, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						if (strategy.getSelected().equals("Cancel")) {
 							state = 6;
 						}
@@ -416,25 +416,25 @@ public class Navigation {
 			case 1: 
 				pincer.setPincerPosition(1800, true, 0.0);
 				if (gameData.charAt(0) == 'R') {
-					if (guidence.goToWaypoint(-20, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(-20, 148, ((Math.PI * 3) /2), RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 4;
 					}
 				}
 				else {
-					if (guidence.goToWaypoint(-226, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
+					if (guidance.goToWaypoint(-226, 200, Math.PI, RobotMap.DEFAULT_AUTO_SPEED)) {
 						state = 2;
 					}
 				}
 				break;
 			case 2:
 				pincer.setPincerPosition(1500, true, 0.0);
-				if (guidence.goToWaypoint(-226, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (guidance.goToWaypoint(-226, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 3;
 				}
 				break;
 			case 3:
 				pincer.setPincerPosition(1500, true, 0.0);
-				if (guidence.goToWaypoint(-206, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
+				if (guidance.goToWaypoint(-206, 160, (Math.PI / 2), RobotMap.DEFAULT_AUTO_SPEED)) {
 					state = 4;
 				}
 				break;
@@ -452,7 +452,7 @@ public class Navigation {
 			break;
 
 		case "Straight":
-			guidence.goToWaypoint(0, 100, 0, RobotMap.DEFAULT_AUTO_SPEED);
+			guidance.goToWaypoint(0, 100, 0, RobotMap.DEFAULT_AUTO_SPEED);
 			pincer.setPincerPosition(2115, true, 0.0);
 			break;
 		default:

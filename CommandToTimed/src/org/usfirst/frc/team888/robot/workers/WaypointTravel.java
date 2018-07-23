@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WaypointTravel {
 
-	private static WaypointTravel guidence;
+	private static WaypointTravel guidance;
 	
 	protected DriveTrain drive;
 	protected DeadReckon location;
@@ -23,15 +23,15 @@ public class WaypointTravel {
 	 * @return The object of WaypointTravel
 	 */
 	public static WaypointTravel getInstance() {
-		if (guidence != null) {
+		if (guidance != null) {
 			synchronized(WaypointTravel.class) {
-				if (guidence != null) {
-					guidence = new WaypointTravel();
+				if (guidance != null) {
+					guidance = new WaypointTravel();
 				}
 			}
 		}
 		
-		return guidence;
+		return guidance;
 	}
 
 	/**

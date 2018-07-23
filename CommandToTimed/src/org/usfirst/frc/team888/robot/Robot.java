@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
 	protected static DriveTrain drive;
 	protected static DeadReckon location;
 	protected static Navigation navigation;
-	protected static WaypointTravel guidence;
+	protected static WaypointTravel guidance;
 
 	protected static Vision vision;
 
@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
 		drive = DriveTrain.getInstance();
 		
 		location = DeadReckon.getInstance();
-		guidence = WaypointTravel.getInstance();
+		guidance = WaypointTravel.getInstance();
 
 		vision = Vision.getInstance();
 
