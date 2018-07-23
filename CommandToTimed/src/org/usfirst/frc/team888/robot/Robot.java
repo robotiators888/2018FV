@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
 
 		// Declares pneumatic-dependent objects
 		compressor =  new RunCompressor();
-		climber = new Climber(oi);
+		climber = Climber.getClimber(oi);
 		pincer = new Pincer(oi);
 
 		// Declares navigating object and passes in classes called by navigation

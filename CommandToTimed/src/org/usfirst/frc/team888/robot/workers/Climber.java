@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.Spark;
  */
 public class Climber {
 
+	private static Climber climber;
+	
 	protected OI oi;
 
 	protected Spark lights;
@@ -38,7 +40,7 @@ public class Climber {
 	 * Constructor
 	 * @param p_oi OI Object
 	 */
-	public Climber(OI p_oi) {
+	private Climber(OI p_oi) {
 		oi = p_oi;
 
 		climberMotorLeft = new Spark(RobotMap.CLIMBER_MOTOR_LEFT);
@@ -53,6 +55,18 @@ public class Climber {
 	}
 
 
+	public static Climber getClimber(OI p_oi) {
+		if (climber != null) {
+			synchronized(Climber.class) {
+				if (climber != null) {
+					climber = new Climber(p_oi);
+				}
+			}
+		}
+		
+		return climber;
+	}
+	
 	/**
 	 * Run at the begining of auto and teleop
 	 */
