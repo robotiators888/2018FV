@@ -124,7 +124,7 @@ public class Navigation {
 		// Send the nav data to the dashboard once per second on the second 
 		if (schedulerOffset == 0) {
 			updateDashboard();
-			location.updateDashboard();
+			location.updateDashboard();	
 			vision.sendMessage(location.cycle);
 		}
 
