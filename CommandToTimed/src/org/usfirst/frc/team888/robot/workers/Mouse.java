@@ -7,25 +7,25 @@ import java.io.IOException;
 public class Mouse implements Runnable {
 
 	private static Mouse mouse;
-	
-	FileInputStream om;
-	
+
+	FileInputStream optMouse;
+
 	byte[] dat = new byte[3];
-	
+
 	int deltaX = 0;
 	int deltaY = 0;
 	int x = 0;
 	int y = 0;
 	int h = 0;
-	
+
 	private Mouse() {
 		try {
-			om = new FileInputStream("/dev/input/mouse1");
+			optMouse = new FileInputStream("/dev/input/mouse1");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static Mouse getInstance() {
 		if (mouse != null) {
 			synchronized(Mouse.class) {
@@ -34,50 +34,49 @@ public class Mouse implements Runnable {
 				}
 			}
 		}
-		
+
 		return mouse;
 	}
-	
+
+	@Override
 	public void run() {
-		while (true) {
-			try {
-				om.read(dat);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			boolean yOverflow = (dat[0] & 0x80) != 0;
-			boolean xOverflow = (dat[0] & 0x40) != 0;
-			boolean ySignBit = (dat[0] & 0x20) != 0;
-			boolean xSignBit = (dat[0] & 0x10) != 0;
+		try {
+			optMouse.read(dat);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-			int xMovement = dat[1];
-			int yMovement = dat[2];
-			
-			deltaX = xSignBit ? xMovement - 255 : xMovement;
-			deltaY = ySignBit ? yMovement - 255 : yMovement;
+		boolean yOverflow = (dat[0] & 0x80) != 0;
+		boolean xOverflow = (dat[0] & 0x40) != 0;
+		boolean ySignBit = (dat[0] & 0x20) != 0;
+		boolean xSignBit = (dat[0] & 0x10) != 0;
 
-	        x += deltaX;
-	        y += deltaY;
+		int xMovement = dat[1];
+		int yMovement = dat[2];
 
-	        h = (int) Math.atan2(deltaX, deltaY);
+		deltaX = xSignBit ? xMovement - 255 : xMovement;
+		deltaY = ySignBit ? yMovement - 255 : yMovement;
 
-	        if (h < 0.0) h += (Math.PI * 2.0);
+		x += deltaX;
+		y += deltaY;
 
-	        h %= (Math.PI * 2.0);
-	        
-	        if (!(xOverflow && yOverflow)) {
-	        	System.out.println("x: " + x + " y: " + " h: " + h);
-	        }
-	        else if (xOverflow && !yOverflow) {
-	        	System.out.println("X OVERFLOW!");
-	        }
-	        else if (!xOverflow && yOverflow) {
-	        	System.out.println("Y OVERFLOW!");
-	        }
-	        else {
-	        	System.out.println("X AND Y OVERFLOW!!!");
-	        }
+		h = (int) Math.atan2(deltaX, deltaY);
+
+		if (h < 0.0) h += (Math.PI * 2.0);
+
+		h %= (Math.PI * 2.0);
+
+		if (!(xOverflow && yOverflow)) {
+			System.out.println("x: " + x + " y: " + " h: " + h);
+		}
+		else if (xOverflow && !yOverflow) {
+			System.out.println("X OVERFLOW!");
+		}
+		else if (!xOverflow && yOverflow) {
+			System.out.println("Y OVERFLOW!");
+		}
+		else {
+			System.out.println("X AND Y OVERFLOW!!!");
 		}
 	}
 }
