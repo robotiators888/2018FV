@@ -8,15 +8,13 @@ public class Mouse extends Thread {
 
 	FileInputStream mouse;
 	
-	byte[] dat =  new byte[3];
+	byte[] dat = new byte[3];
 	
 	int deltaX = 0;
 	int deltaY = 0;
-	int px = 0;
-	int py = 0;
-	int x  = 0;
-	int y  = 0;
-	int h  = 0;
+	int x = 0;
+	int y = 0;
+	int h = 0;
 	
 	public Mouse() {
 		try {
@@ -45,11 +43,10 @@ public class Mouse extends Thread {
 			
 			if (xSignBit) deltaX = xMovement - 255;
 	        else deltaX = xMovement;
-	        if (ySignBit) deltaY = yMovement - 255;
+	        
+			if (ySignBit) deltaY = yMovement - 255;
 	        else deltaY = yMovement;
 
-	        px = x;
-	        py = y;
 	        x += deltaX;
 	        y += deltaY;
 
