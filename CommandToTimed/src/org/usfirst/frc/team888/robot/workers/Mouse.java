@@ -60,11 +60,7 @@ public class Mouse implements Runnable {
 		x += deltaX;
 		y += deltaY;
 
-		h = (int) Math.atan2(deltaX, deltaY);
-
-		if (h < 0.0) h += (Math.PI * 2.0);
-
-		h %= (Math.PI * 2.0);
+		h = (int) DeadReckon.modAngle(Math.atan2(deltaX, deltaY));
 
 		if (!(xOverflow && yOverflow)) {
 			System.out.println("x: " + x + " y: " + " h: " + h);
