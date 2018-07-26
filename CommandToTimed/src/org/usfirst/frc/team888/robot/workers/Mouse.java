@@ -12,8 +12,6 @@ public class Mouse implements Runnable {
 
 	byte[] dat = new byte[3];
 
-	int deltaX = 0;
-	int deltaY = 0;
 	int x = 0;
 	int y = 0;
 	int h = 0;
@@ -28,7 +26,7 @@ public class Mouse implements Runnable {
 
 	public static Mouse getInstance() {
 		if (mouse != null) {
-			synchronized(Mouse.class) {
+			synchronized (Mouse.class) {
 				if (mouse != null) {
 					mouse = new Mouse();
 				}
@@ -54,8 +52,8 @@ public class Mouse implements Runnable {
 		int xMovement = dat[1];
 		int yMovement = dat[2];
 
-		deltaX = xSignBit ? xMovement - 255 : xMovement;
-		deltaY = ySignBit ? yMovement - 255 : yMovement;
+		int deltaX = xSignBit ? xMovement - 255 : xMovement;
+		int deltaY = ySignBit ? yMovement - 255 : yMovement;
 
 		x += deltaX;
 		y += deltaY;
