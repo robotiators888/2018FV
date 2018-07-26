@@ -73,9 +73,9 @@ public class DeadReckon {
 	 * @return The object of DeadReckon
 	 */
 	public static DeadReckon getInstance() {
-		if (dr != null) {
+		if (dr == null) {
 			synchronized(DeadReckon.class) {
-				if (dr != null) {
+				if (dr == null) {
 					dr = new DeadReckon();
 				}
 			}

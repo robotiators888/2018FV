@@ -29,9 +29,9 @@ public class OI {
 	 * @return The object of OI
 	 */
 	public static OI getInstance() {
-		if (oi != null) {
+		if (oi == null) {
 			synchronized(OI.class) {
-				if (oi != null) {
+				if (oi == null) {
 					oi = new OI();
 				}
 			}

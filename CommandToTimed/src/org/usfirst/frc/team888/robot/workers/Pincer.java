@@ -96,9 +96,9 @@ public class Pincer {
 	 * @return The object of Pincer
 	 */
 	public static Pincer getInstance() {
-		if (pincer != null) {
+		if (pincer == null) {
 			synchronized(Pincer.class) {
-				if (pincer != null) {
+				if (pincer == null) {
 					pincer = new Pincer();
 				}
 			}

@@ -37,9 +37,9 @@ public class Vision {
 	 * @return The object of Vision
 	 */
 	public static Vision getInstance() {
-		if (vision != null) {
+		if (vision == null) {
 			synchronized(Vision.class) {
-				if (vision != null) {
+				if (vision == null) {
 					vision = new Vision();
 				}
 			}

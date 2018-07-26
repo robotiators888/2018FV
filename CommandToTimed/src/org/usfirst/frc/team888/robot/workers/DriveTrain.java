@@ -36,9 +36,9 @@ public class DriveTrain {
 	 * @return The object of DriveTrain
 	 */
     public static DriveTrain getInstance() {
-    	if (drive != null) {
+    	if (drive == null) {
     		synchronized(DriveTrain.class) {
-    			if (drive != null) {
+    			if (drive == null) {
     				drive = new DriveTrain();
     			}
     		}

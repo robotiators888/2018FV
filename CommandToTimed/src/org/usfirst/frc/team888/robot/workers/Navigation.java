@@ -86,9 +86,9 @@ public class Navigation {
 	 * @return The object of Navigation
 	 */
 	public static Navigation getInstance() {
-		if (nav != null) {
+		if (nav == null) {
 			synchronized(Navigation.class) {
-				if (nav != null) {
+				if (nav == null) {
 					nav = new Navigation();
 				}
 			}

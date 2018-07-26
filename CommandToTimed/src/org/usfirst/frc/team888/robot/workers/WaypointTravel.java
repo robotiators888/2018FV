@@ -23,9 +23,9 @@ public class WaypointTravel {
 	 * @return The object of WaypointTravel
 	 */
 	public static WaypointTravel getInstance() {
-		if (guidance != null) {
+		if (guidance == null) {
 			synchronized(WaypointTravel.class) {
-				if (guidance != null) {
+				if (guidance == null) {
 					guidance = new WaypointTravel();
 				}
 			}

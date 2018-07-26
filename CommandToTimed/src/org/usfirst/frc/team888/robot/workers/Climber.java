@@ -61,9 +61,9 @@ public class Climber {
 	 * @return The object of Climber
 	 */
 	public static Climber getInstance() {
-		if (climber != null) {
+		if (climber == null) {
 			synchronized(Climber.class) {
-				if (climber != null) {
+				if (climber == null) {
 					climber = new Climber();
 				}
 			}

@@ -25,9 +25,9 @@ public class Mouse implements Runnable {
 	}
 
 	public static Mouse getInstance() {
-		if (mouse != null) {
-			synchronized (Mouse.class) {
-				if (mouse != null) {
+		if (mouse == null) {
+			synchronized(Mouse.class) {
+				if (mouse == null) {
 					mouse = new Mouse();
 				}
 			}
