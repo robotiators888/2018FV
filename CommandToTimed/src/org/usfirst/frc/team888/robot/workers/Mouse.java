@@ -4,9 +4,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class Mouse extends Thread {
+public class Mouse implements Runnable {
 
-	FileInputStream mouse;
+	private static Mouse mouse;
+	
+	FileInputStream om;
 	
 	byte[] dat = new byte[3];
 	
@@ -16,19 +18,30 @@ public class Mouse extends Thread {
 	int y = 0;
 	int h = 0;
 	
-	public Mouse() {
+	private Mouse() {
 		try {
-			mouse = new FileInputStream("/dev/input/mouse1");
+			om = new FileInputStream("/dev/input/mouse1");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	@Override
+	public static Mouse getInstance() {
+		if (mouse != null) {
+			synchronized(Mouse.class) {
+				if (mouse != null) {
+					mouse = new Mouse();
+				}
+			}
+		}
+		
+		return mouse;
+	}
+	
 	public void run() {
 		while (true) {
 			try {
-				mouse.read(dat);
+				om.read(dat);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -7,9 +7,14 @@
 
 package org.usfirst.frc.team888.robot;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.usfirst.frc.team888.robot.workers.Climber;
 import org.usfirst.frc.team888.robot.workers.DeadReckon;
 import org.usfirst.frc.team888.robot.workers.DriveTrain;
+import org.usfirst.frc.team888.robot.workers.Mouse;
 import org.usfirst.frc.team888.robot.workers.Navigation;
 import org.usfirst.frc.team888.robot.workers.Pincer;
 import org.usfirst.frc.team888.robot.workers.RunCompressor;
@@ -36,6 +41,9 @@ public class Robot extends TimedRobot {
 	protected static DeadReckon location;
 	protected static Navigation navigation;
 	protected static WaypointTravel guidance;
+	
+	protected Mouse mouse;
+	protected ScheduledExecutorService pool;
 
 	protected static Vision vision;
 
@@ -72,7 +80,11 @@ public class Robot extends TimedRobot {
 
 		// Declares navigating object and passes in classes called by navigation
 		navigation = Navigation.getInstance();
-
+		
+		pool = Executors.newScheduledThreadPool(1);
+		mouse = Mouse.getInstance();
+		pool.schedule(mouse, 10, TimeUnit.MILLISECONDS);
+		
 
 		// Sends the start position selector to the dashboard
 		SmartDashboard.putData("Start Position", navigation.startPosition);
