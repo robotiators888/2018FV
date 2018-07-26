@@ -41,11 +41,8 @@ public class Mouse extends Thread {
 			int xMovement = dat[1];
 			int yMovement = dat[2];
 			
-			if (xSignBit) deltaX = xMovement - 255;
-	        else deltaX = xMovement;
-	        
-			if (ySignBit) deltaY = yMovement - 255;
-	        else deltaY = yMovement;
+			deltaX = xSignBit ? xMovement - 255 : xMovement;
+			deltaY = ySignBit ? yMovement - 255 : yMovement;
 
 	        x += deltaX;
 	        y += deltaY;
