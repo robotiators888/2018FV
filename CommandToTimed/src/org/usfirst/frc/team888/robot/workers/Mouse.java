@@ -17,9 +17,8 @@ public class Mouse {
 	BufferedWriter bw;
 	File mouseData;
 	FileOutputStream fos;
-	
-	String fileName = "/c/mouseData" + System.currentTimeMillis();
 
+	String fileName;
 
 	byte[] dat = new byte[3];
 
@@ -28,6 +27,8 @@ public class Mouse {
 	int h = 0;
 
 	private Mouse() {
+		fileName = "/c/mouseData" + System.currentTimeMillis();
+		
 		try {
 			optMouse = new FileInputStream("/dev/input/mouse0");
 		} catch (FileNotFoundException e) {
