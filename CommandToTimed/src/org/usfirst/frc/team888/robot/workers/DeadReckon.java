@@ -275,12 +275,10 @@ public class DeadReckon {
 	 * Writes the logged data to a file on the RoboRIO
 	 */
 	public void writeToLogger() {
-		int fileID = 1;
 
 		do {
-			String fileName = "/tmp/navData" + fileID;
+			String fileName = "/c/navData" + System.currentTimeMillis();
 			navData = new File(fileName);
-			fileID++;
 		} while (navData.exists());
 
 		try {

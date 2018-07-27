@@ -21,9 +21,9 @@ public class RunCompressor {
 	 * @return The object of RunCompressor
 	 */
     public static RunCompressor getInstance() {
-    	if (compressor != null) {
+    	if (compressor == null) {
 			synchronized(RunCompressor.class) {
-				if (compressor != null) {
+				if (compressor == null) {
 					compressor = new RunCompressor();
 				}
 			}

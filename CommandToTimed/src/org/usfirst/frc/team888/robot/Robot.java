@@ -7,10 +7,6 @@
 
 package org.usfirst.frc.team888.robot;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-//import java.util.concurrent.TimeUnit;
-
 import org.usfirst.frc.team888.robot.workers.Climber;
 import org.usfirst.frc.team888.robot.workers.DeadReckon;
 import org.usfirst.frc.team888.robot.workers.DriveTrain;
@@ -43,7 +39,6 @@ public class Robot extends TimedRobot {
 	protected static WaypointTravel guidance;
 	
 	protected Mouse mouse;
-	protected ScheduledExecutorService pool;
 
 	protected static Vision vision;
 
@@ -81,9 +76,7 @@ public class Robot extends TimedRobot {
 		// Declares navigating object and passes in classes called by navigation
 		navigation = Navigation.getInstance();
 		
-		pool = Executors.newScheduledThreadPool(1);
 		mouse = Mouse.getInstance();
-		//pool.schedule(mouse, 10, TimeUnit.MILLISECONDS);
 		
 
 		// Sends the start position selector to the dashboard
@@ -98,6 +91,7 @@ public class Robot extends TimedRobot {
 		navigation.navigationInit();
 		compressor.compressorInit();
 		pincer.pincerInit();
+		systemRun = true;
 	}
 
 	/**
@@ -118,6 +112,8 @@ public class Robot extends TimedRobot {
 		navigation.navigationInit();
 		compressor.compressorInit();
 		pincer.pincerInit();
+		
+		systemRun = true;
 	}
 
 	/**
@@ -153,6 +149,7 @@ public class Robot extends TimedRobot {
 			location.writeToLogger();
 			systemRun = false;
 			System.out.println("Logging sucessful");
+			systemRun = false;
 		}
 	}
 }

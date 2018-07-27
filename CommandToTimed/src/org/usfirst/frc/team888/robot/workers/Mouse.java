@@ -1,14 +1,25 @@
 package org.usfirst.frc.team888.robot.workers;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
-public class Mouse implements Runnable {
+public class Mouse {
 
 	private static Mouse mouse;
 
 	FileInputStream optMouse;
+
+	BufferedWriter bw;
+	File mouseData;
+	FileOutputStream fos;
+	
+	String fileName = "/c/mouseData" + System.currentTimeMillis();
+
 
 	byte[] dat = new byte[3];
 
@@ -18,7 +29,7 @@ public class Mouse implements Runnable {
 
 	private Mouse() {
 		try {
-			optMouse = new FileInputStream("/dev/input/mouse1");
+			optMouse = new FileInputStream("/dev/input/mouse0");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -36,8 +47,7 @@ public class Mouse implements Runnable {
 		return mouse;
 	}
 
-	@Override
-	public void run() {
+	public void mouse() {
 		try {
 			optMouse.read(dat);
 		} catch (IOException e) {
@@ -60,17 +70,46 @@ public class Mouse implements Runnable {
 
 		h = (int) DeadReckon.modAngle(Math.atan2(deltaX, deltaY));
 
+
+		String log;
+
 		if (!(xOverflow && yOverflow)) {
-			System.out.println("x: " + x + " y: " + " h: " + h);
+			log = ("x: " + x + " y: " + " h: " + h);
 		}
 		else if (xOverflow && !yOverflow) {
-			System.out.println("X OVERFLOW!");
+			log = ("X OVERFLOW!");
 		}
 		else if (!xOverflow && yOverflow) {
-			System.out.println("Y OVERFLOW!");
+			log = ("Y OVERFLOW!");
 		}
 		else {
-			System.out.println("X AND Y OVERFLOW!!!");
+			log = ("X AND Y OVERFLOW!!!");
+		}
+
+		mouseData = new File(fileName);
+
+		try {
+			fos = new FileOutputStream(mouseData);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+		try {
+			bw.append(log);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			bw.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

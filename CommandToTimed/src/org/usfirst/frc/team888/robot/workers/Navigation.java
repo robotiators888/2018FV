@@ -16,6 +16,7 @@ public class Navigation {
 	protected Climber climber;
 	protected DriveTrain drive;
 	protected DeadReckon location;
+	protected Mouse mouse;
 	protected OI oi;
 	protected Pincer pincer;
 	protected Vision vision;
@@ -61,6 +62,7 @@ public class Navigation {
 		climber = Climber.getInstance();
 		drive = DriveTrain.getInstance();
 		location = DeadReckon.getInstance();
+		mouse = Mouse.getInstance();
 		pincer = Pincer.getInstance();
 		oi = OI.getInstance();
 		vision = Vision.getInstance();
@@ -118,8 +120,10 @@ public class Navigation {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
+		//mouse.mouse();
 		location.updateLog(state);
 		location.updateDashboard();
+		
 
 		// Send the nav data to the dashboard once per second on the second 
 		if (schedulerOffset == 0) {
@@ -217,7 +221,7 @@ public class Navigation {
 			// The case that robot starts in the middle position
 			switch (state) {
 			case 0:
-				if (guidance.goToWaypoint(79, 52, location.getHeading(), RobotMap.DEFAULT_AUTO_SPEED)) state = 10;
+				if (guidance.goToWaypoint(0.0001, 999999, location.getHeading(), RobotMap.DEFAULT_AUTO_SPEED)) state = 10;
 				/*pincer.setPincerPosition(1700, true, 0.0);
 				if (gameData.charAt(0) == 'L') {
 					// If the robot has not arrived at the switch...
