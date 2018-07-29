@@ -120,7 +120,6 @@ public class Navigation {
 		location.updateTracker();
 		updateGuidenceControl();
 		updateMotion();
-		//mouse.mouse();
 		location.updateLog(state);
 		location.updateDashboard();
 		

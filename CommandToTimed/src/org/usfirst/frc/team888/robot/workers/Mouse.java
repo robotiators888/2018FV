@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class Mouse {
+public class Mouse implements Runnable {
 
 	private static Mouse mouse;
 
@@ -47,8 +47,9 @@ public class Mouse {
 
 		return mouse;
 	}
-
-	public void mouse() {
+	
+	@Override
+	public void run() {
 		try {
 			optMouse.read(dat);
 		} catch (IOException e) {
