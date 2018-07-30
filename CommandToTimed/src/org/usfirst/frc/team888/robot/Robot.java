@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
 		
 		mouse = Mouse.getInstance();
 		pool = Executors.newScheduledThreadPool(1);
-		pool.schedule(mouse, 5, TimeUnit.MILLISECONDS);
+		pool.schedule(mouse, 10, TimeUnit.MILLISECONDS);
 
 		// Sends the start position selector to the dashboard
 		SmartDashboard.putData("Start Position", navigation.startPosition);
