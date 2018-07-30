@@ -9,6 +9,7 @@ package org.usfirst.frc.team888.robot;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.usfirst.frc.team888.robot.workers.Climber;
 import org.usfirst.frc.team888.robot.workers.DeadReckon;
@@ -82,7 +83,7 @@ public class Robot extends TimedRobot {
 		
 		mouse = Mouse.getInstance();
 		pool = Executors.newScheduledThreadPool(1);
-		pool.submit(mouse);
+		pool.schedule(mouse, 5, TimeUnit.MILLISECONDS);
 
 		// Sends the start position selector to the dashboard
 		SmartDashboard.putData("Start Position", navigation.startPosition);
