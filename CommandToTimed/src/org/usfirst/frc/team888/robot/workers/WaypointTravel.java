@@ -117,7 +117,7 @@ public class WaypointTravel {
 		if (direction.equals("forward")) {
 
 			//If the heading is to the right of the robot's current heading...
-			if (DeadReckon.modAngle(heading - targetData[0]) >
+			if (DeadReckon.modAngle(heading - targetData[0]) >=
 			DeadReckon.modAngle(targetData[0] - heading)) {
 
 				/*
@@ -153,7 +153,7 @@ public class WaypointTravel {
 			double course = DeadReckon.modAngle(heading + Math.PI);
 
 			//If the heading is to the right of the robot's current heading...
-			if (DeadReckon.modAngle(course - targetData[0]) <
+			if (DeadReckon.modAngle(course - targetData[0]) <=
 					DeadReckon.modAngle(targetData[0] - course)) {
 
 				/*
