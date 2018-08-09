@@ -24,7 +24,5 @@ public class Logger {
 
         // Write the content using put methods
         buffer.put("howtodoinjava.com".getBytes());
-
-        fileChannel.close();
     }
 }
