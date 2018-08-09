@@ -10,108 +10,104 @@ import java.io.OutputStreamWriter;
 
 public class Mouse implements Runnable {
 
-	private static Mouse mouse;
+    private static Mouse mouse;
 
-	FileInputStream optMouse;
+    FileInputStream optMouse;
 
-	BufferedWriter bw;
-	File mouseData;
-	FileOutputStream fos;
+    BufferedWriter bw;
+    File mouseData;
+    FileOutputStream fos;
 
-	String fileName;
+    String fileName;
 
-	byte[] dat = new byte[3];
+    byte[] dat = new byte[3];
 
-	int x = 0;
-	int y = 0;
-	int h = 0;
+    int x = 0;
+    int y = 0;
+    int h = 0;
 
-	private Mouse() {
-		fileName = "/c/mouseData" + System.currentTimeMillis();
-		
-		try {
-			optMouse = new FileInputStream("/dev/input/mouse0");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+    private Mouse() {
+        fileName = "/c/mouseData" + System.currentTimeMillis();
 
-	public static Mouse getInstance() {
-		if (mouse == null) {
-			synchronized(Mouse.class) {
-				if (mouse == null) {
-					mouse = new Mouse();
-				}
-			}
-		}
+        try {
+            optMouse = new FileInputStream("/dev/input/mouse0");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
-		return mouse;
-	}
-	
-	@Override
-	public void run() {
-		try {
-			optMouse.read(dat);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    public static Mouse getInstance() {
+        if (mouse == null) {
+            synchronized (Mouse.class) {
+                if (mouse == null) {
+                    mouse = new Mouse();
+                }
+            }
+        }
 
-		boolean yOverflow = (dat[0] & 0x80) != 0;
-		boolean xOverflow = (dat[0] & 0x40) != 0;
-		boolean ySignBit = (dat[0] & 0x20) != 0;
-		boolean xSignBit = (dat[0] & 0x10) != 0;
+        return mouse;
+    }
 
-		int xMovement = dat[1];
-		int yMovement = dat[2];
+    @Override
+    public void run() {
+        try {
+            optMouse.read(dat);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-		int deltaX = xSignBit ? xMovement - 255 : xMovement;
-		int deltaY = ySignBit ? yMovement - 255 : yMovement;
+        boolean yOverflow = (dat[0] & 0x80) != 0;
+        boolean xOverflow = (dat[0] & 0x40) != 0;
+        boolean ySignBit = (dat[0] & 0x20) != 0;
+        boolean xSignBit = (dat[0] & 0x10) != 0;
 
-		x += deltaX;
-		y += deltaY;
+        int xMovement = dat[1];
+        int yMovement = dat[2];
 
-		h = (int) DeadReckon.modAngle(Math.atan2(deltaX, deltaY));
+        int deltaX = xSignBit ? xMovement - 255 : xMovement;
+        int deltaY = ySignBit ? yMovement - 255 : yMovement;
 
+        x += deltaX;
+        y += deltaY;
 
-		String log;
+        h = (int) DeadReckon.modAngle(Math.atan2(deltaX, deltaY));
 
-		if (!(xOverflow && yOverflow)) {
-			log = ("x: " + x + " y: " + " h: " + h);
-		}
-		else if (xOverflow && !yOverflow) {
-			log = ("X OVERFLOW!");
-		}
-		else if (!xOverflow && yOverflow) {
-			log = ("Y OVERFLOW!");
-		}
-		else {
-			log = ("X AND Y OVERFLOW!!!");
-		}
+        String log;
 
-		mouseData = new File(fileName);
+        if (!(xOverflow && yOverflow)) {
+            log = ("x: " + x + " y: " + " h: " + h);
+        } else if (xOverflow && !yOverflow) {
+            log = ("X OVERFLOW!");
+        } else if (!xOverflow && yOverflow) {
+            log = ("Y OVERFLOW!");
+        } else {
+            log = ("X AND Y OVERFLOW!!!");
+        }
 
-		try {
-			fos = new FileOutputStream(mouseData);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		bw = new BufferedWriter(new OutputStreamWriter(fos));
+        mouseData = new File(fileName);
 
-		try {
-			bw.append(log);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			bw.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        try {
+            fos = new FileOutputStream(mouseData);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-		try {
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            bw.append(log);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            bw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

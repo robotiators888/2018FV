@@ -6,36 +6,37 @@ import edu.wpi.first.wpilibj.Compressor;
 
 public class RunCompressor {
 
-	private static RunCompressor compressor;
-	
-	//Instantiates a compressor object from WPI
+    private static RunCompressor compressor;
+
+    // Instantiates a compressor object from WPI
     protected Compressor mainCompressor;
-    
+
     private RunCompressor() {
-    	//Declares the main compressor as an object of type Compressor
-    	mainCompressor = new Compressor(RobotMap.COMPRESSOR);
+        // Declares the main compressor as an object of type Compressor
+        mainCompressor = new Compressor(RobotMap.COMPRESSOR);
     }
-    
-	/**
-	 * Accessor method for the RunCompressor Singleton.
-	 * @return The object of RunCompressor
-	 */
+
+    /**
+     * Accessor method for the RunCompressor Singleton.
+     * 
+     * @return The object of RunCompressor
+     */
     public static RunCompressor getInstance() {
-    	if (compressor == null) {
-			synchronized(RunCompressor.class) {
-				if (compressor == null) {
-					compressor = new RunCompressor();
-				}
-			}
-		}
-		
-		return compressor;
+        if (compressor == null) {
+            synchronized (RunCompressor.class) {
+                if (compressor == null) {
+                    compressor = new RunCompressor();
+                }
+            }
+        }
+
+        return compressor;
     }
-    
+
     /**
      * Starts the compressor
      */
     public void compressorInit() {
-    	mainCompressor.start();
+        mainCompressor.start();
     }
 }

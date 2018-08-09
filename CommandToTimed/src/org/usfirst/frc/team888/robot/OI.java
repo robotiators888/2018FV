@@ -14,91 +14,99 @@ import edu.wpi.first.wpilibj.Joystick;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-	
-	private static OI oi;
-	
-	// Instantiates and declares the joystick objects
-	Joystick gamepad = new Joystick(RobotMap.GAMEPAD_PORT);
-	Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK);
-	Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
-	
-	private OI() { }
-	
-	/**
-	 * Accessor method for the OI Singleton.
-	 * @return The object of OI
-	 */
-	public static OI getInstance() {
-		if (oi == null) {
-			synchronized(OI.class) {
-				if (oi == null) {
-					oi = new OI();
-				}
-			}
-		}
-		
-		return oi;
-	}
 
-	/**
-	 * @param Axis array value
-	 * @return Axis value between -1 and 1 for left joystick
-	 */
-	public double getLeftStickAxis(int axis) {
-		return leftStick.getRawAxis(axis);
-	}
-	
-	/**
-	 * @param Axis array value
-	 * @return Axis value between -1 and 1 for right joystick
-	 */
-	public double getRightStickAxis(int axis) {
-		return rightStick.getRawAxis(axis);
-	}
-	
-	/**
-	 * @param Axis array value
-	 * @return Axis value between -1 and 1 for gamepad joystick
-	 */
-	public double getGamepadAxis(int axis) {
-		return gamepad.getRawAxis(axis);
-	}
-	
-	/**
-	 * @return The D-Pad values from the secondary controller
-	 */
-	public int getGamepadPOV() {
-		return gamepad.getPOV();
-	}
-	
-	/**
-	 * @param Button array value
-	 * @return Button value (true if pressed) from the left joystick
-	 */
-	public boolean getLeftStickButton(int button) {
-		return leftStick.getRawButton(button);
-	}
-	
-	/**
-	 * @param Button array value
-	 * @return Button value (true if pressed) from the right joystick
-	 */
-	public boolean getRightStickButton(int button) {
-		return rightStick.getRawButton(button);
-	}
-	
-	/**
-	 * @param Button array value
-	 * @return Button value (true if pressed) from the gamepad joystick
-	 */
-	public boolean getGamepadButton(int button) {
-		return gamepad.getRawButton(button);
-	}
-	
-	/**
-	 * @return True if both the left and right joystick triggers are pressed
-	 */
-	public boolean getTriggers() {
-		return (leftStick.getRawButton(1) && rightStick.getRawButton(1));
-	}
+    private static OI oi;
+
+    // Instantiates and declares the joystick objects
+    Joystick gamepad = new Joystick(RobotMap.GAMEPAD_PORT);
+    Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK);
+    Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK);
+
+    private OI() {
+    }
+
+    /**
+     * Accessor method for the OI Singleton.
+     * 
+     * @return The object of OI
+     */
+    public static OI getInstance() {
+        if (oi == null) {
+            synchronized (OI.class) {
+                if (oi == null) {
+                    oi = new OI();
+                }
+            }
+        }
+
+        return oi;
+    }
+
+    /**
+     * @param Axis
+     *            array value
+     * @return Axis value between -1 and 1 for left joystick
+     */
+    public double getLeftStickAxis(int axis) {
+        return leftStick.getRawAxis(axis);
+    }
+
+    /**
+     * @param Axis
+     *            array value
+     * @return Axis value between -1 and 1 for right joystick
+     */
+    public double getRightStickAxis(int axis) {
+        return rightStick.getRawAxis(axis);
+    }
+
+    /**
+     * @param Axis
+     *            array value
+     * @return Axis value between -1 and 1 for gamepad joystick
+     */
+    public double getGamepadAxis(int axis) {
+        return gamepad.getRawAxis(axis);
+    }
+
+    /**
+     * @return The D-Pad values from the secondary controller
+     */
+    public int getGamepadPOV() {
+        return gamepad.getPOV();
+    }
+
+    /**
+     * @param Button
+     *            array value
+     * @return Button value (true if pressed) from the left joystick
+     */
+    public boolean getLeftStickButton(int button) {
+        return leftStick.getRawButton(button);
+    }
+
+    /**
+     * @param Button
+     *            array value
+     * @return Button value (true if pressed) from the right joystick
+     */
+    public boolean getRightStickButton(int button) {
+        return rightStick.getRawButton(button);
+    }
+
+    /**
+     * @param Button
+     *            array value
+     * @return Button value (true if pressed) from the gamepad joystick
+     */
+    public boolean getGamepadButton(int button) {
+        return gamepad.getRawButton(button);
+    }
+
+    /**
+     * @return True if both the left and right joystick triggers are pressed
+     */
+    public boolean getTriggers() {
+        return (leftStick.getRawButton(1) && rightStick.getRawButton(1));
+    }
 }

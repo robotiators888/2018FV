@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
         vision = Vision.getInstance();
 
         // Declares pneumatic-dependent objects
-        compressor =  RunCompressor.getInstance();
+        compressor = RunCompressor.getInstance();
         climber = Climber.getInstance();
         pincer = Pincer.getInstance();
 
