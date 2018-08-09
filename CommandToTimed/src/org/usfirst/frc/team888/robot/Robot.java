@@ -33,129 +33,130 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-	// Instantiates OI object
-	protected static OI oi;
+    // Instantiates OI object
+    protected static OI oi;
 
-	// Instantiates drive train, location finding, and navigating objects
-	protected static DriveTrain drive;
-	protected static DeadReckon location;
-	protected static Navigation navigation;
-	protected static WaypointTravel guidance;
-	
-	protected Mouse mouse;
-	protected ScheduledExecutorService pool;
+    // Instantiates drive train, location finding, and navigating objects
+    protected static DriveTrain drive;
+    protected static DeadReckon location;
+    protected static Navigation navigation;
+    protected static WaypointTravel guidance;
 
-	protected static Vision vision;
+    protected Mouse mouse;
+    protected ScheduledExecutorService pool;
 
-	// Instantiates compressor, climber, and pincer objects
-	protected static RunCompressor compressor;
-	protected static Climber climber;
-	protected static Pincer pincer;
+    protected static Vision vision;
 
-	protected static long disabledCounter;
+    // Instantiates compressor, climber, and pincer objects
+    protected static RunCompressor compressor;
+    protected static Climber climber;
+    protected static Pincer pincer;
 
-	private boolean systemRun = false;
-	
-	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
-	@Override
-	public void robotInit() {
-		// Declares OI object
-		oi = OI.getInstance();
+    protected static long disabledCounter;
 
-		// Declares drive and location finding objects
-		drive = DriveTrain.getInstance();
-		
-		location = DeadReckon.getInstance();
-		guidance = WaypointTravel.getInstance();
+    private boolean systemRun = false;
 
-		vision = Vision.getInstance();
+    /**
+     * This function is run when the robot is first started up and should be
+     * used for any initialization code.
+     */
+    @Override
+    public void robotInit() {
 
-		// Declares pneumatic-dependent objects
-		compressor =  RunCompressor.getInstance();
-		climber = Climber.getInstance();
-		pincer = Pincer.getInstance();
+        // Declares OI object
+        oi = OI.getInstance();
 
-		// Declares navigating object and passes in classes called by navigation
-		navigation = Navigation.getInstance();
-		
-		mouse = Mouse.getInstance();
-		pool = Executors.newScheduledThreadPool(1);
-		pool.schedule(mouse, 10, TimeUnit.MILLISECONDS);
+        // Declares drive and location finding objects
+        drive = DriveTrain.getInstance();
 
-		// Sends the start position selector to the dashboard
-		SmartDashboard.putData("Start Position", navigation.startPosition);
-	}
+        location = DeadReckon.getInstance();
+        guidance = WaypointTravel.getInstance();
 
-	/**
-	 * This function is called once at the beginning of autonomous.
-	 */
-	@Override
-	public void autonomousInit() {
-		navigation.navigationInit();
-		compressor.compressorInit();
-		pincer.pincerInit();
-		systemRun = true;
-	}
+        vision = Vision.getInstance();
 
-	/**
-	 * This function is called periodically during autonomous.
-	 */
-	@Override
-	public void autonomousPeriodic() {
-		navigation.navigationExecute();
-		pincer.pincerExecute();
-		climber.climberExecute();
-	}
+        // Declares pneumatic-dependent objects
+        compressor =  RunCompressor.getInstance();
+        climber = Climber.getInstance();
+        pincer = Pincer.getInstance();
 
-	/**
-	 * This function is called once at the beginning of the operator control.
-	 */
-	@Override
-	public void teleopInit() {
-		navigation.navigationInit();
-		compressor.compressorInit();
-		pincer.pincerInit();
-		
-		systemRun = true;
-	}
+        // Declares navigating object and passes in classes called by navigation
+        navigation = Navigation.getInstance();
 
-	/**
-	 * This function is called periodically during operator control.
-	 */
-	@Override
-	public void teleopPeriodic() {
-		navigation.navigationExecute();
+        mouse = Mouse.getInstance();
+        pool = Executors.newScheduledThreadPool(1);
+        pool.schedule(mouse, 10, TimeUnit.MILLISECONDS);
 
-		pincer.pincerExecute();
-		climber.climberExecute();
-	}
+        // Sends the start position selector to the dashboard
+        SmartDashboard.putData("Start Position", navigation.startPosition);
+    }
 
-	/**
-	 * This function is called once when the robot enters a disabled state.
-	 */
-	@Override
-	public void disabledInit() {
-		SmartDashboard.putData("Start Position", navigation.startPosition);
-		SmartDashboard.putData("Stratagy", navigation.strategy);
+    /**
+     * This function is called once at the beginning of autonomous.
+     */
+    @Override
+    public void autonomousInit() {
+        navigation.navigationInit();
+        compressor.compressorInit();
+        pincer.pincerInit();
+        systemRun = true;
+    }
 
-		disabledCounter = System.currentTimeMillis();
-	}
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {
+        navigation.navigationExecute();
+        pincer.pincerExecute();
+        climber.climberExecute();
+    }
 
-	/**
-	 * This function is called periodically while the robot is disabled.
-	 */
-	@Override
-	public void disabledPeriodic() {
-		long t = System.currentTimeMillis();
-		// If the robot has been disabled for 5 seconds then log all data
-		if (systemRun && ((t - disabledCounter) >= 5000)) {
-			location.writeToLogger();
-			systemRun = false;
-			System.out.println("Logging sucessful");
-			systemRun = false;
-		}
-	}
+    /**
+     * This function is called once at the beginning of the operator control.
+     */
+    @Override
+    public void teleopInit() {
+        navigation.navigationInit();
+        compressor.compressorInit();
+        pincer.pincerInit();
+
+        systemRun = true;
+    }
+
+    /**
+     * This function is called periodically during operator control.
+     */
+    @Override
+    public void teleopPeriodic() {
+        navigation.navigationExecute();
+
+        pincer.pincerExecute();
+        climber.climberExecute();
+    }
+
+    /**
+     * This function is called once when the robot enters a disabled state.
+     */
+    @Override
+    public void disabledInit() {
+        SmartDashboard.putData("Start Position", navigation.startPosition);
+        SmartDashboard.putData("Stratagy", navigation.strategy);
+
+        disabledCounter = System.currentTimeMillis();
+    }
+
+    /**
+     * This function is called periodically while the robot is disabled.
+     */
+    @Override
+    public void disabledPeriodic() {
+        long t = System.currentTimeMillis();
+        // If the robot has been disabled for 5 seconds then log all data
+        if (systemRun && ((t - disabledCounter) >= 5000)) {
+            location.writeToLogger();
+            systemRun = false;
+            System.out.println("Logging sucessful");
+            systemRun = false;
+        }
+    }
 }
