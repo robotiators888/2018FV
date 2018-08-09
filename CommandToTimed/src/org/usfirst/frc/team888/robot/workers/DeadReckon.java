@@ -305,10 +305,16 @@ public class DeadReckon {
             try {
                 bw.append(String.format(
                         "%d,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n",
-                        (int) navLog.get(i)[0], navLog.get(i)[1],
-                        navLog.get(i)[2], navLog.get(i)[3], navLog.get(i)[4],
-                        navLog.get(i)[5], navLog.get(i)[6], navLog.get(i)[7],
-                        navLog.get(i)[8], navLog.get(i)[9]));
+                        (int) navLog.get(i)[0],
+                        navLog.get(i)[1],
+                        navLog.get(i)[2],
+                        navLog.get(i)[3], 
+                        navLog.get(i)[4],
+                        navLog.get(i)[5], 
+                        navLog.get(i)[6],
+                        navLog.get(i)[7],
+                        navLog.get(i)[8],
+                        navLog.get(i)[9]));
             } catch (IOException e) {
                 e.printStackTrace();
             }
