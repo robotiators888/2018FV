@@ -240,17 +240,20 @@ public class Pincer {
                 manualPower = 0;
             }
         }
+        
         if (button) {
             pincerMotor.set(ControlMode.PercentOutput, pincerPower);
-        } else {
+        }
+        else {
             pincerMotor.set(ControlMode.PercentOutput, manualPower);
         }
+       
         if (!(currentAngle > (desiredPosition + angleThreshold))
                 && !(currentAngle < (desiredPosition - angleThreshold))) {
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
 
     }
 
