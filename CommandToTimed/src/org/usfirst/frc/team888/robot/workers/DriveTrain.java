@@ -6,8 +6,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class DriveTrain {
 
     private static DriveTrain drive;
@@ -78,19 +76,8 @@ public class DriveTrain {
      * 
      * @return An array of left and right clicks
      */
-    public int[] getEncoderVals() {
-        int leftClicks = -rearLeft.getSelectedSensorPosition(0);
-        int rightClicks = rearRight.getSelectedSensorPosition(0);
-
-        int[] i = { leftClicks, rightClicks };
-
-        SmartDashboard.putNumber("Raw Left Clicks", leftClicks);
-        SmartDashboard.putNumber("Raw Right Clicks", rightClicks);
-        SmartDashboard.putNumber("Left Talon Current",
-                rearLeft.getOutputCurrent());
-        SmartDashboard.putNumber("Right Talon Current",
-                rearRight.getOutputCurrent());
-
-        return i;
+    public double[] getEncoderVals() {
+        return new double[] { -rearLeft.getSelectedSensorPosition(0),
+                rearRight.getSelectedSensorPosition(0) };
     }
 }
