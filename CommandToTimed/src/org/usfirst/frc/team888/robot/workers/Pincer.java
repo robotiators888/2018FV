@@ -89,13 +89,10 @@ public class Pincer {
         bottomLimit = new DigitalInput(2);
         topLimit = new DigitalInput(1);
         bottomBanner = new DigitalInput(3);
-
-        // lights = new Spark(RobotMap.LIGHTS);
     }
 
     /**
      * Accessor method for the Pincer Singleton.
-     * 
      * @return The object of Pincer
      */
     public static Pincer getInstance() {
@@ -156,13 +153,13 @@ public class Pincer {
     public boolean setPincerPosition(double desiredPosition, boolean button,
             double axis) {
         batteryVoltage = pincerMotor.getBusVoltage();
-        if (proximity.get()) {
+        if (proximity.get())
             maxSpeed = withoutCubePercent
-                    * (batteryVoltage / maxBatteryVoltage);
-        } else {
+            * (batteryVoltage / maxBatteryVoltage);
+        else
             maxSpeed = withCubePercent * (batteryVoltage / maxBatteryVoltage);
-        }
 
+        // Brings down pincer position
         if (currentAngle > (desiredPosition + angleThreshold)) {
             if (Math.abs(currentAngle - lastAngle) < movementThreshold) {
                 maintainerConstant = maintainerConstant
@@ -174,10 +171,12 @@ public class Pincer {
 
             if (pincerPower > (maxSpeed - 0.05)) {
                 pincerPower = maxSpeed - 0.05;
+                reflexStart = reflexTimer;
             }
-            reflexStart = reflexTimer;
-            // stuff to bring down to angle
-        } else if (currentAngle < (desiredPosition - angleThreshold)) {
+        }
+
+        // Raises up pincer position
+        else if (currentAngle < (desiredPosition - angleThreshold)) {
             if (Math.abs(currentAngle - lastAngle) < movementThreshold) {
                 maintainerConstant = maintainerConstant
                         + maintainerConstantIterator;
@@ -188,10 +187,11 @@ public class Pincer {
                 pincerPower = maxSpeed;
             }
             pincerPower = -pincerPower;
-            // stuff to bring up to angle
             reflexStart = reflexTimer;
+        }
 
-        } else {
+        // Maintains position
+        else {
             pincerPower = (-pincerPower
                     * Math.abs(currentAngle - desiredPosition) * (reflexHigh)
                     * 0.0025) / Math.abs(pincerPower);
@@ -211,9 +211,6 @@ public class Pincer {
             } else {
                 pincerPower = 0;
             }
-            // stuff to maintain position, want to do a thing where it puts
-            // slight
-            // power in the opposite direction to oppose movement and brake
         }
 
         lastAngle = currentAngle;
@@ -222,52 +219,41 @@ public class Pincer {
         manualPower = 0.55 * axis;
 
         if (topLimit.get()) {
-            if (pincerPower < 0) {
+            if (pincerPower < 0)
                 pincerPower = 0;
-            }
-            if (manualPower < 0) {
+            if (manualPower < 0)
                 manualPower = 0;
-            }
         }
 
         SmartDashboard.putNumber("pincer encoder", currentAngle);
 
         if (bottomLimit.get() || bottomBanner.get()) {
-            if (pincerPower > 0.16) {
+            if (pincerPower > 0.16)
                 pincerPower = 0;
-            }
-            if (manualPower > 0) {
+            if (manualPower > 0)
                 manualPower = 0;
-            }
         }
-        
-        if (button) {
+
+        if (button)
             pincerMotor.set(ControlMode.PercentOutput, pincerPower);
-        }
-        else {
+        else
             pincerMotor.set(ControlMode.PercentOutput, manualPower);
-        }
-       
+
         if (!(currentAngle > (desiredPosition + angleThreshold))
                 && !(currentAngle < (desiredPosition - angleThreshold))) {
             return true;
         }
-        
+
         return false;
 
     }
 
     // Uses pistons to close pincer
     public void pince(boolean button) {
-        if (input == true && lastInput == false) {
-            press = true;
-        } else {
-            press = false;
-        }
+        press = (input == true && lastInput == false) ? true : false;
 
-        if (press) {
+        if (press)
             output = !output;
-        }
 
         lastInput = input;
         input = button;
@@ -279,7 +265,6 @@ public class Pincer {
             pincerPiston.set(DoubleSolenoid.Value.kReverse);
             pincerPosition = "Closed";
         }
-        System.out.println("I want to die");
     }
 
     public boolean getProzimity() {
