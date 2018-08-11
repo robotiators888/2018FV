@@ -49,8 +49,8 @@ public class Climber {
 
         climberMotorLeft = new Spark(RobotMap.CLIMBER_MOTOR_LEFT);
         climberMotorRight = new Spark(RobotMap.CLIMBER_MOTOR_RIGHT);
-        climberPistonLeft = new Solenoid(5, 0); // module number, channel
-        climberPistonRight = new Solenoid(5, 1); // module number, channel
+        climberPistonLeft = new Solenoid(5, 0);
+        climberPistonRight = new Solenoid(5, 1);
 
         climberEncoder = new Encoder(4, 5, true, CounterBase.EncodingType.k4X);
 
