@@ -1,7 +1,5 @@
 package org.usfirst.frc.team888.robot.workers;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class WaypointTravel {
 
     private static WaypointTravel guidance;
@@ -72,7 +70,6 @@ public class WaypointTravel {
                 double[] adjustments = moveToWaypoint(desiredX, desiredY,
                         speed);
                 drive.move(speed + adjustments[0], speed + adjustments[1]);
-                // TODO Make this not break when x=0
             }
             break;
         case 1:
@@ -210,7 +207,6 @@ public class WaypointTravel {
         }
 
         return adjustments;
-
     }
 
     /**
@@ -266,14 +262,6 @@ public class WaypointTravel {
         // Calculates the adjustment based on how much the robot needs to turn
         double driveAdjustment = Math.max(0,
                 Math.min(0.5, (Math.abs(headingDifference))));
-
-        // SmartDashboard.putNumber("desired x", desiredX);
-        // SmartDashboard.putNumber("desired y", desiredY);
-        SmartDashboard.putNumber("desired heading",
-                Math.toDegrees(desiredHeading));
-        SmartDashboard.putNumber("ajustment proportion", driveAdjustment);
-        SmartDashboard.putNumber("headingDifference",
-                Math.toDegrees(headingDifference));
 
         return new double[] { desiredHeading, driveAdjustment };
     }
