@@ -99,18 +99,16 @@ public class DeadReckon {
          * change is ignored and the previous change is used instead.
          */
         changeInEncoderLeft = encoderLeftValue - lastEncoderLeft;
-        if (changeInEncoderLeft > 3000 || changeInEncoderLeft < -3000) {
+        if (changeInEncoderLeft > 3000 || changeInEncoderLeft < -3000)
             changeInEncoderLeft = lastChangeInEncoderLeft;
-        } else {
+        else
             lastChangeInEncoderLeft = changeInEncoderLeft;
-        }
 
         changeInEncoderRight = encoderRightValue - lastEncoderRight;
-        if (changeInEncoderRight > 3000 || changeInEncoderRight < -3000) {
+        if (changeInEncoderRight > 3000 || changeInEncoderRight < -3000)
             changeInEncoderRight = lastChangeInEncoderRight;
-        } else {
+        else
             lastChangeInEncoderRight = changeInEncoderRight;
-        }
 
         // Algorithm for when the robot is going forward
         if (changeInEncoderLeft >= 0 && changeInEncoderRight >= 0) {
@@ -308,9 +306,9 @@ public class DeadReckon {
                         (int) navLog.get(i)[0],
                         navLog.get(i)[1],
                         navLog.get(i)[2],
-                        navLog.get(i)[3], 
+                        navLog.get(i)[3],
                         navLog.get(i)[4],
-                        navLog.get(i)[5], 
+                        navLog.get(i)[5],
                         navLog.get(i)[6],
                         navLog.get(i)[7],
                         navLog.get(i)[8],
@@ -347,7 +345,7 @@ public class DeadReckon {
         timePassed = time - lastTime;
 
         // Gets the encoder values from the drive train.
-        int[] vals = drive.getEncoderVals();
+        double[] vals = drive.getEncoderVals();
 
         // If the tracker has been calibrated...
         if (calibrated) {
