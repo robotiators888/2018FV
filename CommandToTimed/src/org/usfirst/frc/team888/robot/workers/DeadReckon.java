@@ -30,7 +30,7 @@ public class DeadReckon {
     protected double changeInY;
     protected double clickPosX;
     protected double clickPosY;
-    protected int cycle;
+    protected int    cycle;
     protected String direction;
     protected double encoderLeftValue;
     protected double encoderRightValue;
